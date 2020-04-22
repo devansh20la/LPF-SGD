@@ -34,7 +34,7 @@ def get_args(*args):
     parser.add_argument('--skip', type=lambda x: bool(util.strtobool(x)), default=True)
     parser.add_argument('--lr_decay', type=lambda x: bool(util.strtobool(x)), default=True)
 
-    parser.add_argument('-saved_model', type=str)
+    parser.add_argument('-hg', type=str)
 
     args = parser.parse_args(*args)
 
@@ -59,6 +59,4 @@ def get_args(*args):
 
 
 if __name__ == '__main__':
-    args = get_args(["--regular", "None", "--skip", "True"])
-    for key, value in vars(args).items():
-        print(key, value)
+    args = get_args(fromfile_prefix_chars='@checkpoints/mnist/holygrail.txt')

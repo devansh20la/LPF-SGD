@@ -8,7 +8,7 @@ import numpy as np
 import torch
 import codecs
 from sklearn.model_selection import train_test_split
-from .utils import download_url, download_and_extract_archive, extract_archive, \
+from torchvision.datasets.utils import download_url, download_and_extract_archive, extract_archive, \
     verify_str_arg
 
 

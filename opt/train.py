@@ -10,7 +10,7 @@ import glob
 import os
 import random
 from torch.utils.tensorboard import SummaryWriter
-from utils import get_loader, class_model_run, my_sch
+from utils import get_loader, class_model_run, AMSGD, SGD
 
 
 def create_path(path):
@@ -22,6 +22,7 @@ def main(args):
     logger = logging.getLogger('my_log')
 
     dset_loaders = get_loader(args, training=True)
+
     model = LeNet()
     criterion = nn.CrossEntropyLoss()
 
@@ -29,43 +30,58 @@ def main(args):
         model.cuda()
         torch.backends.cudnn.benchmark = True
 
-    optimizer = optim.SGD(model.parameters(), lr=args.lr,
+    if args.opt == "amsgd":
+        optimizer = AMSGD(model.parameters(), lr=args.lr,
                           momentum=args.m, weight_decay=args.wd)
-    scheduler = my_sch(optimizer)
+    elif args.opt == "sgd":
+        optimizer = SGD(model.parameters(), lr=args.lr,
+                        momentum=args.m, weight_decay=args.wd)
+
     writer = SummaryWriter(log_dir=args.cp_dir)
+
+    saved_dict = {'cos_dist': [],
+                  "lr": [],
+                  "mu": []}
 
     for epoch in range(args.ep):
 
         logger.info('Epoch: [%d | %d]' % (epoch, args.ep))
 
-        stats, grad_update = \
+        stats = \
             class_model_run('train', dset_loaders,
-                            model, criterion, optimizer, args, scheduler)
+                            model, criterion, optimizer, args)
 
         logger.info('Train_Loss = {0}, Train_Err = {1}'.format(stats["loss"].avg, stats["err1"].avg))
 
         writer.add_scalar('Train/Train_Loss', stats["loss"].avg, epoch)
         writer.add_scalar('Train/Train_Err1', stats["err1"].avg, epoch)
         writer.add_scalar('Train/Train_Err5', stats["err5"].avg, epoch)
+        saved_dict["cos_dist"] += stats["cos_dist"]
+        saved_dict["lr"] += stats["lr"]
+        saved_dict["mu"] += stats["mu"]
 
-        stats, _ = \
+        grads = stats["grad_update"]
+
+        stats = \
             class_model_run('val', dset_loaders, model,
-                            criterion, optimizer, args, scheduler)
+                            criterion, optimizer, args)
         logger.info('Val_Loss = {0}, Val_Err = {1}'.format(stats["loss"].avg, stats["err1"].avg))
         writer.add_scalar('Val/Val_Loss', stats["loss"].avg, epoch)
         writer.add_scalar('Val/Val_Err1', stats["err1"].avg, epoch)
         writer.add_scalar('Val/Val_Err5', stats["err5"].avg, epoch)
 
-        state = {
-            'epoch': epoch,
-            'model': model.state_dict(),
-            "grads": grad_update
-        }
-
-        torch.save(state, f"{args.cp_dir}/state_{epoch}.pth.tar")
+        if epoch % 1 == 0:
+            state = {
+                'epoch': epoch,
+                'model': model.state_dict(),
+                "grads": grads
+            }
+            torch.save(state, f"{args.cp_dir}/trained_model_ep{epoch}.pth.tar")
+            torch.save(saved_dict, f"{args.cp_dir}/stats.pth.tar")
 
 
 if __name__ == '__main__':
+    # args = get_args(["-opt","sgd","-lr","0.01","-m","0.9","-wd","0.0","--dtype","mnist","--print_freq","50"])
     args = get_args()
 
     # Random seed

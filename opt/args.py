@@ -20,9 +20,10 @@ def get_args(*args):
     parser.add_argument('--ep', type=int, default=250, help='Epochs')
     parser.add_argument('--bs', type=int, default=128, help='batch size')
 
-    parser.add_argument('-lr', type=float, help='learning rate')
-    parser.add_argument('-wd', type=float, help='weight decay')
-    parser.add_argument('-m', type=float, help='momentum')
+    parser.add_argument('-opt', type=str, required=True, help='Optimizer')
+    parser.add_argument('-lr', type=float, required=True, help='learning rate')
+    parser.add_argument('-wd', type=float, required=True, help='weight decay')
+    parser.add_argument('-m', type=float, required=True, help='momentum')
 
     args = parser.parse_args(*args)
 
@@ -41,7 +42,7 @@ def get_args(*args):
     args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}"
+    args.n = f"{args.dtype}/{args.opt}_{args.lr}_{args.m}_{args.bs}_{args.wd}"
 
     return args
 

@@ -7,7 +7,7 @@ import time
 from torch.nn.utils import parameters_to_vector as p2v
 
 
-def class_model_run(phase, loader, model, criterion, optimizer, args, scheduler=None):
+def class_model_run(phase, loader, model, criterion, optimizer, args):
     """
         Function to forward pass through classification problem
     """
@@ -19,8 +19,13 @@ def class_model_run(phase, loader, model, criterion, optimizer, args, scheduler=
         model.eval()
 
     stats = {x: AverageMeter() for x in ["loss", "err1", "err5"]}
+    stats["grads"] = []
+    stats["cos_dist"] = []
+    stats["lr"] = []
+    stats["mu"] = []
+    stats["grad_update"] = []
+
     t = time.time()
-    grad_update = None
 
     for batch_idx, inp_data in enumerate(loader[phase], 1):
 
@@ -38,18 +43,18 @@ def class_model_run(phase, loader, model, criterion, optimizer, args, scheduler=
                 # compute gradient and do SGD step
                 optimizer.zero_grad()
                 batch_loss.backward()
+
                 optimizer.step()
 
-                # adpative momentum and lr scheduler
-                scheduler.step()
+            stats["cos_dist"] += optimizer.cos_dist
 
-            # with torch.no_grad():
-            #     # save gradients
-            #     grads = []
-            #     for param in model.parameters():
-            #         grads.append(param.grad.reshape(-1))
-            #     grads = torch.cat(grads)
-            #     grad_update += [grads]
+            with torch.no_grad():
+                # save gradients
+                grads = []
+                for param in model.parameters():
+                    grads.append(param.grad.cpu().reshape(-1))
+                grads = torch.cat(grads)
+                stats["grad_update"] += [grads]
 
         elif phase == 'val':
             with torch.no_grad():
@@ -64,16 +69,20 @@ def class_model_run(phase, loader, model, criterion, optimizer, args, scheduler=
         stats["err1"].update(float(100.0 - batch_err[0]), inputs.size(0))
         stats["err5"].update(float(100.0 - batch_err[1]), inputs.size(0))
 
-        if batch_idx % args.print_freq == 0:
-            logger.info("Phase:{0} -- Batch_idx:{1}/{2} -- {3:.2f} samples/sec"
-                        "-- Loss:{4:.2f} -- Error1:{5:.2f}".format(
-                          phase, batch_idx, len(loader[phase]),
-                          stats["err1"].count / (time.time() - t), stats["loss"].avg, stats["err1"].avg))
+        # fix this -- this way of obtaining lr, mu is stupid
+        lr = list(map(lambda group: group['lr'], optimizer.param_groups))[0]
+        mu = list(map(lambda group: group['momentum'], optimizer.param_groups))[0]
 
-    if grad_update is not None:
-        return stats, grad_update
-    else:
-        return stats
+        stats["lr"] += [lr]
+        stats["mu"] += [mu]
+
+        if batch_idx % args.print_freq == 0:
+
+            logger.info(f"Phase:{phase} -- LR: {lr:.4f} -- MU:{mu:.4f} -- Batch_idx:{batch_idx}/{len(loader[phase])}"
+                        f"-- {stats['err1'].count / (time.time() - t):.2f} samples/sec"
+                        f"-- Loss:{stats['loss'].avg:.2f} -- Error1:{stats['err1'].avg:.2f}")
+
+    return stats
 
 
 def get_loader(args, training, lp=1.0):
@@ -95,17 +104,17 @@ def get_loader(args, training, lp=1.0):
         dset_loaders = {
             'train': torch.utils.data.DataLoader(dsets['train'], batch_size=args.bs,
                                                  shuffle=True, pin_memory=True,
-                                                 num_workers=2),
+                                                 num_workers=12),
             'val': torch.utils.data.DataLoader(dsets['val'], batch_size=128,
                                                shuffle=False, pin_memory=True,
-                                               num_workers=2)
+                                               num_workers=12)
         }
 
     else:
         dset_loaders = {
             'test': torch.utils.data.DataLoader(dsets['test'], batch_size=128,
                                                 shuffle=False, pin_memory=True,
-                                                num_workers=2)
+                                                num_workers=12)
         }
 
     return dset_loaders

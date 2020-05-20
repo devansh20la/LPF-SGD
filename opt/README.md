@@ -1,7 +1,7 @@
 # Adaptive Momentum Stochastic gradient descent.
 
 ## Prerequisites
-What things you need to install the software and how to install them
+You need to install
 ```
 pytorch
 torchvision

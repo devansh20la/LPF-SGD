@@ -16,24 +16,24 @@ tqdm (for pretty progress bars)
 The following arguemnts are required to train lenet model on mnist data.
 
 ```
-    --dir: directory
-    --print_freq: frequency to print statistics
+--dir: directory
+--print_freq: frequency to print statistics
 
-    --dtype: data type
-      supported arguments:
-      "mnist"
+--dtype: data type
+  supported arguments:
+  "mnist"
 
-    --ms: manual seed
-    --ep: total number of epochs
-    --bs: batch size
+--ms: manual seed
+--ep: total number of epochs
+--bs: batch size
 
-    -opt: optimizer
-      supported arguments are:
-      "amsgd"
-      "sgd"
-    -lr: learning rate
-    -wd: weight decay
-    -m: momentum
+-opt: optimizer
+  supported arguments are:
+  "amsgd"
+  "sgd"
+-lr: learning rate
+-wd: weight decay
+-m: momentum
 ```
 Example to train lenet model on mnist data with AMSGD optimizer:
 ```

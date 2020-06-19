@@ -16,6 +16,11 @@ from utils import get_loader, class_model_run
 def create_path(path):
     if os.path.isdir(path) is False:
         os.makedirs(path)
+    else:
+        for file in glob.glob(path + '/*.log'):
+            for file in glob.glob(path+'/*'):
+                print(f"deleting {file}")
+                os.remove(file)
 
 
 def main(args):
@@ -31,9 +36,10 @@ def main(args):
 
     if args.optim == "sgd":
         optimizer = optim.SGD(model.parameters(), lr=args.lr,
-                              momentum=args.m, weight_decay=args.wd)
+                              momentum=args.mo, weight_decay=args.wd)
     elif args.optim == "adam":
-        optimizer = optim.Adam(model.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08,
+        optimizer = optim.Adam(model.parameters(), lr=args.lr,
+                               betas=(0.9, 0.999), eps=1e-08,
                                weight_decay=args.wd, amsgrad=False)
     if args.lr_decay:
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
@@ -56,7 +62,7 @@ def main(args):
         if args.lr_decay:
             scheduler.step()
 
-        if epoch % 50 == 0:
+        if (epoch+1) % 50 == 0:
             valloss, valerr1, valerr5 = \
                 class_model_run('val', dset_loaders, model,
                                 criterion, optimizer, args)
@@ -80,14 +86,7 @@ if __name__ == '__main__':
         torch.cuda.manual_seed_all(args.ms)
 
     # Intialize directory and create path
-    args.cp_dir = f"{args.dir}/checkpoints/{args.n}"
-    list_of_files = sorted(glob.glob1(args.cp_dir, '*run*'))
-    if len(list_of_files) == 0:
-        list_of_files = 0
-    else:
-        list_of_files = len(list_of_files)
-
-    args.cp_dir = f"{args.cp_dir}/run{list_of_files}"
+    args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
     create_path(args.cp_dir)
 
     # Logging tools
@@ -101,17 +100,5 @@ if __name__ == '__main__':
     logger.addHandler(console)
     logger.info(args)
 
-    #holy grail that matches params to run
-    path = f"{args.dir}/checkpoints/{args.n}/holygrail.txt"
-    if not(os.path.isfile(path)):
-        with open(path, 'w') as f:
-            for key in vars(args):
-                f.write(f"{key},")
-            f.write("\n")
-
-    with open(path, 'a') as f:
-        for key, value in vars(args).items():
-            f.write(f"{value},")
-        f.write("\n")
-
     main(args)
+

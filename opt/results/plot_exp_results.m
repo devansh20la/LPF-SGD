@@ -17,17 +17,17 @@ for i = 1:size(files)
     lr = name(2); lr= lr{1};
     m = name(3); m = m{1};
     bs = name(4); bs = strsplit(bs{1}, '.mat'); bs = bs(1); bs = bs{1};
-    plot(TrainErr,'LineWidth',4,"DisplayName", sprintf("%s, bs=%s, \\alpha=%s, \\mu=%s",n,bs,lr,m));
+    plot(TrainLoss,'LineWidth',4,"DisplayName", sprintf("%s, bs=%s, \\alpha=%s, \\mu=%s",n,bs,lr,m));
     hold on;
 end
 
 %%
-ylim([0, 10]);
+ylim([0, 1]);
 xlim([0,200]);
-legend('NumColumns',2,'Location','southoutside');
+legend('NumColumns',1,'Location','northeast');
 grid on;
-xlabel('Epoch'); ylabel('Error (%)'); title('Train Err - MNIST - LeNet');
+xlabel('Epoch'); ylabel('Loss'); title('Train Loss - MNIST - LeNet');
 set(gca,'YScale', 'log');
 set(gca,'FontSize',24);
-set(gcf, 'Position',  [50,145,826,691])
-print('lenet_train_err','-depsc');
+set(gcf, 'Position',  [620,526,620,452])
+print('lenet_train_loss','-depsc');

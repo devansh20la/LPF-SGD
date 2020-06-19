@@ -21,6 +21,7 @@ class BasicBlock(nn.Module):
 
         if self.regular == 'batch_norm':
             self.bn1 = nn.BatchNorm2d(planes)
+
         elif self.regular == "dropout":
             self.bn1 = nn.Dropout(0.2, inplace=True)
 
@@ -69,19 +70,19 @@ class ResNet(nn.Module):
     def __init__(self, block, num_blocks, args, num_classes=10, zero_init_residual=False):
         super(ResNet, self).__init__()
         self.args = args
-        self.in_planes = 8
+        self.in_planes = self.args.width * 8
 
-        self.conv1 = nn.Conv2d(1, 8, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1, bias=False)
         if self.args.regular == "batch_norm":
-            self.bn1 = nn.BatchNorm2d(8)
+            self.bn1 = nn.BatchNorm2d(self.args.width * 8)
         elif self.args.regular == "dropout":
             self.bn1 = nn.Dropout(0.2, inplace=True)
 
-        self.layer1 = self._make_layer(block, 8, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, 16, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, 32, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, 64, num_blocks[3], stride=2)
-        self.linear = nn.Linear(64 * block.expansion, num_classes)
+        self.layer1 = self._make_layer(block, self.args.width * 8, num_blocks[0], stride=1)
+        self.layer2 = self._make_layer(block, self.args.width * 16, num_blocks[1], stride=2)
+        self.layer3 = self._make_layer(block, self.args.width * 32, num_blocks[2], stride=2)
+        self.layer4 = self._make_layer(block, self.args.width * 64, num_blocks[3], stride=2)
+        self.linear = nn.Linear(self.args.width * 64 * block.expansion, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -134,12 +135,8 @@ if __name__ == "__main__":
     import sys
     sys.path.append("..")
     from args import get_args
-    from torch.utils.tensorboard import SummaryWriter
 
-    args = get_args(["--regular", "batch_norm", "--skip", "True"])
+    args = get_args(["--exp_num", "250"])
     model = resnet18_narrow(args)
 
-    writer = SummaryWriter('.')
-    inputs = torch.randn(1, 3, 32, 32)
-    writer.add_graph(model, inputs)
-    writer.close()
+    print(args, model)

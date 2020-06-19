@@ -134,15 +134,10 @@ if __name__ == "__main__":
     import sys
     sys.path.append("..")
     from args import get_args
-    from torch.utils.tensorboard import SummaryWriter
-    from torchvision import models 
+    from torchvision import models
 
     model = models.resnet18()
-    # args = get_args(["--regular", "batch_norm", "--skip", "True"])
-    # model = resnet18(args)
-
-    writer = SummaryWriter('.')
-    inputs = torch.randn(1, 3, 32, 32)
-
-    writer.add_graph(model, inputs)
-    writer.close()
+    args = get_args(["--exp_num", "0"])
+    model = resnet18(args)
+    print(args)
+    print(model)

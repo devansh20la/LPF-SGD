@@ -86,19 +86,12 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
 
 
 def get_loader(args, training, lp=1.0):
-    """ function to get data loader specific to different datasets
-    """
-    if args.dtype == 'cifar10':
-        dsets = cifar10_dsets(args, training)
 
-    elif args.dtype == 'cifar100':
-        dsets = cifar100_dsets(args, training)
-
-    elif args.dtype == 'imagenet':
-        dsets = imagenet_dsets(args, training)
-
-    elif args.dtype == 'mnist':
+    if args.dtype == 'mnist':
         dsets = mnist_dsets(args, training, lp=lp)
+    else:
+        print("dtype not available---quiting")
+        quit()
 
     if training is True:
         dset_loaders = {
@@ -137,93 +130,6 @@ def mnist_dsets(args, training, lp):
         dsets = {
             'test': MNIST(args.data_dir, train=False, download=False,
                           transform=transform, lp=lp)
-        }
-
-    return dsets
-
-
-def cifar10_dsets(args, training):
-    """ Function to load cifar10 data
-    """
-    transform = {
-        'train': transforms.Compose([transforms.ToTensor(),
-                                     transforms.Normalize(
-                                        (0.4914, 0.4822, 0.4465),
-                                        (0.2023, 0.1994, 0.2010))]),
-        'val': transforms.Compose([transforms.ToTensor(),
-                                   transforms.Normalize(
-                                        (0.4914, 0.4822, 0.4465),
-                                        (0.2023, 0.1994, 0.2010))])
-    }
-    if training is True:
-        dsets = {
-            'train': datasets.CIFAR10(root=args.data_dir, train=True,
-                                      download=False, transform=transform['train']),
-            'val': datasets.CIFAR10(root=args.data_dir, train=False,
-                                    download=False, transform=transform['val'])
-        }
-    else:
-        dsets = {
-            'test': datasets.CIFAR10(root=args.data_dir, train=False,
-                                     download=False, transform=transform['val'])
-        }
-
-    return dsets
-
-
-def cifar100_dsets(args, training):
-    """ Function to load cifar100 data
-    """
-    transform = {
-        'train': transforms.Compose([transforms.ToTensor(),
-                                     transforms.Normalize(
-                                        (0.4914, 0.4822, 0.4465),
-                                        (0.2023, 0.1994, 0.2010))]),
-        'val': transforms.Compose([transforms.ToTensor(),
-                                   transforms.Normalize(
-                                        (0.4914, 0.4822, 0.4465),
-                                        (0.2023, 0.1994, 0.2010))])
-    }
-    if training is True:
-        dsets = {
-            'train': datasets.CIFAR100(root=args.data_dir, train=True,
-                                       download=True, transform=transform['train']),
-            'val': datasets.CIFAR100(root=args.data_dir, train=False,
-                                     download=True, transform=transform['val'])
-        }
-    else:
-        dsets = {
-            'test': datasets.CIFAR100(root=args.data_dir, train=False,
-                                      download=True, transform=transform['val'])
-        }
-
-    return dsets
-
-
-def imagenet_dsets(args, training):
-    """ Function to load imagenet data
-    """
-    transform = transforms.Compose([transforms.Resize(256),
-                                    transforms.CenterCrop(224),
-                                    transforms.ToTensor(),
-                                    transforms.Normalize(
-                                         mean=[0.485, 0.456, 0.406],
-                                         std=[0.229, 0.224, 0.225])])
-
-    if training is True:
-        dsets = {
-            'train': datasets.ImageNet(root=args.data_dir, split='train',
-                                       images_per_class=args.img_per_class,
-                                       download=False,
-                                       transform=transform),
-            'val': datasets.ImageNet(root=args.data_dir, split='val',
-                                     download=False, transform=transform)
-        }
-
-    else:
-        dsets = {
-            'test': datasets.ImageNet(root=args.data_dir, split='val',
-                                      download=False, transform=transform)
         }
 
     return dsets

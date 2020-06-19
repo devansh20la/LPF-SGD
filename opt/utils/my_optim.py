@@ -165,8 +165,8 @@ class AMSGD(Optimizer):
             # group['momentum'] = base_mu * torch.exp(-0.05 * cos_dist).item()
             # group['lr'] = base_lr * torch.exp(-0.346 * cos_dist).item()
             self.cos_dist += [cos_dist]
-            group['momentum'] = base_mu * max(cos_dist, 1e-4)
-            group['lr'] = base_lr * max(cos_dist, 1e-4)
+            group['momentum'] = base_mu * max(1 - cos_dist/2, 1e-4)
+            group['lr'] = base_lr * max(1 - cos_dist/2, 1e-4)
 
             weight_decay = group['weight_decay']
             momentum = group['momentum']

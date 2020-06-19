@@ -3,7 +3,7 @@
 query_device() {
 	for d in 0 1 2 3
 	do
-		dmem="$(nvidia-smi -q -i ${d} -d Memory | grep -A4 GPU | grep Used | grep -Eo '[0-9]{1,5}')"
+		dmem="$(nvidia-smi -q -i ${d} -d Memory |grep -A4 GPU | grep Used | grep -Eo '[0-9]{1,5}')"
 		if (($dmem < 50)); then
 		    device=${d}
 		fi
@@ -16,47 +16,17 @@ get_device() {
 	do
 		query_device
 		if [[ -z "${device}" ]]; then
-			echo "All devices are busy sleeping for 60s"
+			echo "All devices are busy, sleeping for 60s"
 			sleep 60
 		fi
 	done
 }
 
-
-for m in 0.9 0.5 0.0
-do
-	for wd in 0.0 1e-2 1e-4
-	do
-		for ms in 1
-		do
-			for lr_decay in "True" "False"
-			do
-				for lr in 0.01 0.001 0.005
-				do
-					for bs in 32 64 128
-					do
-						for skip in "True" "False"
-						do
-							for regular in "batch_norm" "dropout" "None"
-							do
-								get_device
-								CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
-									--dtype="mnist" \
-									--bs=${bs} \
-									--ep=200 \
-									--lr=${lr} \
-									--m=${m} \
-									--ms=${ms} \
-									--wd=${wd} \
-									--regular=${regular} \
-									--lr_decay=${lr_decay} \
-									--skip=${skip} &
-								sleep 30
-							done
-						done
-					done
-				done
-			done
-		done
-	done
+for exp_num in {0..1300}; do
+	get_device
+	CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
+		--dtype="cifar10" \
+		--print_freq=100 \
+		--exp_num=${exp_num} 2>&1 &
+	sleep 30
 done

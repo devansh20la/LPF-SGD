@@ -1,0 +1,39 @@
+import glob 
+import shutil 
+
+from sklearn.model_selection import ParameterGrid
+param_grid = {'m': [0.9, 0.5, 0.0],
+              'wd': [0.0, 1e-2, 1e-4],
+              'ms': [1],
+              'lr_decay': ["True", "False"],
+              'lr': [0.01, 0.001, 0.005],
+              'bs': [16, 32, 64, 128],
+              'skip': ["True", "False"],
+              'regular': ["batch_norm", "dropout", "none"]}
+
+grid = list(ParameterGrid(param_grid))
+
+
+db4 = glob.glob1(".", "sgd_*")
+
+for idx, fol in enumerate(grid, 0):
+	name = f'sgd_250_{fol["lr"]}_{fol["wd"]}_{fol["bs"]}_{fol["m"]}_{fol["regular"]}_{fol["skip"]}_{fol["lr_decay"]}'
+	if name in db4:
+		shutil.move(name, f"{idx}_{name}")
+
+
+
+
+import glob
+
+for fol in glob.glob("*sgd_*"):
+	if len(glob.glob(fol + "/run_ms_1/*.log")) != 1:
+		print(f"Error: {fol}", len(glob.glob(fol + "run_ms_1/*.log")))
+		print(glob.glob(fol + "run_ms_1/*.log"))
+	else:
+		for file in glob.glob(fol + "/run_ms_1/*.log"):
+			f = open(file, 'r')
+			if "Epoch: [249 | 250]" not in f.read():
+				f = open(file, 'r')
+				if 'nan' in f.read():
+					print(file)

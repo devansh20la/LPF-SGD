@@ -2,7 +2,7 @@ import torch
 import logging
 import time
 from utils.train_utils import AverageMeter, accuracy
-from torch.nn.utils import parameters_to_vector as p2v
+import numpy as np
 
 
 def class_model_run(phase, loader, model, criterion, optimizer, args):
@@ -21,7 +21,7 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
     err5 = AverageMeter()
     t = time.time()
 
-    for batch_idx, inp_data in enumerate(loader[phase],1):
+    for batch_idx, inp_data in enumerate(loader[phase], 1):
 
         inputs, targets = inp_data
 
@@ -32,14 +32,13 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
             with torch.set_grad_enabled(True):
                 # compute output
                 outputs = model(inputs)
-                # print(outputs.size(), targets.size())
+
                 batch_loss = criterion(outputs, targets)
 
                 # compute gradient and do SGD step
                 optimizer.zero_grad()
                 batch_loss.backward()
                 optimizer.step()
-
 
         elif phase == 'val':
             with torch.no_grad():
@@ -49,8 +48,12 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
             logger.info('Define correct phase')
             quit()
 
+        if np.isnan(batch_loss.item()):
+            logger.fatal("Training loss is nan .. quitting application")
+            quit()
+
         loss.update(batch_loss.item(), inputs.size(0))
-        batch_err = accuracy(outputs, targets, topk=(1,5))
+        batch_err = accuracy(outputs, targets, topk=(1, 5))
         err1.update(float(100.0 - batch_err[0]), inputs.size(0))
         err5.update(float(100.0 - batch_err[1]), inputs.size(0))
 

@@ -23,17 +23,17 @@ def get_loader(args, training, lp=1.0):
         dset_loaders = {
             'train': torch.utils.data.DataLoader(dsets['train'], batch_size=args.bs,
                                                  shuffle=True, pin_memory=True,
-                                                 num_workers=2),
+                                                 num_workers=8),
             'val': torch.utils.data.DataLoader(dsets['val'], batch_size=128,
                                                shuffle=False, pin_memory=True,
-                                               num_workers=2)
+                                               num_workers=8)
         }
 
     else:
         dset_loaders = {
             'test': torch.utils.data.DataLoader(dsets['test'], batch_size=128,
                                                 shuffle=False, pin_memory=True,
-                                                num_workers=2)
+                                                num_workers=8)
         }
 
     return dset_loaders

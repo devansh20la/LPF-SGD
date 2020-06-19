@@ -24,9 +24,9 @@ get_device() {
 
 for bs in 128 1024
 do
-	for lr in 0.005 0.007 0.01
+	for lr in 0.1
 	do
-		for m in 0.6 0.7 0.9
+		for m in 0.9 0.99 0.995
 		do
 			get_device
 			CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
@@ -34,7 +34,6 @@ do
 				-wd=0.0  \
 				-m=${m}  \
 				--bs=${bs}  \
-				--print_freq=100  \
 				--dtype="mnist"  \
 				--print_freq=50  \
 				--ep=200 \

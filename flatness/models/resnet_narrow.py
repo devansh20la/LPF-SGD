@@ -14,28 +14,23 @@ class BasicBlock(nn.Module):
 
     def __init__(self, args, in_planes, planes, stride=1):
         super(BasicBlock, self).__init__()
-        self.regular = args.regular
+        self.batchnorm = args.batchnorm
         self.skip = args.skip
 
         self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
 
-        if self.regular == 'batch_norm':
+        if self.batchnorm:
             self.bn1 = nn.BatchNorm2d(planes)
-
-        elif self.regular == "dropout":
-            self.bn1 = nn.Dropout(0.2, inplace=True)
 
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
 
-        if self.regular == 'batch_norm':
+        if self.batchnorm:
             self.bn2 = nn.BatchNorm2d(planes)
-        elif self.regular == "dropout":
-            self.bn2 = nn.Dropout(0.2, inplace=True)
 
         if self.skip:
             self.shortcut = nn.Sequential()
             if stride != 1 or in_planes != self.expansion*planes:
-                if self.regular == "batch_norm":
+                if self.batchnorm:
                     self.shortcut = nn.Sequential(
                         nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
                         nn.BatchNorm2d(self.expansion*planes)
@@ -47,21 +42,15 @@ class BasicBlock(nn.Module):
 
     def forward(self, x):
         out = self.conv1(x)
-        if self.regular == "batch_norm":
+        if self.batchnorm:
             out = self.bn1(out)
         out = F.relu(out)
-        if self.regular == "dropout":
-            out = self.bn1(out)
-
         out = self.conv2(out)
-        if self.regular == "batch_norm":
+        if self.batchnorm:
             out = self.bn2(out)
-
         if self.skip:
             out += self.shortcut(x)
         out = F.relu(out)
-        if self.regular == "dropout":
-            out = self.bn2(out)
 
         return out
 
@@ -73,10 +62,8 @@ class ResNet(nn.Module):
         self.in_planes = self.args.width * 8
 
         self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1, bias=False)
-        if self.args.regular == "batch_norm":
+        if self.args.batchnorm:
             self.bn1 = nn.BatchNorm2d(self.args.width * 8)
-        elif self.args.regular == "dropout":
-            self.bn1 = nn.Dropout(0.2, inplace=True)
 
         self.layer1 = self._make_layer(block, self.args.width * 8, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, self.args.width * 16, num_blocks[1], stride=2)
@@ -109,13 +96,11 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         out = self.conv1(x)
-        if self.args.regular == "batch_norm":
+
+        if self.args.batchnorm:
             out = self.bn1(out)
 
         out = F.relu(out)
-
-        if self.args.regular == "dropout":
-            out = self.bn1(out)
 
         out = self.layer1(out)
         out = self.layer2(out)
@@ -136,7 +121,5 @@ if __name__ == "__main__":
     sys.path.append("..")
     from args import get_args
 
-    args = get_args(["--exp_num", "250"])
+    args = get_args("--exp_num", "1")
     model = resnet18_narrow(args)
-
-    print(args, model)

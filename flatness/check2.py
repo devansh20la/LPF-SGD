@@ -6,7 +6,8 @@ from utils.train_utils import AverageMeter, accuracy
 import argparse
 from sklearn.model_selection import ParameterGrid
 import pickle
-from tqdm import tqdm 
+from tqdm import tqdm
+import glob
 
 
 def main(args):
@@ -64,20 +65,12 @@ if __name__ == '__main__':
                   'lr': [0.01, 0.001, 0.005],
                   'bs': [16, 32, 64, 128],
                   'skip': ["True", "False"],
-                  'regular': ["batch_norm", "dropout", "none"]}
-
-    check_grid = {'m': {'0.9': [0, 0], '0.5': [0, 0], '0.0': [0, 0]},
-                  'wd': {'0.0': [0, 0], '0.01': [0, 0], '0.0001': [0, 0]},
-                  'lr_decay': {"True": [0, 0], "False": [0, 0]},
-                  'lr': {'0.01': [0, 0], '0.001': [0, 0], '0.005': [0, 0]},
-                  'bs': {'16': [0, 0], '32': [0, 0], '64': [0, 0], '128': [0, 0]},
-                  'skip': {"True": [0, 0], "False": [0, 0]},
-                  'regular': {"batch_norm": [0, 0], "dropout": [0, 0], "none": [0, 0]}
-                  }
+                  'regular': ["dropout", "batch_norm", "none"]}
 
     grid = list(ParameterGrid(param_grid))
 
     for exp_num, params in enumerate(tqdm(grid), 0):
+
         args.m = params['m']
         args.wd = params['wd']
         args.ms = params['ms']
@@ -88,40 +81,16 @@ if __name__ == '__main__':
         args.regular = params['regular']
         args.width = 1
 
-        args.n = f"all_{args.dtype}/{exp_num}_{args.optim}_{args.ep}_{args.lr}" \
+        args.n = f"all_{args.dtype}/*_{args.optim}_{args.ep}_{args.lr}" \
                  f"_{args.wd}_{args.bs}_{args.m}_{args.regular}_{args.skip}_{args.lr_decay}"
 
-        check_grid['m'][f"{params['m']}"][0] += 1
-        check_grid['wd'][f"{params['wd']}"][0] += 1
-        check_grid['lr_decay'][f"{params['lr_decay']}"][0] += 1
-        check_grid['lr'][f"{params['lr']}"][0] += 1
-        check_grid['bs'][f"{params['bs']}"][0] += 1
-        check_grid['skip'][f"{params['skip']}"][0] += 1
-        check_grid['regular'][f"{params['regular']}"][0] += 1
-
         args.bs = 1024
-        args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_1"
 
-        args.data_dir = f"{args.dir}/data/{args.dtype}"
-        args.use_cuda = torch.cuda.is_available()
+        for fol in glob.glob(f"checkpoints/{args.n}"):
+            args.cp_dir = f"{fol}/run_ms_1"
 
-        train_err, val_err, gen_gap = main(args)
+            args.data_dir = f"{args.dir}/data/{args.dtype}"
+            args.use_cuda = torch.cuda.is_available()
 
-        if train_err < 1.0:
-            check_grid['m'][f"{params['m']}"][1] += 1
-            check_grid['wd'][f"{params['wd']}"][1] += 1
-            check_grid['lr_decay'][f"{params['lr_decay']}"][1] += 1
-            check_grid['lr'][f"{params['lr']}"][1] += 1
-            check_grid['bs'][f"{params['bs']}"][1] += 1
-            check_grid['skip'][f"{params['skip']}"][1] += 1
-            check_grid['regular'][f"{params['regular']}"][1] += 1
-
-        with open('results/all_results.csv', 'wa') as f:
-            f.write(f"{args.n.split('/')[-1]}, {train_err}, {val_err}, {gen_gap}\n")
-
-    with open('results/narrow_resnet_cifar10.csv', 'w') as f:
-        f.write("hyper-parameter, good_exp, bad_exp\n")
-
-    for k1, v1 in check_grid.items():
-        for k2, v2 in v1.items():
-            f.write(f"{k1}-{k2}, {v2[1]}, {v2[0]-v2[1]}\n")
+            train_err, val_err, gen_gap = main(args)
+            print(train_err, val_err)

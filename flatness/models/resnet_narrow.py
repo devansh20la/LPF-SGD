@@ -121,5 +121,6 @@ if __name__ == "__main__":
     sys.path.append("..")
     from args import get_args
 
-    args = get_args("--exp_num", "1")
+    args = get_args(["--exp_num", "1"])
     model = resnet18_narrow(args)
+

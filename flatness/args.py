@@ -36,13 +36,13 @@ def get_args(*args):
     # parser.add_argument('--skip', type=lambda x: bool(util.strtobool(x)), default=True)
     # parser.add_argument('--lr_decay', type=lambda x: bool(util.strtobool(x)), default=True)
 
-    args = parser.parse_args(args)
+    args = parser.parse_args(*args)
 
     from sklearn.model_selection import ParameterGrid
     param_grid = {'ms': [0],  # seed
                   'mo': [0.0, 0.5, 0.9],  # momentum
                   'width': [4, 6, 8],  # network width
-                  'wd': [1e-4, 1e-2, 0.0],  # weight decay
+                  'wd': [0.0, 1e-4, 1e-2],  # weight decay
                   'lr': [5e-3, 1e-2, 5e-2],  # learning rate
                   'bs': [16, 32, 64],  # batch size
                   'lr_decay': [True, False],  # learning rate decay
@@ -51,7 +51,6 @@ def get_args(*args):
                   }
 
     grid = list(ParameterGrid(param_grid))
-
     params = grid[args.exp_num]
 
     args.ms = params['ms']
@@ -81,8 +80,8 @@ def get_args(*args):
     args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}/" \
-             f"{args.width}_{args.batchnorm}_{args.skip}_" \
+    args.n = f"all_new_{args.dtype}/" \
+             f"{args.exp_num}_{args.width}_{args.batchnorm}_{args.skip}_" \
              f"{args.optim}_{args.ep}_{args.lr}_{args.wd}_" \
              f"{args.bs}_{args.mo}_{args.lr_decay}"
 
@@ -90,4 +89,4 @@ def get_args(*args):
 
 
 if __name__ == '__main__':
-    args = get_args("--exp_num", "1")
+    args = get_args()

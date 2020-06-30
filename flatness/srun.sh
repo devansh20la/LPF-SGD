@@ -9,7 +9,7 @@
 #SBATCH --mail-type=END
 ##SBATCH --mail-user=db3484@nyu.edu
 #SBATCH --gres=gpu:1
-#SBATCH --output=slurm_logs/%A_%a.out
+#SBATCH --output=slurm_logs/%a.out
 
 module purge
 module load anaconda3/2019.10
@@ -20,5 +20,5 @@ source /share/apps/anaconda3/2019.10/etc/profile.d/conda.sh
 conda activate myenv
 
 cd /beegfs/db3484/gen_v_sharp/flatness/
-python train.py --dtype="cifar10" --exp_num=$SLURM_ARRAY_TASK_ID
-# python compute_flatness.py --exp_num=$SLURM_ARRAY_TASK_ID
+# python train.py --dtype="cifar10" --exp_num=$SLURM_ARRAY_TASK_ID
+python compute_flatness.py --exp_num=$SLURM_ARRAY_TASK_ID

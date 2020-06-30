@@ -17,10 +17,9 @@ def create_path(path):
     if os.path.isdir(path) is False:
         os.makedirs(path)
     else:
-        for file in glob.glob(path + '/*.log'):
-            for file in glob.glob(path+'/*'):
-                print(f"deleting {file}")
-                os.remove(file)
+        for file in glob.glob(path+'/*'):
+            print(f"deleting {file}")
+            os.remove(file)
 
 
 def main(args):
@@ -71,7 +70,11 @@ def main(args):
             writer.add_scalar('Val/Val_Err1', valerr1, epoch)
             writer.add_scalar('Val/Val_Err5', valerr5, epoch)
 
-        state = model.state_dict()
+        state = {'model': model.state_dict(),
+                 'optimizer': optimizer.state_dict(),
+                 'scheduler': scheduler.state_dict,
+                 'epoch': epoch+1
+                 }
         torch.save(state, f"{args.cp_dir}/trained_model.pth.tar")
 
 
@@ -101,4 +104,3 @@ if __name__ == '__main__':
     logger.info(args)
 
     main(args)
-

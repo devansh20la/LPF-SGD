@@ -24,19 +24,22 @@
 # fols = glob.glob1("."/ "*sgd_*")
 
 # for i,param in enumerate(grid,0):
-# 	n = f"{i}_{param['width']}_{param['batchnorm']}_{param['skip']}_" \
-# 	    f"{param['optim']}_{param['ep']}_{param[lr}_{param['wd']}_" \
-# 	    f"{param['bs']}_{param['mo']}_{param['lr_decay']}"
+#   n = f"{i}_{param['width']}_{param['batchnorm']}_{param['skip']}_" \
+#       f"{param['optim']}_{param['ep']}_{param[lr}_{param['wd']}_" \
+#       f"{param['bs']}_{param['mo']}_{param['lr_decay']}"
 
 #   with open(n + '')
 #   print()
 
 
 import glob
-for fol in glob.glob("*sgd_*"):
-	with open(fol + "/run_ms_0/dist_bw_params.txt", 'r') as f:
-		h = next(f)
-		cont = next(f)
-	print(f"{ ', '.join(fol.split('_')[1:])}, {cont[:-1]}")
 
+with open("results/resnet_cifar10.csv", 'w') as f:
+    f.write("exp_num, width,batchnorm,skip,opt, epoch, lr,wd,bs,mo,lr-decay,train_loss, train_err, val_loss,val_err, flatness, div\n")
 
+for fol in glob.glob("checkpoints/all_new_cifar10/*sgd_*"):
+    with open(fol + "/run_ms_0/dist_bw_params.txt", 'r') as f:
+        h = next(f)
+        cont = next(f)
+    with open("results/resnet_cifar10.csv", 'a') as f:
+        f.write(f"{','.join(fol.split('/')[-1].split('_'))}, {cont}")

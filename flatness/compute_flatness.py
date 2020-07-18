@@ -11,6 +11,11 @@ from utils.train_utils import AverageMeter, accuracy
 import copy
 
 
+def load_grad(model, grads):
+    for p, g in zip(model.parameters(), grads):
+        p.grad.data = g
+
+
 def main(args):
     movement_grad = AverageMeter()
 
@@ -27,7 +32,7 @@ def main(args):
     criterion = nn.CrossEntropyLoss()
 
     # compute generalization gap
-    print("Computing generalization gap")
+    print("Computing gradients")
     model.eval()
 
     base_loss = 0.0
@@ -57,14 +62,23 @@ def main(args):
 
     gen_gap = loss_mtr['val'].avg - loss_mtr['train'].avg
 
-    lr = 0.001
-    optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.0,
-                          weight_decay=0.0)
-    a = 0.0
+    total_norm = 0.0
+    grads = []
+    for p in model.parameters():
+        grads.append(copy.deepcopy(p.grad.data))
+        param_norm = p.grad.data.norm(2)
+        total_norm += param_norm.item() ** 2
+
+    if total_norm == np.nan:
+        print("Gradient norm is nan")
+        quit()
+
+    a = 0.001
+    a_range = [float('-inf'), float('inf')]
+    optimizer = optim.SGD(model.parameters(), a, 0.0, 0.0)
 
     for itr in range(10000):
         optimizer.step()
-        a += lr
 
         curr_loss = 0.0
         for inp_data in dset_loaders['train']:
@@ -78,34 +92,33 @@ def main(args):
                 batch_loss = criterion(outputs, targets) * inputs.size(0) / len(dset_loaders['train'].dataset)
                 curr_loss += batch_loss.item()
 
-        if curr_loss/base_loss > 2:
-            print(f"Itr: {itr}, base_loss:{base_loss:0.7f}, curr_loss:{curr_loss:0.7f}")
-            break
-        else:
-            if itr > 0:
-                movement_grad.update(curr_loss/prev_curr_loss, 1)
+        print(f"Itr: {itr}, base_loss:{base_loss:0.7f}, curr_loss:{curr_loss:0.7f}, a:{a}, div:{curr_loss/base_loss:0.7f}")
+
+        if curr_loss / base_loss < 1.99:
+            a_range[0] = a
+            if a_range[1] < float('inf'):
+                a = np.array(a_range).mean()
             else:
-                prev_curr_loss = curr_loss
+                a *= 2
+            model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar"))
+            load_grad(model, grads)
+            optimizer = optim.SGD(model.parameters(), a, 0.0, 0.0)
 
-            if (itr+1) % 10 == 0:
-                if movement_grad.avg < 1.1:
-                    lr *= 2
-                    optimizer = optim.SGD(model.parameters(), lr=lr, momentum=0.0, weight_decay = 0.0)
-                    print(f"increased learning rate to :{lr}, grad_movement:{movement_grad.avg}")
-                    movement_grad = AverageMeter()
-                else:
-                    print(movement_grad.avg)
+        elif curr_loss / base_loss > 2.001:
+            a_range[1] = a
+            if a_range[0] > float('-inf'):
+                a = np.array(a_range).mean()
+            else:
+                a /= 2
+                a += a/2
 
-            total_norm = 0.0
-            for p in model.parameters():
-                print(p.grad.data)
-                param_norm = p.grad.data.norm(2)
-                total_norm += param_norm.item() ** 2
+            model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar"))
+            load_grad(model, grads)
+            optimizer = optim.SGD(model.parameters(), a, 0.0, 0.0)
 
-            print(f"Itr: {itr}, base_loss:{base_loss:0.7f}, curr_loss:{curr_loss:0.7f}, norm:{total_norm:0.07f}")
-            if total_norm == np.nan:
-                print("Gradient norm is nan")
-                quit()
+        else:
+            print(f"Itr: {itr}, base_loss:{base_loss:0.7f}, curr_loss:{curr_loss:0.7f}, a:{a}, div:{curr_loss/base_loss:0.7f}")
+            break
 
     flatness = 0.0
     for p in model.parameters():

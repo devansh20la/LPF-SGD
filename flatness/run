@@ -4,7 +4,7 @@ query_device() {
 	for d in 0 1 2 3
 	do
 		dmem="$(nvidia-smi -q -i ${d} -d Memory |grep -A4 GPU | grep Used | grep -Eo '[0-9]{1,5}')"
-		if (($dmem < 50)); then
+		if (($dmem < 10)); then
 		    device=${d}
 		fi
 	done
@@ -16,17 +16,17 @@ get_device() {
 	do
 		query_device
 		if [[ -z "${device}" ]]; then
-			echo "All devices are busy, sleeping for 60s"
-			sleep 60
+			echo "All devices are busy, sleeping for 10s"
+			sleep 10
 		fi
 	done
 }
 
-for exp_num in {0..2000}; do
+for exp_num in {501..800}; do
 	get_device
 	CUDA_VISIBLE_DEVICES=$((device)) nohup python compute_flatness.py \
 		--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
-	sleep 10
+	sleep 5
 	# CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
 	# 	--dtype="cifar10" \
 	# 	--print_freq=500 \

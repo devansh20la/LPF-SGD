@@ -43,7 +43,7 @@ def get_args(*args):
                   'mo': [0.0, 0.5, 0.9],  # momentum
                   'width': [4, 6, 8],  # network width
                   'wd': [0.0, 1e-4, 1e-2],  # weight decay
-                  'lr': [5e-3, 1e-2, 5e-2],  # learning rate
+                  'lr': [5e-3, 1e-2, 5e-2, 0.1],  # learning rate
                   'bs': [16, 32, 64],  # batch size
                   'lr_decay': [True, False],  # learning rate decay
                   'skip': [True, False],  # skip connection

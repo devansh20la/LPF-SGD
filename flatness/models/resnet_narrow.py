@@ -63,13 +63,13 @@ class ResNet(nn.Module):
 
         self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1, bias=False)
         if self.args.batchnorm:
-            self.bn1 = nn.BatchNorm2d(self.args.width * 8)
+            self.bn1 = nn.BatchNorm2d(self.args.width * 8, track_running_stats=False)
 
-        self.layer1 = self._make_layer(block, self.args.width * 8, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, self.args.width * 16, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, self.args.width * 32, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, self.args.width * 64, num_blocks[3], stride=2)
-        self.linear = nn.Linear(self.args.width * 64 * block.expansion, num_classes)
+        # self.layer1 = self._make_layer(block, self.args.width * 8, num_blocks[0], stride=1)
+        # self.layer2 = self._make_layer(block, self.args.width * 16, num_blocks[1], stride=2)
+        # self.layer3 = self._make_layer(block, self.args.width * 32, num_blocks[2], stride=2)
+        # self.layer4 = self._make_layer(block, self.args.width * 64, num_blocks[3], stride=2)
+        self.linear = nn.Linear(25088, num_classes)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -102,11 +102,11 @@ class ResNet(nn.Module):
 
         out = F.relu(out)
 
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = F.avg_pool2d(out, 4)
+        # out = self.layer1(out)
+        # # out = self.layer2(out)
+        # # out = self.layer3(out)
+        # # out = self.layer4(out)
+        # # out = F.avg_pool2d(out, 4)
         out = out.view(out.size(0), -1)
         out = self.linear(out)
         return out
@@ -116,11 +116,78 @@ def resnet18_narrow(args, **kwargs):
     return ResNet(BasicBlock, [2, 2, 2, 2], args, **kwargs)
 
 
+def resnet18_test(args, **kwargs):
+    return ResNet(BasicBlock, [1], args, **kwargs)
+
+
+def modify_any_way_you_like(param):
+    param.div_(param.norm())
+
+
+def modify_and_get_right_gamma(weight, bias):
+    gamma = weight.norm() + bias.norm()
+    weight.div_(gamma)
+    bias.div_(gamma)
+    return gamma
+
+
+def modify_with_right_norm(weight, gamma):
+    weight.mul_(gamma)
+    gamma = weight.norm()
+    weight.div_(gamma)
+    return gamma
+
+
+def handle_seq_with_identity_skip(layer):
+    mods = list(layer.named_modules())[2:]
+
+    modify_any_way_you_like(mods[0][1].weight.data)
+    right_norm = modify_and_get_right_gamma(mods[1][1].weight.data, mods[1][1].bias.data)
+    modify_with_right_norm(mods[2][1].weight.data, right_norm)
+
+    right_norm = modify_and_get_right_gamma(mods[3][1].weight.data, mods[3][1].bias.data)
+
+    return right_norm
+
+
 if __name__ == "__main__":
-    import sys
-    sys.path.append("..")
-    from args import get_args
+    torch.random.manual_seed(1)
+    for _ in range(100):
+        import sys
+        sys.path.append("..")
+        from args import get_args
+        # from utils import ENorm
 
-    args = get_args(["--exp_num", "1"])
-    model = resnet18_narrow(args)
+        args = get_args(["--exp_num", "0"])
+        model = resnet18_test(args)
 
+        x = torch.randn(1, 3, 28, 28)
+        y = model(x)
+        # y = torch.nn.Softmax(dim=1)(y).argmax().item()
+
+        layers = list(model.children())
+        right_norm = None
+
+        for i in range(len(layers)):
+            layer = layers[i]
+            if isinstance(layer, nn.Conv2d) and isinstance(layers[i+1], nn.BatchNorm2d):
+                if right_norm is not None:
+                    modify_with_right_norm(layer.weight, right_norm)
+                    right_norm = None
+                else:
+                    modify_any_way_you_like(layer.weight.data)
+
+            if isinstance(layer, nn.BatchNorm2d):
+                right_norm = modify_and_get_right_gamma(layer.weight.data, layer.bias.data)
+
+            # if isinstance(layer, nn.Sequential):
+            #     right_norm = handle_seq_with_identity_skip(layer)
+
+            if isinstance(layer, nn.Linear):
+                layer.weight.data.mul_(right_norm)
+                gamma = layer.weight.data.norm() + layer.bias.data.norm()
+                layer.weight.data.div_(gamma)
+                layer.bias.data.div_(gamma)
+
+        print(torch.nn.Softmax(dim=1)(y).argmax().item() - torch.nn.Softmax(dim=1)(model(x)).argmax().item())
+    quit()

@@ -3,21 +3,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class test_model(nn.Module):
-    def __init__(self):
-        super(test_model, self).__init__()
-        self.layer1 = nn.Linear(20, 10, bias=False)
-
-    def forward(self, x):
-        return self.layer1(x)
-
-
 class LeNet(nn.Module):
     def __init__(self):
         super(LeNet, self).__init__()
-        self.conv1 = nn.Conv2d(1, 6, 5)
+        self.conv1 = nn.Conv2d(3, 6, 5)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1   = nn.Linear(256, 120)
+        self.fc1   = nn.Linear(16*5*5, 120)
         self.fc2   = nn.Linear(120, 84)
         self.fc3   = nn.Linear(84, 10)
         self.normed = False
@@ -81,6 +72,13 @@ class LeNet(nn.Module):
 
 if __name__ == "__main__":
     model = LeNet()
+    model.load_state_dict(torch.load("../checkpoints/cifar10/lenet/sgd_0.01_0.9_64_0.0/run_ms_1/trained_model.pth.tar", map_location='cpu'))
+    x = torch.randn(1, 3, 32, 32)
+    y = model(x)
 
+    model.norm()
+    # for n, l in model.named_parameters():
+    #     print(n)
 
+    print(y, model(x))
 

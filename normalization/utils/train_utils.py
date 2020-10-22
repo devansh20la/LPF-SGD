@@ -30,7 +30,7 @@ def get_loader(args, training, lp=1.0):
 
     else:
         dset_loaders = {
-            'test': torch.utils.data.DataLoader(dsets['test'], batch_size=128,
+            'test': torch.utils.data.DataLoader(dsets['test'], batch_size=args.bs,
                                                 shuffle=False, pin_memory=True,
                                                 num_workers=8)
         }
@@ -46,14 +46,14 @@ def mnist_dsets(args, training, lp):
 
     if training is True:
         dsets = {
-            'train': datasets.MNIST(args.data_dir, train=True, download=True,
+            'train': datasets.MNIST(args.data_dir, train=True, download=False,
                                     transform=transform),
-            'val': datasets.MNIST(args.data_dir, train=False, download=True,
+            'val': datasets.MNIST(args.data_dir, train=False, download=False,
                                   transform=transform)
         }
     else:
         dsets = {
-            'test': datasets.MNIST(args.data_dir, train=False, download=True,
+            'test': datasets.MNIST(args.data_dir, train=False, download=False,
                                    transform=transform)
         }
 
@@ -64,7 +64,9 @@ def cifar10_dsets(args, training):
     """ Function to load cifar10 data
     """
     transform = {
-        'train': transforms.Compose([transforms.ToTensor(),
+        'train': transforms.Compose([transforms.RandomCrop(32, padding=4),
+                                     transforms.RandomHorizontalFlip(),
+                                     transforms.ToTensor(),
                                      transforms.Normalize(
                                         (0.4914, 0.4822, 0.4465),
                                         (0.2023, 0.1994, 0.2010))]),

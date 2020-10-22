@@ -20,5 +20,5 @@ source /share/apps/anaconda3/2019.10/etc/profile.d/conda.sh
 conda activate myenv
 
 cd /beegfs/db3484/gen_v_sharp/flatness/
-# python train.py --dtype="cifar10" --exp_num=$SLURM_ARRAY_TASK_ID
-python compute_flatness.py --exp_num=$SLURM_ARRAY_TASK_ID
+python train.py --ep=500 --dtype="mnist" --exp_num=$SLURM_ARRAY_TASK_ID
+# python compute_flatness.py --exp_num=$SLURM_ARRAY_TASK_ID

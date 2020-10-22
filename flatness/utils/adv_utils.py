@@ -54,11 +54,6 @@ def Rop(ys, xs, vs):
         ws = [torch.zeros(y.size(), requires_grad=True) for y in ys]
 
     gs = torch.autograd.grad(ys, xs, grad_outputs=ws, create_graph=True, retain_graph=True, allow_unused=True)
-    # gs = (g.contiguous() for g in gs)
-
-    # print([g.is_contiguous() for g in gs])
-    # print([g.is_contiguous() for g in ws])
-    # print([g.is_contiguous() for g in vs])
 
     re = torch.autograd.grad(gs, ws, grad_outputs=vs, create_graph=False, allow_unused=True)
     re = (r.contiguous() for r in re)
@@ -66,7 +61,7 @@ def Rop(ys, xs, vs):
     return tuple([j.detach() for j in re])
 
 
-def vector_to_parameter_list(vec, parameters):
+def vector_to_parameter_tuple(vec, parameters):
     r"""Convert one vector to the parameter list
 
     Arguments:
@@ -78,24 +73,19 @@ def vector_to_parameter_list(vec, parameters):
     if not isinstance(vec, torch.Tensor):
         raise TypeError('expected torch.Tensor, but got: {}'
                         .format(torch.typename(vec)))
-    # Flag for the device where the parameter is located
-    param_device = None
     params_new = []
     # Pointer for slicing the vector for each parameter
     pointer = 0
     for param in parameters:
-        # Ensure the parameters are located in the same device
-        param_device = _check_param_device(param, param_device)
-
         # The length of the parameter
         num_param = param.numel()
         # Slice the vector, reshape it, and replace the old data of the parameter
-        param_new = vec[pointer:pointer + num_param].view_as(param).data
+        param_new = vec[pointer:pointer + num_param].view_as(param).data.to(param.device)
         params_new.append(param_new)
         # Increment the pointer
         pointer += num_param
 
-    return list(params_new)
+    return tuple(params_new)
 
 
 def Lop(ys, xs, ws):

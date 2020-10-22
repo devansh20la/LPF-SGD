@@ -23,7 +23,7 @@ if __name__ == '__main__':
     param_grid = {'ms': [0],  # seed
                   'mo': [0.0, 0.5, 0.9],  # momentum
                   'width': [4, 6, 8],  # network width
-                  'wd': [0.0, 1e-4, 1e-2],  # weight decay
+                  'wd': [0.0, 1e-4, 5e-4],  # weight decay
                   'lr': [5e-3, 1e-2, 5e-2],  # learning rate
                   'bs': [16, 32, 64],  # batch size
                   'lr_decay': [True, False],  # learning rate decay
@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     check_grid = {'mo': {'0.9': [0, 0], '0.5': [0, 0], '0.0': [0, 0]},
                   'width': {'4': [0 ,0], '6': [0, 0], '8': [0, 0]},
-                  'wd': {'0.0': [0, 0], '0.01': [0, 0], '0.0001': [0, 0]},
+                  'wd': {'0.0': [0, 0], '0.0005': [0, 0], '0.0001': [0, 0]},
                   'lr': {'0.01': [0, 0], '0.005': [0, 0], '0.05': [0, 0]},
                   'bs': {'16': [0, 0], '32': [0, 0], '64': [0, 0]},
                   'lr_decay': {"True": [0, 0], "False": [0, 0]},
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         args.skip = params['skip']
         args.batchnorm = params['batchnorm']
 
-        args.n = f"all_new_{args.dtype}/" \
+        args.n = f"{args.dtype}/" \
                  f"{exp_num}_{args.width}_{args.batchnorm}_{args.skip}_" \
                  f"{args.optim}_{args.ep}_{args.lr}_{args.wd}_" \
                  f"{args.bs}_{args.mo}_{args.lr_decay}"
@@ -80,7 +80,7 @@ if __name__ == '__main__':
             train_err = cont[1]
             val_err = cont[3]
 
-        if float(train_err) < 1.0:
+        if float(train_err) < 5.0:
             check_grid['mo'][f"{params['mo']}"][1] += 1
             check_grid['width'][f"{params['width']}"][1] += 1
             check_grid['wd'][f"{params['wd']}"][1] += 1

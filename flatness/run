@@ -22,14 +22,15 @@ get_device() {
 	done
 }
 
-for exp_num in {501..800}; do
+for exp_num in {0..50}; do
 	get_device
-	CUDA_VISIBLE_DEVICES=$((device)) nohup python compute_flatness.py \
-		--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
-	sleep 5
-	# CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
-	# 	--dtype="cifar10" \
-	# 	--print_freq=500 \
-	# 	--exp_num=${exp_num} >/dev/null 2>&1 &
-	# sleep 30
+	# CUDA_VISIBLE_DEVICES=$((device)) nohup python compute_flatness.py \
+	# 	--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
+	# sleep 5
+	CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
+		--ep=500 \
+		--dtype="mnist" \
+		--print_freq=500 \
+		--exp_num=${exp_num} >/dev/null 2>&1 &
+	sleep 30
 done

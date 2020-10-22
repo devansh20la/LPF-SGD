@@ -1,141 +1,106 @@
 from args import get_args
 import torch
 import torch.nn as nn
-from models import resnet18_narrow as resnet18
+from models import LeNet
 import numpy as np
 import random
-from utils import get_loader
-import torch.optim as optim
-from torch.nn.utils import parameters_to_vector
-from utils.train_utils import AverageMeter, accuracy
-import copy
+from utils import get_loader, vector_to_parameter_tuple
+from flat_meas import fro_norm, eig_trace, eps_flatness_model
 
 
-def load_grad(model, grads):
-    for p, g in zip(model.parameters(), grads):
-        p.grad.data = g
+def del_attr(obj, names):
+    if len(names) == 1:
+        delattr(obj, names[0])
+    else:
+        del_attr(getattr(obj, names[0]), names[1:])
+
+
+def set_attr(obj, names, val):
+    if len(names) == 1:
+        setattr(obj, names[0], val)
+    else:
+        set_attr(getattr(obj, names[0]), names[1:], val)
+
+
+def make_functional(mod):
+    orig_params = tuple(p.detach().requires_grad_() for p in mod.parameters())
+    # Remove all the parameters in the model
+    names = []
+    for name, p in list(mod.named_parameters()):
+        del_attr(mod, name.split("."))
+        names.append(name)
+    return orig_params, names
+
+
+def load_weights(mod, names, params):
+    for name, p in zip(names, params):
+        set_attr(mod, name.split("."), p)
+
+
+class model_for_sharp():
+    def __init__(self, model, dset_loaders, criterion, use_cuda=False):
+        self.dset_loaders = dset_loaders
+        self.criterion = criterion
+        self.model = model
+        self.functional = False
+        self.use_cuda = use_cuda
+
+    def hvp(self, v):
+        model = self.model
+        criterion = self.criterion
+
+        if self.functional is not True:
+            self.params, self.names = make_functional(model)
+            self.functional = True
+
+        v = vector_to_parameter_tuple(v, self.params)
+
+        def f(*new_params):
+            load_weights(model, self.names, new_params)
+            loss = 0.0
+            for batch_idx, inp_data in enumerate(self.dset_loaders['train'], 1):
+                inputs, targets = inp_data
+                if self.use_cuda:
+                    inputs, targets = inputs.cuda(), targets.cuda()
+                with torch.set_grad_enabled(True):
+                    outputs = model(inputs)
+                    batch_loss = criterion(outputs, targets)
+                    loss += batch_loss
+            return loss
+
+        return torch.cat([x.cpu().contiguous().view(-1, 1) for x in torch.autograd.functional.vhp(f, self.params, v)[1]])
 
 
 def main(args):
-    movement_grad = AverageMeter()
+    import copy
+    mtr = {}
 
     dset_loaders = get_loader(args, training=True)
-
-    print(f'loading model from {args.cp_dir}')
-    model = resnet18(args)
-
-    if args.use_cuda:
-        model.cuda()
-        torch.backends.cudnn.benchmark = True
-
-    model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar"))
     criterion = nn.CrossEntropyLoss()
 
-    # compute generalization gap
-    print("Computing gradients")
-    model.eval()
+    # initialize model
+    model = LeNet()
+    model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar", map_location='cpu'))
+    if args.use_cuda:
+        model = model.cuda()
+    model.norm()
 
-    base_loss = 0.0
-    loss_mtr = {'train': AverageMeter(), 'val':  AverageMeter()}
-    err_mtr = {'train': AverageMeter(), 'val': AverageMeter()}
+    # get parameter dimension
+    d = 0
+    for p in model.parameters(): d += p.numel()
 
-    for phase in ["train", "val"]:
-        for inp_data in dset_loaders[phase]:
-            inputs, targets = inp_data
+    mtr['eps_flat'] = eps_flatness_model(model, criterion, dset_loaders['train'], 0.1,
+                                         tol=1e-6, use_cuda=args.use_cuda, verbose=True)
+    quit()
+    model_func = model_for_sharp(model, dset_loaders, criterion, use_cuda=args.use_cuda)
+    mtr['fro_norm'] = fro_norm(model_func, d, 1)
+    mtr["eig_trace"] = eig_trace(model_func, d, 100, draws=100, use_cuda=args.use_cuda, verbose=True)
 
-            if args.use_cuda:
-                inputs, targets = inputs.cuda(), targets.cuda()
-
-            with torch.set_grad_enabled(phase == 'train'):
-                outputs = model(inputs)
-
-                batch_loss = criterion(outputs, targets)
-                batch_err = accuracy(outputs, targets, topk=(1, ))
-
-                loss_mtr[phase].update(batch_loss.item(), inputs.size(0))
-                err_mtr[phase].update(100.0 - batch_err[0].item(), inputs.size(0))
-
-                if phase == 'train':
-                    batch_loss = -1*batch_loss * inputs.size(0) / len(dset_loaders['train'].dataset)
-                    batch_loss.backward()
-                    base_loss += -1*batch_loss.item()
-
-    gen_gap = loss_mtr['val'].avg - loss_mtr['train'].avg
-
-    total_norm = 0.0
-    grads = []
-    for p in model.parameters():
-        grads.append(copy.deepcopy(p.grad.data))
-        param_norm = p.grad.data.norm(2)
-        total_norm += param_norm.item() ** 2
-
-    if total_norm == np.nan:
-        print("Gradient norm is nan")
-        quit()
-
-    a = 0.001
-    a_range = [float('-inf'), float('inf')]
-    optimizer = optim.SGD(model.parameters(), a, 0.0, 0.0)
-
-    for itr in range(10000):
-        optimizer.step()
-
-        curr_loss = 0.0
-        for inp_data in dset_loaders['train']:
-            inputs, targets = inp_data
-
-            if args.use_cuda:
-                inputs, targets = inputs.cuda(), targets.cuda()
-
-            with torch.set_grad_enabled(False):
-                outputs = model(inputs)
-                batch_loss = criterion(outputs, targets) * inputs.size(0) / len(dset_loaders['train'].dataset)
-                curr_loss += batch_loss.item()
-
-        print(f"Itr: {itr}, base_loss:{base_loss:0.7f}, curr_loss:{curr_loss:0.7f}, a:{a}, div:{curr_loss/base_loss:0.7f}")
-
-        if curr_loss / base_loss < 1.99:
-            a_range[0] = a
-            if a_range[1] < float('inf'):
-                a = np.array(a_range).mean()
-            else:
-                a *= 2
-            model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar"))
-            load_grad(model, grads)
-            optimizer = optim.SGD(model.parameters(), a, 0.0, 0.0)
-
-        elif curr_loss / base_loss > 2.001:
-            a_range[1] = a
-            if a_range[0] > float('-inf'):
-                a = np.array(a_range).mean()
-            else:
-                a /= 2
-                a += a/2
-
-            model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar"))
-            load_grad(model, grads)
-            optimizer = optim.SGD(model.parameters(), a, 0.0, 0.0)
-
-        else:
-            print(f"Itr: {itr}, base_loss:{base_loss:0.7f}, curr_loss:{curr_loss:0.7f}, a:{a}, div:{curr_loss/base_loss:0.7f}")
-            break
-
-    flatness = 0.0
-    for p in model.parameters():
-        param_norm = p.grad.data.norm(2)
-        flatness += param_norm.item() ** 2
-    flatness = flatness ** (1. / 2)
-    flatness = a*flatness
-
-    with open(f"{args.cp_dir}/dist_bw_params.txt", 'w') as f:
-        f.write(f"train_loss, train_err, val_loss, val_err, flatness, div\n")
-        f.write(f"{loss_mtr['train'].avg}, {err_mtr['train'].avg}, {loss_mtr['val'].avg}, {err_mtr['val'].avg}, {flatness}, {curr_loss/base_loss}\n")
+# "eps_flat", "pac_bayes", "local_entropy", "low_pass"
 
 
 if __name__ == '__main__':
-    args = get_args()
-
-    args.bs = 1024
+    args = get_args(["--exp_num", "0", "--dtype", "mnist"])
 
     # Random seed
     random.seed(args.ms)
@@ -143,9 +108,10 @@ if __name__ == '__main__':
     np.random.seed(args.ms)
     if args.use_cuda:
         torch.cuda.manual_seed_all(args.ms)
+        torch.backends.cudnn.benchmark = True
 
     # Intialize directory and create path
+    args.bs = 128
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
-    args.bs = 1024
 
     main(args)

@@ -1,6 +1,7 @@
 import torch
 from torchvision import datasets, transforms
 from sklearn.metrics import average_precision_score
+from utils.data_loader_mnist import MNIST
 
 
 def get_loader(args, training, lp=1.0):
@@ -16,7 +17,7 @@ def get_loader(args, training, lp=1.0):
         dsets = imagenet_dsets(args, training)
 
     elif args.dtype == 'mnist':
-        dsets = mnist_dsets(args, training, lp=lp)
+        dsets = mnist_dsets(args, training, lp=0.50)
 
     if training is True:
         dset_loaders = {
@@ -46,15 +47,15 @@ def mnist_dsets(args, training, lp):
 
     if training is True:
         dsets = {
-            'train': datasets.MNIST(args.data_dir, train=True, download=True,
-                                    transform=transform),
-            'val': datasets.MNIST(args.data_dir, train=False, download=True,
-                                  transform=transform)
+            'train': MNIST(args.data_dir, train=True, download=True,
+                           transform=transform, lp=lp),
+            'val': MNIST(args.data_dir, train=False, download=True,
+                         transform=transform)
         }
     else:
         dsets = {
-            'test': datasets.MNIST(args.data_dir, train=False, download=True,
-                                   transform=transform)
+            'test': MNIST(args.data_dir, train=False, download=True,
+                          transform=transform)
         }
 
     return dsets

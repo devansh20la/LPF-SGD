@@ -44,8 +44,8 @@ def get_args(*args):
                   # 'width': [4, 6, 8],  # network width
                   'wd': [0.0, 1e-4, 5e-4],  # weight decay
                   'lr': [7e-3, 0.0085, 1e-2],  # learning rate
-                  'bs': [32, 64, 128],  # batch size
-                  'lr_decay': [True, False],  # learning rate decay
+                  'bs': [32, 128, 512],  # batch size
+                  'lr_decay': [False],  # learning rate decay
                   # 'skip': [True, False],  # skip connection
                   # 'batchnorm': [True, False]  # batchnorm
                   }

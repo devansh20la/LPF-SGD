@@ -12,115 +12,76 @@ def load_weights(model, params, grads):
         mp.grad.data = copy.deepcopy(g)
 
 
-def compute_gradient(model, data_loader, criterion, use_cuda):
-    model.eval()
-    loss_mtr = AverageMeter()
-
-    for inp_data in data_loader:
-        inputs, targets = inp_data
-
-        if use_cuda:
-            inputs, targets = inputs.cuda(), targets.cuda()
-
-        with torch.set_grad_enabled(True):
-            outputs = model(inputs)
-            batch_loss = criterion(outputs, targets)
-            loss_mtr.update(batch_loss.item(), inputs.size(0))
-            batch_loss = -1*batch_loss * inputs.size(0) / len(data_loader.dataset)
-            batch_loss.backward()
-
-    # copy.deepcopy does not copy gradients so we have to do it separately
-    theta_star_params = []
-    theta_star_grads = []
-    for n, p in model.named_parameters():
-        theta_star_params.append(copy.deepcopy(p))
-        theta_star_grads.append(copy.deepcopy(p.grad))
-
-    return theta_star_params, theta_star_grads, loss_mtr.avg
-
-
-def eps_flatness_model(model, criterion, data_loader, epsilon,
-                       tol=1e-6, use_cuda=False, verbose=False):
-    print("Computing base loss and gradients")
+def eps_flatness(model_func, epsilon, tol=1e-6, use_cuda=False, verbose=False):
+    r'''
+        Function to compute eps flatness similar to description in keskar
+        Inputs:
+            model_func: model class that contains relevant functions
+            epsilon   : loss deviation
+            tolerance : tolerance on the loss deviation
+            use_cuda  : use cuda
+            verbose   : print details
+        Output:
+            return sharpness measure 1/alpha
+    '''
+    print("......... Computing base loss and gradients .........")
     theta_star_params, theta_star_grads, \
-        base_loss = compute_gradient(model, data_loader, criterion, use_cuda)
-    eta_range = [1e-16, 100]
+        base_loss, _ = model_func.compute_loss(ascent_stats=True)
 
+    eta_range = [1e-16, 1]
+
+    print("........ Computing eta_max .........")
+
+    for itr in range(10**7):
+        eta = eta_range[1]
+        optimizer = optim.SGD(model_func.model.parameters(), eta, 0.0, 0.0)
+        optimizer.step()
+
+        curr_loss,_ = model_func.compute_loss()
+
+        d = curr_loss - base_loss
+        if d < epsilon:
+            eta_range[1] = eta*5
+        else:
+            load_weights(model_func.model, theta_star_params, theta_star_grads)
+            break
+
+        if itr % 10 == 0 and verbose:
+            print(f"{itr:2.3E}, {eta:2.3E}, {eta_range[0]:2.3E}, {eta_range[1]:2.3E}, {d:2.3E}, {base_loss:2.3E}, {curr_loss:2.3E}")
+        load_weights(model_func.model, theta_star_params, theta_star_grads)
+
+    # we need norm of the theta_star_grads as per the simplification
     flatness = 0.0
     for p in theta_star_grads:
         param_norm = p.data.view(-1).norm(2)
         flatness += param_norm.item() ** 2
     flatness = flatness ** (0.5)
 
-    print("Computing eta_max")
-    # first compute eta max
-    for itr in range(10**7):
-
-        load_weights(model, theta_star_params, theta_star_grads)
-
-        eta = eta_range[1]
-
-        optimizer = optim.SGD(model.parameters(), eta, 0.0, 0.0)
-        print(theta_star_params[0])
-        optimizer.step()
-        print(theta_star_params[0])
-        quit()
-        # for p1, p2 in zip(model.parameters(), theta_star_grads):
-        #     print((p1.grad.view(-1) - p2.view(-1)).norm())
-        curr_loss = 0.0
-        for inp_data in data_loader:
-            inputs, targets = inp_data
-            if use_cuda:
-                inputs, targets = inputs.cuda(), targets.cuda()
-            with torch.set_grad_enabled(False):
-                outputs = model(inputs)
-                batch_loss = criterion(outputs, targets) * inputs.size(0) / len(data_loader.dataset)
-                curr_loss += batch_loss.item()
-
-        d = curr_loss - base_loss
-        if d < epsilon:
-            eta_range[1] = eta*1000
-        else:
-            break
-
-        if itr % 1 == 0 and verbose:
-            print(f"itr:{itr:2.3E}, eta:{eta:2.6E}, eta_min:{eta_range[0]:2.6E}, eta_max:{eta_range[1]:2.6E}, d:{d:2.6E}")
-
     print(f"eta_max found: {eta_range[1]:.6E}")
     print("Computing eta")
+    print(f"{'Itr':^10} {'eta':^10} {'eta_min':^10} {'eta_max':^10} {'d':^10} {'base_loss':^10} {'curr_loss':^10}")
     for itr in range(10**7):
-        load_weights(model, theta_star_params, theta_star_grads)
-
         eta = np.mean(eta_range)
-        optimizer = optim.SGD(model.parameters(), eta, 0.0, 0.0)
+        optimizer = optim.SGD(model_func.model.parameters(), eta, 0.0, 0.0)
         optimizer.step()
 
-        curr_loss = 0.0
-        for inp_data in data_loader:
-            inputs, targets = inp_data
-
-            if use_cuda:
-                inputs, targets = inputs.cuda(), targets.cuda()
-
-            with torch.set_grad_enabled(False):
-                outputs = model(inputs)
-                batch_loss = criterion(outputs, targets) * inputs.size(0) / len(data_loader.dataset)
-                curr_loss += batch_loss.item()
+        curr_loss,_ = model_func.compute_loss()
 
         d = curr_loss - base_loss
-
         if epsilon - tol <= d <= epsilon + tol:
-            return eta*flatness
+            load_weights(model_func.model, theta_star_params, theta_star_grads)
+            return 1/(eta*flatness)
         elif d < epsilon - tol:
             eta_range[0] = eta
         else:
             eta_range[1] = eta
 
         if itr % 10 == 0 and verbose:
-            print(f"itr:{itr:2.3E}, eta:{eta:2.6E}, eta_min:{eta_range[0]:2.6E}, eta_max:{eta_range[1]:2.6E}, d:{d:2.6E}, base_loss:{base_loss:2.6E}, curr_loss:{curr_loss:2.6E}")
+            print(f"{itr:2.3E}, {eta:2.3E}, {eta_range[0]:2.3E}, {eta_range[1]:2.3E}, {d:2.3E}, {base_loss:2.3E}, {curr_loss:2.3E}")
+        load_weights(model_func.model, theta_star_params, theta_star_grads)
 
 
-def eps_flatness(func, theta_star, grad, eps, tol=1e-6, verbose=False):
+def _eps_flatness(func, theta_star, grad, eps, tol=1e-6, verbose=False):
     if verbose:
         print("Computing epsilon flatness")
 

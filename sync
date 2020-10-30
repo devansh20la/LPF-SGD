@@ -11,3 +11,7 @@ rsync -avP * db7:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
 
 rsync -avP * prince:/beegfs/db3484/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
 	--exclude='*/results/' --exclude="sync"
+
+
+rsync -avP * greene:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
+	--exclude='*/results/' --exclude="sync"

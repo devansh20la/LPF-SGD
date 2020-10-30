@@ -51,6 +51,7 @@ def main(args):
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
 
     writer = SummaryWriter(log_dir=args.cp_dir)
+    torch.save(model.state_dict(), f"{args.cp_dir}/model_init.pth.tar")
 
     for epoch in range(args.ep):
 

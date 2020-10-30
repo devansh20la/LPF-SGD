@@ -106,7 +106,7 @@ class MNIST(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return {'img':img, 'target': target}
+        return img, target
 
     def __len__(self):
         return len(self.data)

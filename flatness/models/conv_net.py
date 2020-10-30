@@ -6,10 +6,16 @@ import torch.nn.functional as F
 class test_model(nn.Module):
     def __init__(self):
         super(test_model, self).__init__()
-        self.layer1 = nn.Linear(20, 10, bias=False)
+        self.conv1 = nn.Conv2d(1, 1, 7, 2)
+        self.conv2 = nn.Conv2d(1, 1, 7, 2)
+        self.fc1   = nn.Linear(9, 10)
 
     def forward(self, x):
-        return self.layer1(x)
+        out = F.relu(self.conv1(x))
+        out = F.relu(self.conv2(out))
+        out = self.fc1(out.view(out.shape[0],-1))
+        
+        return out
 
 
 class LeNet(nn.Module):
@@ -80,7 +86,13 @@ class LeNet(nn.Module):
 
 
 if __name__ == "__main__":
-    model = LeNet()
+    model = test_model()
+    x = torch.randn(1,1,28,28)
+    model(x)
+    d = 0
+    for p in model.parameters():
+        d+=p.numel()
+    print(d)
 
 
 

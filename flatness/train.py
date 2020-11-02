@@ -2,7 +2,7 @@ from args import get_args
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from models import LeNet
+from models import resnet18_narrow
 import time
 import logging
 import numpy as np
@@ -21,7 +21,8 @@ def create_path(path):
 
         with open(file, 'r') as f:
             file = f.read()
-            if "Epoch: [249 | 250]" in file:
+            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file or 'Training loss is nan' in file:
+                print("exists")
                 quit()
             else:
                 for file in glob.glob(path+'/*'):
@@ -33,22 +34,15 @@ def main(args):
     logger = logging.getLogger('my_log')
 
     dset_loaders = get_loader(args, training=True)
-    model = LeNet()
+    model = resnet18_narrow(args)
     criterion = nn.CrossEntropyLoss()
 
     if args.use_cuda:
         model.cuda()
         torch.backends.cudnn.benchmark = True
 
-    if args.optim == "sgd":
-        optimizer = optim.SGD(model.parameters(), lr=args.lr,
-                              momentum=args.mo, weight_decay=args.wd)
-    elif args.optim == "adam":
-        optimizer = optim.Adam(model.parameters(), lr=args.lr,
-                               betas=(0.9, 0.999), eps=1e-08,
-                               weight_decay=args.wd, amsgrad=False)
-    if args.lr_decay:
-        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=100, gamma=0.1)
+    optimizer = optim.SGD(model.parameters(), lr=args.lr,
+                          momentum=args.mo, weight_decay=args.wd)
 
     writer = SummaryWriter(log_dir=args.cp_dir)
     torch.save(model.state_dict(), f"{args.cp_dir}/model_init.pth.tar")
@@ -65,9 +59,6 @@ def main(args):
         writer.add_scalar('Train/Train_Loss', trainloss, epoch)
         writer.add_scalar('Train/Train_Err1', trainerr1, epoch)
         writer.add_scalar('Train/Train_Err5', trainerr5, epoch)
-
-        if args.lr_decay:
-            scheduler.step()
 
         torch.save(model.state_dict(), f"{args.cp_dir}/trained_model.pth.tar")
         if trainloss < 0.01:

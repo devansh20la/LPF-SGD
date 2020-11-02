@@ -195,12 +195,4 @@ def ResNet18():
 
 if __name__ == "__main__":
     model = ResNet18()
-    # print(model)
-    x = torch.randn(1, 3, 32, 32)
-    y = model(x)
-
-    model.norm()
-    # for n, l in model.named_parameters():
-    #     print(n)
-
-    print(y, model(x))
+    print(model)

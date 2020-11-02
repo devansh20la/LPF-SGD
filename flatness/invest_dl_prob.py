@@ -1,7 +1,7 @@
 from args import get_args
 import torch
 import torch.nn as nn
-from models import LeNet
+from models import resnet18_narrow
 import numpy as np
 import random
 from utils import get_loader
@@ -118,7 +118,7 @@ def main(args):
     criterion = nn.CrossEntropyLoss()
 
     # initialize model
-    model = LeNet()
+    model = resnet18_narrow(args)
     model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar", map_location='cpu'))
     if args.use_cuda:
         model = model.cuda()
@@ -131,44 +131,44 @@ def main(args):
     mtr["train_acc"] = model_func.train_acc
     mtr["val_acc"] = model_func.val_acc
 
-    # compute various measures
-    t = time.time()
-    mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-2, use_cuda=args.use_cuda, verbose=True)
-    print(f"time required for eps_flat:{time.time() - t}")
+    # # compute various measures
+    # t = time.time()
+    # mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-2, use_cuda=args.use_cuda, verbose=True)
+    # print(f"time required for eps_flat:{time.time() - t}")
 
-    t = time.time()
-    model_init = LeNet()
-    model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
-    if args.use_cuda:
-        model_init = model_init.cuda()
-    model_init.norm()
-    mtr["pac_bayes"] = pac_bayes(model_func, 10, 0.1, theta_init=model_init.parameters(), tol=1e-2, verbose=True)
-    print(f"time required for pac_bayes:{time.time() - t}")
-    del model_init
+    # t = time.time()
+    # model_init = LeNet()
+    # model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
+    # if args.use_cuda:
+    #     model_init = model_init.cuda()
+    # model_init.norm()
+    # mtr["pac_bayes"] = pac_bayes(model_func, 10, 0.1, theta_init=model_init.parameters(), tol=1e-2, verbose=True)
+    # print(f"time required for pac_bayes:{time.time() - t}")
+    # del model_init
 
-    t = time.time()
-    mtr['fro_norm'] = fro_norm(model_func, 1000)
-    print(f"time required for fro_norm:{time.time() - t}")
+    # t = time.time()
+    # mtr['fro_norm'] = fro_norm(model_func, 1000)
+    # print(f"time required for fro_norm:{time.time() - t}")
 
-    t = time.time()
-    mtr['fim'] = fim(model_func)
-    print(f"time required for fim:{time.time() - t}")
+    # t = time.time()
+    # mtr['fim'] = fim(model_func)
+    # print(f"time required for fim:{time.time() - t}")
 
-    t = time.time()
-    e = eig_trace(model_func, 100, use_cuda=args.use_cuda)
-    mtr["eig_trace"] = e.sum()
-    print(f"time required for eig:{time.time() - t}")
+    # t = time.time()
+    # e = eig_trace(model_func, 100, use_cuda=args.use_cuda)
+    # mtr["eig_trace"] = e.sum()
+    # print(f"time required for eig:{time.time() - t}")
 
-    t = time.time()
-    mtr['local_entropy'] = entropy(model_func, 0.1, 1000)
-    print(f"time required for entropy:{time.time() - t}")
+    # t = time.time()
+    # mtr['local_entropy'] = entropy(model_func, 0.1, 1000)
+    # print(f"time required for entropy:{time.time() - t}")
 
-    t = time.time()
-    mtr['low_pass'] = low_pass(model_func, 0.1, 1000)
-    print(f"time required for low pass:{time.time() - t}")
+    # t = time.time()
+    # mtr['low_pass'] = low_pass(model_func, 0.1, 1000)
+    # print(f"time required for low pass:{time.time() - t}")
 
-    with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
-        np.save(f, e)
+    # with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
+    #     np.save(f, e)
 
     with open(f"{args.cp_dir}/measures.pkl", 'wb') as f:
         pickle.dump(mtr, f)
@@ -188,7 +188,7 @@ if __name__ == '__main__':
         torch.backends.cudnn.benchmark = True
 
     # Intialize directory and create path
-    args.bs = 4096
+    args.bs = 256
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
 
     if os.path.isfile(f"{args.cp_dir}/measures.pkl"):

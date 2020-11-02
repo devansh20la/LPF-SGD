@@ -18,5 +18,5 @@ source /share/apps/anaconda3/2020.07/etc/profile.d/conda.sh
 conda activate myenv
 
 cd /home/db3484/gen_v_sharp/flatness/
-# python train.py --ep=500 --dtype="mnist" --exp_num=$SLURM_ARRAY_TASK_ID
-python invest_dl_prob.py --exp_num=$SLURM_ARRAY_TASK_ID --dtype="mnist"
+python train.py --ep=500 --dtype="cifar10" --exp_num=$SLURM_ARRAY_TASK_ID
+# python invest_dl_prob.py --exp_num=$SLURM_ARRAY_TASK_ID --dtype="mnist"

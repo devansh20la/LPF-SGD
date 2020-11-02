@@ -1,12 +1,7 @@
-import torch
-import torch.nn as nn
-from models import resnet18_narrow as resnet18
-from utils import get_loader
-from utils.train_utils import AverageMeter, accuracy
 import argparse
 from sklearn.model_selection import ParameterGrid
 import pickle
-from tqdm import tqdm 
+from tqdm import tqdm
 
 
 if __name__ == '__main__':
@@ -24,19 +19,17 @@ if __name__ == '__main__':
                   'mo': [0.0, 0.5, 0.9],  # momentum
                   'width': [4, 6, 8],  # network width
                   'wd': [0.0, 1e-4, 5e-4],  # weight decay
-                  'lr': [5e-3, 1e-2, 5e-2],  # learning rate
-                  'bs': [16, 32, 64],  # batch size
-                  'lr_decay': [True, False],  # learning rate decay
+                  'lr': [0.01, 0.032, 0.1],  # learning rate
+                  'bs': [32, 128, 512],  # batch size
                   'skip': [True, False],  # skip connection
                   'batchnorm': [True, False]  # batchnorm
                   }
 
     check_grid = {'mo': {'0.9': [0, 0], '0.5': [0, 0], '0.0': [0, 0]},
-                  'width': {'4': [0 ,0], '6': [0, 0], '8': [0, 0]},
+                  'width': {'4': [0, 0], '6': [0, 0], '8': [0, 0]},
                   'wd': {'0.0': [0, 0], '0.0005': [0, 0], '0.0001': [0, 0]},
-                  'lr': {'0.01': [0, 0], '0.005': [0, 0], '0.05': [0, 0]},
-                  'bs': {'16': [0, 0], '32': [0, 0], '64': [0, 0]},
-                  'lr_decay': {"True": [0, 0], "False": [0, 0]},
+                  'lr': {'0.01': [0, 0], '0.032': [0, 0], '0.1': [0, 0]},
+                  'bs': {'32': [0, 0], '128': [0, 0], '512': [0, 0]},
                   'skip': {"True": [0, 0], "False": [0, 0]},
                   'batchnorm': {"True": [0, 0], "False": [0, 0]}
                   }
@@ -44,49 +37,49 @@ if __name__ == '__main__':
     grid = list(ParameterGrid(param_grid))
 
     for exp_num, params in enumerate(tqdm(grid), 0):
+        args.exp_num = exp_num
         args.ms = params['ms']
         args.mo = params['mo']
         args.width = params['width']
         args.wd = params['wd']
         args.lr = params['lr']
         args.bs = params['bs']
-        args.lr_decay = params['lr_decay']
         args.skip = params['skip']
         args.batchnorm = params['batchnorm']
 
         args.n = f"{args.dtype}/" \
-                 f"{exp_num}_{args.width}_{args.batchnorm}_{args.skip}_" \
-                 f"{args.optim}_{args.ep}_{args.lr}_{args.wd}_" \
-                 f"{args.bs}_{args.mo}_{args.lr_decay}"
+                 f"{args.exp_num}_{args.ms}_{args.mo}_{args.width}_{args.wd}_" \
+                 f"{args.lr}_{args.bs}_{args.skip}_{args.batchnorm}"
 
         check_grid['mo'][f"{params['mo']}"][0] += 1
         check_grid['width'][f"{params['width']}"][0] += 1
         check_grid['wd'][f"{params['wd']}"][0] += 1
         check_grid['lr'][f"{params['lr']}"][0] += 1
         check_grid['bs'][f"{params['bs']}"][0] += 1
-        check_grid['lr_decay'][f"{params['lr_decay']}"][0] += 1
         check_grid['skip'][f"{params['skip']}"][0] += 1
         check_grid['batchnorm'][f"{params['batchnorm']}"][0] += 1
+        args.cp_dir = f"checkpoints/{args.n}/run_ms_0/"
 
-        args.bs = 1024
-        args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_0"
+        try:
+            with open(args.cp_dir + "measures.pkl", 'rb') as f:
+                measure = pickle.load(f)
+                train_err = 100 - measure['train_acc']
+                val_err = 100 - measure['val_acc']
 
-        args.data_dir = f"{args.dir}/data/{args.dtype}"
-        args.use_cuda = torch.cuda.is_available()
-
-        with open(args.cp_dir + "/dist_bw_params.txt", 'r') as f:
-            head = next(f)
-            cont = next(f).split(',')
-            train_err = cont[1]
-            val_err = cont[3]
-
-        if float(train_err) < 5.0:
+            if float(train_err) < 1.0:
+                check_grid['mo'][f"{params['mo']}"][1] += 1
+                check_grid['width'][f"{params['width']}"][1] += 1
+                check_grid['wd'][f"{params['wd']}"][1] += 1
+                check_grid['lr'][f"{params['lr']}"][1] += 1
+                check_grid['bs'][f"{params['bs']}"][1] += 1
+                check_grid['skip'][f"{params['skip']}"][1] += 1
+                check_grid['batchnorm'][f"{params['batchnorm']}"][1] += 1
+        except:
             check_grid['mo'][f"{params['mo']}"][1] += 1
             check_grid['width'][f"{params['width']}"][1] += 1
             check_grid['wd'][f"{params['wd']}"][1] += 1
             check_grid['lr'][f"{params['lr']}"][1] += 1
             check_grid['bs'][f"{params['bs']}"][1] += 1
-            check_grid['lr_decay'][f"{params['lr_decay']}"][1] += 1
             check_grid['skip'][f"{params['skip']}"][1] += 1
             check_grid['batchnorm'][f"{params['batchnorm']}"][1] += 1
 

@@ -1,7 +1,6 @@
 import numpy as np
 from utils.spectral_utils import tridiag_to_eigv
 from tqdm import tqdm
-from hessian_eigenthings import deflated_power_iteration
 from scipy.sparse.linalg import LinearOperator as ScipyLinearOperator
 from scipy.sparse.linalg import eigsh
 from warnings import warn

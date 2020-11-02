@@ -22,15 +22,15 @@ get_device() {
 	done
 }
 
-for exp_num in {60..80}; do
+for exp_num in {0..100}; do
 	get_device
 	CUDA_VISIBLE_DEVICES=$((device)) nohup python invest_dl_prob.py \
-		--exp_num=${exp_num} --dtype="mnist" > jobs/${exp_num}.out 2>&1 &
-	sleep 5
+		--exp_num=${exp_num} --dtype="cifar10" > jobs/${exp_num}.out 2>&1 &
+	sleep 3
 	# CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
 	# 	--ep=500 \
-	# 	--dtype="mnist" \
+	# 	--dtype="cifar10" \
 	# 	--print_freq=500 \
-	# 	--exp_num=${exp_num} >/dev/null 2>&1 &
+	# 	--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
 	# sleep 30
 done

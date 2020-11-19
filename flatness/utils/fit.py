@@ -18,10 +18,9 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
 
     loss = AverageMeter()
     err1 = AverageMeter()
-    err5 = AverageMeter()
     t = time.time()
 
-    for batch_idx, inp_data in enumerate(loader[phase], 1):
+    for batch_idx, inp_data in enumerate(loader, 1):
 
         inputs, targets = inp_data
 
@@ -32,7 +31,6 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
             with torch.set_grad_enabled(True):
                 # compute output
                 outputs = model(inputs)
-
                 batch_loss = criterion(outputs, targets)
 
                 # compute gradient and do SGD step
@@ -53,14 +51,13 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
             quit()
 
         loss.update(batch_loss.item(), inputs.size(0))
-        batch_err = accuracy(outputs, targets, topk=(1, 5))
-        err1.update(float(100.0 - batch_err[0]), inputs.size(0))
-        err5.update(float(100.0 - batch_err[1]), inputs.size(0))
+        batch_err = accuracy(outputs, targets, topk=(1,))[0]
+        err1.update(float(100.0 - batch_err), inputs.size(0))
 
         if batch_idx % args.print_freq == 0:
             logger.info("Phase:{0} -- Batch_idx:{1}/{2} -- {3:.2f} samples/sec"
                         "-- Loss:{4:.2f} -- Error1:{5:.2f}".format(
-                          phase, batch_idx, len(loader[phase]),
+                          phase, batch_idx, len(loader),
                           err1.count / (time.time() - t), loss.avg, err1.avg))
 
-    return loss.avg, err1.avg, err5.avg
+    return loss.avg, err1.avg

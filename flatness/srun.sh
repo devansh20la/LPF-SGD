@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=12
-#SBATCH --time=4:00:00
+#SBATCH --time=20:00:00
 #SBATCH --mem=16GB
 #SBATCH --job-name=flatness
 #SBATCH --mail-type=END
@@ -20,5 +20,11 @@ source /share/apps/anaconda3/2019.10/etc/profile.d/conda.sh
 conda activate myenv
 
 cd /beegfs/db3484/gen_v_sharp/flatness/
-python train.py --ep=500 --dtype="cifar10" --exp_num=$SLURM_ARRAY_TASK_ID
-# python invest_dl_prob.py --exp_num=$SLURM_ARRAY_TASK_ID --dtype="mnist"
+python train.py \
+	--ep=500 \
+	--dtype='cifar10' \
+	--print_freq=500 \
+	--exp_num=${SLURM_ARRAY_TASK_ID} && \
+python invest_dl_prob.py \
+	--exp_num=${SLURM_ARRAY_TASK_ID} \
+	--dtype='cifar10'

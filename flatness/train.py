@@ -18,10 +18,9 @@ def create_path(path):
         os.makedirs(path)
     else:
         file = glob.glob(f"{path}/*.log")[0]
-
         with open(file, 'r') as f:
             file = f.read()
-            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file or 'Training loss is nan' in file:
+            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file:
                 print("exists")
                 quit()
             else:
@@ -38,11 +37,13 @@ def main(args):
     criterion = nn.CrossEntropyLoss()
 
     if args.use_cuda:
-        model.cuda()
+        model = model.cuda()
+        criterion = criterion.cuda()
         torch.backends.cudnn.benchmark = True
 
     optimizer = optim.SGD(model.parameters(), lr=args.lr,
                           momentum=args.mo, weight_decay=args.wd)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 200], gamma=0.1)
 
     writer = SummaryWriter(log_dir=args.cp_dir)
     torch.save(model.state_dict(), f"{args.cp_dir}/model_init.pth.tar")
@@ -51,28 +52,22 @@ def main(args):
 
         logger.info('Epoch: [%d | %d]' % (epoch, args.ep))
 
-        trainloss, trainerr1, trainerr5 = \
-            class_model_run('train', dset_loaders,
-                            model, criterion, optimizer, args)
+        trainloss, trainerr1 = class_model_run('train', dset_loaders['train'],
+                                               model, criterion, optimizer, args)
 
+        trainloss, trainerr1 = class_model_run('val', dset_loaders['train'], model,
+                                               criterion, optimizer, args)
         logger.info('Train_Loss = {0}, Train_Err = {1}'.format(trainloss, trainerr1))
         writer.add_scalar('Train/Train_Loss', trainloss, epoch)
         writer.add_scalar('Train/Train_Err1', trainerr1, epoch)
-        writer.add_scalar('Train/Train_Err5', trainerr5, epoch)
 
         torch.save(model.state_dict(), f"{args.cp_dir}/trained_model.pth.tar")
-        if trainloss < 0.01:
+
+        if trainloss <= 0.01:
             logger.info("Stopping criterion achieved")
             break
 
-        if epoch % 20 == 0:
-            valloss, valerr1, valerr5 = \
-                class_model_run('val', dset_loaders, model,
-                                criterion, optimizer, args)
-            logger.info('Val_Loss = {0}, Val_Err = {1}'.format(valloss, valerr1))
-            writer.add_scalar('Val/Val_Loss', valloss, epoch)
-            writer.add_scalar('Val/Val_Err1', valerr1, epoch)
-            writer.add_scalar('Val/Val_Err5', valerr5, epoch)
+        scheduler.step()
 
 
 if __name__ == '__main__':

@@ -19,16 +19,16 @@ if __name__ == '__main__':
                   'mo': [0.0, 0.5, 0.9],  # momentum
                   'width': [4, 6, 8],  # network width
                   'wd': [0.0, 1e-4, 5e-4],  # weight decay
-                  'lr': [0.01, 0.032, 0.1],  # learning rate
+                  'lr': [0.01, 0.0075, 0.005],  # learning rate
                   'bs': [32, 128, 512],  # batch size
-                  'skip': [True, False],  # skip connection
+                  'skip': [True, False],
                   'batchnorm': [True, False]  # batchnorm
                   }
 
     check_grid = {'mo': {'0.9': [0, 0], '0.5': [0, 0], '0.0': [0, 0]},
                   'width': {'4': [0, 0], '6': [0, 0], '8': [0, 0]},
                   'wd': {'0.0': [0, 0], '0.0005': [0, 0], '0.0001': [0, 0]},
-                  'lr': {'0.01': [0, 0], '0.032': [0, 0], '0.1': [0, 0]},
+                  'lr': {'0.01': [0, 0], '0.0075': [0, 0], '0.005': [0, 0]},
                   'bs': {'32': [0, 0], '128': [0, 0], '512': [0, 0]},
                   'skip': {"True": [0, 0], "False": [0, 0]},
                   'batchnorm': {"True": [0, 0], "False": [0, 0]}
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         args.skip = params['skip']
         args.batchnorm = params['batchnorm']
 
-        args.n = f"{args.dtype}/" \
+        args.n = f"{args.dtype}/resnet/" \
                  f"{args.exp_num}_{args.ms}_{args.mo}_{args.width}_{args.wd}_" \
                  f"{args.lr}_{args.bs}_{args.skip}_{args.batchnorm}"
 
@@ -60,21 +60,12 @@ if __name__ == '__main__':
         check_grid['batchnorm'][f"{params['batchnorm']}"][0] += 1
         args.cp_dir = f"checkpoints/{args.n}/run_ms_0/"
 
-        try:
-            with open(args.cp_dir + "measures.pkl", 'rb') as f:
-                measure = pickle.load(f)
-                train_err = 100 - measure['train_acc']
-                val_err = 100 - measure['val_acc']
+        with open(args.cp_dir + "measures.pkl", 'rb') as f:
+            measure = pickle.load(f)
+            train_err = 100 - measure['train_acc']
+            val_err = 100 - measure['val_acc']
 
-            if float(train_err) < 1.0:
-                check_grid['mo'][f"{params['mo']}"][1] += 1
-                check_grid['width'][f"{params['width']}"][1] += 1
-                check_grid['wd'][f"{params['wd']}"][1] += 1
-                check_grid['lr'][f"{params['lr']}"][1] += 1
-                check_grid['bs'][f"{params['bs']}"][1] += 1
-                check_grid['skip'][f"{params['skip']}"][1] += 1
-                check_grid['batchnorm'][f"{params['batchnorm']}"][1] += 1
-        except:
+        if measure['train_loss'] < 0.01:
             check_grid['mo'][f"{params['mo']}"][1] += 1
             check_grid['width'][f"{params['width']}"][1] += 1
             check_grid['wd'][f"{params['wd']}"][1] += 1

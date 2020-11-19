@@ -14,7 +14,7 @@ class test_model(nn.Module):
         out = F.relu(self.conv1(x))
         out = F.relu(self.conv2(out))
         out = self.fc1(out.view(out.shape[0],-1))
-        
+
         return out
 
 

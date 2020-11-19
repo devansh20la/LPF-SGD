@@ -22,15 +22,22 @@ get_device() {
 	done
 }
 
-for exp_num in {0..100}; do
+while getopts a: flag
+do
+    case "${flag}" in
+        a) a=(${OPTARG//-/ });;
+    esac
+done
+
+for ((exp_num = ${a[0]}; exp_num <= ${a[1]}; exp_num++ )); do
 	get_device
-	CUDA_VISIBLE_DEVICES=$((device)) nohup python invest_dl_prob.py \
-		--exp_num=${exp_num} --dtype="cifar10" > jobs/${exp_num}.out 2>&1 &
-	sleep 3
-	# CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
-	# 	--ep=500 \
-	# 	--dtype="cifar10" \
-	# 	--print_freq=500 \
-	# 	--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
-	# sleep 30
+	CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python train.py \
+		--ep=500 \
+		--dtype='cifar10' \
+		--print_freq=500 \
+		--exp_num=${exp_num} && \
+	python invest_dl_prob.py \
+		--exp_num=${exp_num} \
+		--dtype='cifar10'" > jobs/${exp_num}.out 2>&1 &
+	sleep 30
 done

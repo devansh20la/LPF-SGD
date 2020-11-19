@@ -66,15 +66,32 @@ class model_for_sharp():
         the vectorized model parameters
         """
         self.zero_grad()
-        grad_vec = self.prepare_grad()
-        self.zero_grad()
+        hessian_vec_prod = None
+        phase = 'train'
 
-        grad_grad = torch.autograd.grad(
-            grad_vec, self.model.parameters(), grad_outputs=vec, only_inputs=True
-        )
-        hessian_vec_prod = torch.cat([g.contiguous().view(-1) for g in grad_grad])
+        for inputs, targets in self.dataloader[phase]:
+            if self.use_cuda:
+                inputs = inputs.cuda()
+                targets = targets.cuda()
 
-        return hessian_vec_prod
+            outputs = self.model(inputs)
+            loss = self.criterion(outputs, targets)
+
+            grad_dict = torch.autograd.grad(
+                loss, self.model.parameters(), create_graph=True
+            )
+            grad_vec = torch.cat([g.contiguous().view(-1) for g in grad_dict])
+            grad_grad = torch.autograd.grad(
+                grad_vec, self.model.parameters(), grad_outputs=vec, only_inputs=True
+            )
+            if hessian_vec_prod is not None:
+                hessian_vec_prod += torch.cat([g.contiguous().view(-1) for g in grad_grad])
+            else:
+                hessian_vec_prod = torch.cat([g.contiguous().view(-1) for g in grad_grad])
+
+            self.zero_grad()
+
+        return hessian_vec_prod/len(self.dataloader[phase])
 
     def zero_grad(self):
         """
@@ -84,36 +101,8 @@ class model_for_sharp():
             if p.grad is not None:
                 p.grad.data.zero_()
 
-    def prepare_grad(self, phase='train'):
-        """
-        Compute gradient w.r.t loss over all parameters and vectorize
-        """
-        grad_vec = None
-
-        for inputs, targets in self.dataloader[phase]:
-            if self.use_cuda:
-                inputs = inputs.cuda()
-                targets = targets.cuda()
-
-            outputs = self.model(inputs)
-            loss = self.criterion(outputs, targets)
-            loss *= (inputs.shape[0] / len(self.dataloader[phase].dataset))
-
-            grad_dict = torch.autograd.grad(
-                loss, self.model.parameters(), create_graph=True
-            )
-            if grad_vec is not None:
-                grad_vec += torch.cat([g.contiguous().view(-1) for g in grad_dict])
-            else:
-                grad_vec = torch.cat([g.contiguous().view(-1) for g in grad_dict])
-
-        self.grad_vec = grad_vec
-        return self.grad_vec
-
 
 def main(args):
-    mtr = {}
-
     dset_loaders = get_loader(args, training=True)
     criterion = nn.CrossEntropyLoss()
 
@@ -122,58 +111,87 @@ def main(args):
     model.load_state_dict(torch.load(f"{args.cp_dir}/trained_model.pth.tar", map_location='cpu'))
     if args.use_cuda:
         model = model.cuda()
+    model.eval()
     model.norm()
 
     model_func = model_for_sharp(model, dset_loaders, criterion, use_cuda=args.use_cuda)
 
-    mtr["train_loss"] = model_func.train_loss
-    mtr["val_loss"] = model_func.val_loss
-    mtr["train_acc"] = model_func.train_acc
-    mtr["val_acc"] = model_func.val_acc
+    if os.path.isfile(f"{args.cp_dir}/measures.pkl"):
+        with open(f"{args.cp_dir}/measures.pkl", 'rb') as f:
+            mtr = pickle.load(f)
+        print(np.abs(mtr["train_loss"] - model_func.train_loss))
+        if np.abs(mtr["train_loss"] - model_func.train_loss) > 1e-6:
+            print("STUPIDITY HAPPENDED HERE")
+            quit()
+    else:
+        mtr = {}
+        mtr["train_loss"] = model_func.train_loss
+        mtr["val_loss"] = model_func.val_loss
+        mtr["train_acc"] = model_func.train_acc
+        mtr["val_acc"] = model_func.val_acc
 
-    # # compute various measures
-    # t = time.time()
-    # mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-2, use_cuda=args.use_cuda, verbose=True)
-    # print(f"time required for eps_flat:{time.time() - t}")
+    if mtr["train_loss"] > 0.01:
+        print(mtr)
+        quit()
 
-    # t = time.time()
-    # model_init = LeNet()
-    # model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
-    # if args.use_cuda:
-    #     model_init = model_init.cuda()
-    # model_init.norm()
-    # mtr["pac_bayes"] = pac_bayes(model_func, 10, 0.1, theta_init=model_init.parameters(), tol=1e-2, verbose=True)
-    # print(f"time required for pac_bayes:{time.time() - t}")
-    # del model_init
+    # compute various measures
+    if 'eps_flat' not in mtr.keys():
+        t = time.time()
+        mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-2, use_cuda=args.use_cuda, verbose=True)
+        print(f"time required for eps_flat:{time.time() - t}")
+        save(mtr)
 
-    # t = time.time()
-    # mtr['fro_norm'] = fro_norm(model_func, 1000)
-    # print(f"time required for fro_norm:{time.time() - t}")
+    if 'pac_bayes' not in mtr.keys():
+        t = time.time()
+        model_init = resnet18_narrow(args)
+        model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
+        if args.use_cuda:
+            model_init = model_init.cuda()
+        model_init.norm()
+        mtr["pac_bayes"] = pac_bayes(model_func, 10, 0.1, theta_init=model_init.parameters(), tol=1e-2, verbose=True)
+        print(f"time required for pac_bayes:{time.time() - t}")
+        del model_init
+        save(mtr)
 
-    # t = time.time()
-    # mtr['fim'] = fim(model_func)
-    # print(f"time required for fim:{time.time() - t}")
+    if 'fro_norm' not in mtr.keys():
+        t = time.time()
+        mtr['fro_norm'] = fro_norm(model_func, 10)
+        print(f"time required for fro_norm:{time.time() - t}")
+        save(mtr)
 
-    # t = time.time()
-    # e = eig_trace(model_func, 100, use_cuda=args.use_cuda)
-    # mtr["eig_trace"] = e.sum()
-    # print(f"time required for eig:{time.time() - t}")
+    if 'fim' not in mtr.keys():
+        t = time.time()
+        mtr['fim'] = fim(model_func)
+        print(f"time required for fim:{time.time() - t}")
+        save(mtr)
 
-    # t = time.time()
-    # mtr['local_entropy'] = entropy(model_func, 0.1, 1000)
-    # print(f"time required for entropy:{time.time() - t}")
+    if 'eig_trace' not in mtr.keys():
+        t = time.time()
+        e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)
+        mtr["eig_trace"] = e.sum()
+        print(f"time required for eig:{time.time() - t}")
+        with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
+            np.save(f, e)
 
-    # t = time.time()
-    # mtr['low_pass'] = low_pass(model_func, 0.1, 1000)
-    # print(f"time required for low pass:{time.time() - t}")
+    if 'local_entropy' not in mtr.keys():
+        t = time.time()
+        mtr['local_entropy'] = entropy(model_func, 100, 100)
+        print(f"time required for entropy:{time.time() - t}")
+        save(mtr)
 
-    # with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
-    #     np.save(f, e)
+    if 'low_pass' not in mtr.keys():
+        t = time.time()
+        mtr['low_pass'] = low_pass(model_func, 0.01, 100)
+        print(f"time required for low pass:{time.time() - t}")
+        save(mtr)
 
+    save(mtr)
+    print(mtr)
+
+
+def save(mtr):
     with open(f"{args.cp_dir}/measures.pkl", 'wb') as f:
         pickle.dump(mtr, f)
-
-    print(mtr)
 
 
 if __name__ == '__main__':
@@ -190,9 +208,5 @@ if __name__ == '__main__':
     # Intialize directory and create path
     args.bs = 256
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
-
-    if os.path.isfile(f"{args.cp_dir}/measures.pkl"):
-        print("File already exists")
-        quit()
 
     main(args)

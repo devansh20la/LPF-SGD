@@ -18,25 +18,25 @@ class BasicBlock(nn.Module):
         self.skip = args.skip
 
         if self.batchnorm:
-            self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
+            self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1)
             self.bn1 = nn.BatchNorm2d(planes)
-            self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=False)
+            self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1)
             self.bn2 = nn.BatchNorm2d(planes)
         else:
-            self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=True)
-            self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1, bias=True)
+            self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=3, stride=stride, padding=1)
+            self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=1, padding=1)
 
         if self.skip:
             self.shortcut = nn.Sequential()
             if stride != 1 or in_planes != self.expansion*planes:
                 if self.batchnorm:
                     self.shortcut = nn.Sequential(
-                        nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
+                        nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride),
                         nn.BatchNorm2d(self.expansion*planes)
                     )
                 else:
                     self.shortcut = nn.Sequential(
-                        nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=True)
+                        nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride)
                         )
         self.normed = False
 
@@ -45,48 +45,61 @@ class BasicBlock(nn.Module):
         modules = list(self.children())
         for idx, l in enumerate(modules, 0):
             if isinstance(l, nn.Conv2d):
-                if idx < len(modules) - 1:
-                    if isinstance(modules[idx + 1], nn.BatchNorm2d):
-                        conv_before_bn(l)
-                    else:
-                        self.params_for_norm.append(conv_without_bn(l).reshape(-1, 1, 1, 1))
-                else:
-                    self.params_for_norm.append(conv_without_bn(l).reshape(-1, 1, 1, 1))
+                self.params_for_norm.append(conv(l).reshape(-1, 1, 1, 1))
+
             elif isinstance(l, nn.BatchNorm2d):
                 self.params_for_norm.append(bn(l).reshape(-1, 1, 1, 1))
+
             elif isinstance(l, nn.Sequential):
                 if len(list(l.children())) == 2:
-                    conv_before_bn(l[0])
+                    self.params_for_norm.append(conv(l[0]).reshape(-1, 1, 1, 1))
                     self.params_for_norm.append(bn(l[1]).reshape(-1, 1, 1, 1))
                 elif len(list(l.children())) == 1:
-                    self.params_for_norm.append(conv_without_bn(l[0]).reshape(-1, 1, 1, 1))
+                    self.params_for_norm.append(conv(l[0]).reshape(-1, 1, 1, 1))
 
         if torch.cuda.is_available():
             for p in self.params_for_norm:
                 p.cuda()
+
         self.normed = True
 
     def forward(self, x):
         out = self.conv1(x)
+        if self.normed is True:
+            idx=0
+            out = F.conv2d(out, self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+            idx+=1
         if self.batchnorm:
             out = self.bn1(out)
+            if self.normed is True:
+                out = F.conv2d(out, self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+                idx+=1
         out = F.relu(out)
-        if self.normed is True:
-            out = F.conv2d(out, self.params_for_norm[0], groups=self.params_for_norm[0].shape[0], bias=None)
 
         out = self.conv2(out)
+        if self.normed is True:
+            out = F.conv2d(out, self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+            idx+=1
         if self.batchnorm:
             out = self.bn2(out)
-        if self.normed is True:
-            out = F.conv2d(out, self.params_for_norm[1], groups=self.params_for_norm[1].shape[0], bias=None)
+            if self.normed is True:
+                out = F.conv2d(out, self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+                idx+=1
 
-        if self.skip is True:
+        if self.skip:
             if len(list(self.shortcut.children())) > 0 and self.normed is True:
-                out += F.conv2d(self.shortcut(x), self.params_for_norm[2], groups=self.params_for_norm[2].shape[0], bias=None)
+                if self.batchnorm:
+                    x = F.conv2d(self.shortcut[0](x), self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+                    idx += 1
+                    out += F.conv2d(self.shortcut[1](x), self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+                    idx += 1
+                else:
+                    out += F.conv2d(self.shortcut(x), self.params_for_norm[idx], groups=self.params_for_norm[idx].shape[0], bias=None)
+                    idx += 1
             else:
                 out += self.shortcut(x)
-
         out = F.relu(out)
+
         return out
 
 
@@ -97,10 +110,10 @@ class ResNet(nn.Module):
         self.in_planes = self.args.width * 8
 
         if self.args.batchnorm:
-            self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1, bias=False)
-            self.bn1 = nn.BatchNorm2d(self.args.width * 8, track_running_stats=False)
+            self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1)
+            self.bn1 = nn.BatchNorm2d(self.args.width * 8)
         else:
-            self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1, bias=True)
+            self.conv1 = nn.Conv2d(3, self.args.width * 8, kernel_size=3, stride=1, padding=1)
 
         self.layer1 = self._make_layer(block, self.args.width * 8, num_blocks[0], stride=1)
         self.layer2 = self._make_layer(block, self.args.width * 16, num_blocks[1], stride=2)
@@ -134,12 +147,16 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         out = self.conv1(x)
+        if self.normed is True:
+            idx = 0
+            out = F.conv2d(out, self.params_for_norm[idx], bias=None, groups= self.params_for_norm[idx].shape[0])
+            idx += 1
         if self.args.batchnorm:
             out = self.bn1(out)
+            if self.normed is True:
+                out = F.conv2d(out, self.params_for_norm[idx], bias=None, groups= self.params_for_norm[idx].shape[0])
+                idx += 1
         out = F.relu(out)
-
-        if self.normed is True:
-            out = F.conv2d(out, self.params_for_norm[0], bias=None, groups= self.params_for_norm[0].shape[0])
 
         out = self.layer1(out)
         out = self.layer2(out)
@@ -150,7 +167,9 @@ class ResNet(nn.Module):
         out = self.linear(out)
 
         if self.normed is True:
-            out = F.linear(out, self.params_for_norm[1], bias=None)
+            out = F.linear(out, self.params_for_norm[idx], bias=None)
+            idx += 1
+
         return out
 
     def norm(self):
@@ -158,10 +177,7 @@ class ResNet(nn.Module):
         modules = list(self.children())
         for idx, l in enumerate(modules, 0):
             if isinstance(l, nn.Conv2d):
-                if isinstance(modules[idx + 1], nn.BatchNorm2d):
-                    conv_before_bn(l)
-                else:
-                    self.params_for_norm.append(conv_without_bn(l).reshape(-1, 1, 1, 1))
+                self.params_for_norm.append(conv(l).reshape(-1, 1, 1, 1))
 
             elif isinstance(l, nn.BatchNorm2d):
                 self.params_for_norm.append(bn(l).reshape(-1, 1, 1, 1))
@@ -169,12 +185,14 @@ class ResNet(nn.Module):
             elif isinstance(l, nn.Sequential):
                 for l in l.children():
                     l.norm()
+
             elif isinstance(l, nn.Linear):
                 p = l.weight.data.norm(dim=1, keepdim=True) + l.bias.data.abs().view(-1, 1)
                 s = l.weight.data.shape
                 l.weight.data.view(s[0], -1).div_(p).view(s)
                 l.bias.data.div_(p.reshape(-1))
                 self.params_for_norm.append(torch.diag(p.reshape(-1)))
+
         self.normed = True
         if torch.cuda.is_available():
             for p in self.params_for_norm:
@@ -185,13 +203,7 @@ def resnet18_narrow(args, **kwargs):
     return ResNet(BasicBlock, [2, 2, 2, 2], args, **kwargs)
 
 
-def conv_before_bn(l):
-    s = l.weight.data.shape
-    p = l.weight.data.view(s[0], -1).norm(dim=1, keepdim=True)
-    l.weight.data.view(s[0], -1).div_(p).view(s)
-
-
-def conv_without_bn(l):
+def conv(l):
     s = l.weight.data.shape
     p = l.weight.data.view(s[0], -1).norm(dim=1, keepdim=True) + l.bias.data.abs().view(-1, 1)
     l.weight.data.view(s[0], -1).div_(p).view(s)
@@ -212,13 +224,11 @@ if __name__ == "__main__":
     sys.path.append("../")
     from args import get_args
 
-    args = get_args(["--exp_num", "0"])
-    args.batchnorm = False
-    args.skip = True
+    args = get_args(["--exp_num", "900", "--dtype", "cifar10"])
     model = resnet18_narrow(args)
-    # print(model)
-
     x = torch.randn(1, 3, 32, 32)
     print(model(x))
     model.norm()
     print(model(x))
+
+

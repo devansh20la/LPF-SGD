@@ -4,17 +4,18 @@ import torch
 from torchvision import datasets, transforms
 from sklearn.metrics import average_precision_score
 from utils.data_loader_mnist import MNIST
-from utils.data_loader_cifar import CIFAR10
+from utils.data_loader_cifar import CIFAR10, CIFAR10_NOISY
 
 
-def get_loader(args, training, data_load_fraction=1.0):
+def get_loader(args, training, data_load_fraction=1.0, label_noise=0.0):
   """ function to get data loader specific to different datasets
   """
   if args.dtype == 'cifar10':
-    dsets = cifar10_dsets(args, training, data_load_fraction)  
-
+    dsets = cifar10_dsets(args, training, data_load_fraction, label_noise)
+  elif args.dtype == 'cifar10_noisy':
+    dsets = cifar10_noisy_dsets(args, training, args.dn)
   elif args.dtype == 'mnist':
-    dsets = mnist_dsets(args, training, data_load_fraction)
+    dsets = mnist_dsets(args, training, data_load_fraction, label_noise)
 
   if training is True:
     dset_loaders = {
@@ -36,7 +37,7 @@ def get_loader(args, training, data_load_fraction=1.0):
   return dset_loaders
 
 
-def mnist_dsets(args, training, data_load_fraction):
+def mnist_dsets(args, training, data_load_fraction, label_noise):
   """ Function to load mnist data
   """
   transform = transforms.Compose([transforms.ToTensor(),
@@ -45,7 +46,8 @@ def mnist_dsets(args, training, data_load_fraction):
   if training is True:
     dsets = {
         'train': MNIST(args.data_dir, train=True, download=True,
-                       transform=transform, data_load_fraction=data_load_fraction),
+                       transform=transform, data_load_fraction=data_load_fraction,
+                       label_noise=label_noise),
         'val': MNIST(args.data_dir, train=False, download=True,
                      transform=transform)
     }
@@ -58,7 +60,7 @@ def mnist_dsets(args, training, data_load_fraction):
   return dsets
 
 
-def cifar10_dsets(args, training, lp):
+def cifar10_noisy_dsets(args, training, data_noise):
   """ Function to load cifar10 data
   """
   transform = {
@@ -73,14 +75,43 @@ def cifar10_dsets(args, training, lp):
   }
   if training is True:
     dsets = {
-      'train': CIFAR10(root=args.data_dir, load_percent=lp, train=True,
-                       download=False, transform=transform['train']),
-      'val': CIFAR10(root=args.data_dir, load_percent=1.0, train=False,
+      'train': CIFAR10_NOISY(root=args.data_dir, train=True, data_noise=args.dn),
+      'val': CIFAR10(root=args.data_dir.split('cifar10_noisy')[0]+"cifar10/", train=False,
                      download=False, transform=transform['val'])
     }
   else:
     dsets = {
-      'test': CIFAR10(root=args.data_dir, load_percent=1.0, train=False,
+      'test': CIFAR10(root=args.data_dir.split('cifar10_noisy')[0]+"cifar10/", train=False,
+                      download=False, transform=transform['val'])
+    }
+
+  return dsets
+
+
+def cifar10_dsets(args, training, data_load_fraction, label_noise):
+  """ Function to load cifar10 data
+  """
+  transform = {
+    'train': transforms.Compose([transforms.ToTensor(),
+                                 transforms.Normalize(
+                                    (0.4914, 0.4822, 0.4465),
+                                    (0.2023, 0.1994, 0.2010))]),
+    'val': transforms.Compose([transforms.ToTensor(),
+                               transforms.Normalize(
+                                    (0.4914, 0.4822, 0.4465),
+                                    (0.2023, 0.1994, 0.2010))])
+  }
+  if training is True:
+    dsets = {
+      'train': CIFAR10(root=args.data_dir, data_load_fraction=data_load_fraction,
+                       label_noise=label_noise, train=True,
+                       download=False, transform=transform['train']),
+      'val': CIFAR10(root=args.data_dir, train=False,
+                     download=False, transform=transform['val'])
+    }
+  else:
+    dsets = {
+      'test': CIFAR10(root=args.data_dir, train=False,
                       download=False, transform=transform['val'])
     }
 

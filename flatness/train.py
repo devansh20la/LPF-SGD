@@ -20,7 +20,7 @@ def create_path(path):
         file = glob.glob(f"{path}/*.log")[0]
         with open(file, 'r') as f:
             file = f.read()
-            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file:
+            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file or 'nan' in file:
                 print("exists")
                 quit()
             else:
@@ -43,7 +43,7 @@ def main(args):
 
     optimizer = optim.SGD(model.parameters(), lr=args.lr,
                           momentum=args.mo, weight_decay=args.wd)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[100, 200], gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[150, 200], gamma=0.1)
 
     writer = SummaryWriter(log_dir=args.cp_dir)
     torch.save(model.state_dict(), f"{args.cp_dir}/model_init.pth.tar")
@@ -54,9 +54,6 @@ def main(args):
 
         trainloss, trainerr1 = class_model_run('train', dset_loaders['train'],
                                                model, criterion, optimizer, args)
-
-        trainloss, trainerr1 = class_model_run('val', dset_loaders['train'], model,
-                                               criterion, optimizer, args)
         logger.info('Train_Loss = {0}, Train_Err = {1}'.format(trainloss, trainerr1))
         writer.add_scalar('Train/Train_Loss', trainloss, epoch)
         writer.add_scalar('Train/Train_Err1', trainerr1, epoch)

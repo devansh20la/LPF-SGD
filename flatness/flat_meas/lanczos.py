@@ -8,6 +8,7 @@ from scipy.sparse.linalg import eigsh
 from warnings import warn
 import torch
 import time
+import logging
 
 
 def lanczos(func, dim, max_itr, use_cuda=False, verbose=False):
@@ -78,7 +79,8 @@ def lanczos(func, dim, max_itr, use_cuda=False, verbose=False):
 
         info = f"Iteration {k} / {max_itr} done in {time.time()-t:.2f}s (MVP: {time_mvp:.2f}s)"
         if (verbose) and (k%10 == 0):
-            print(info)
+            logger = logging.getLogger('my_log')
+            logger.info(info)
 
     return vecs, tridiag
 

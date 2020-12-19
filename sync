@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# rsync -avP * db2:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
-# 	--exclude='*/results/' --exclude="sync"
+rsync -avP * db2:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
+ 	--exclude='*/results/' --exclude="sync"
 
 # rsync -avP * db7:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
 # 	--exclude='*/results/' --exclude="sync"
 
-# rsync -avP * prince:/beegfs/db3484/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
-# 	--exclude='*/results/' --exclude="sync"
+#rsync -avP * prince:/beegfs/db3484/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
+#	--exclude='*/results/' --exclude="sync"
 
 # rsync -avP * greene:/scratch/db3484/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' \
 # 	--exclude='*/results/' --exclude="sync"

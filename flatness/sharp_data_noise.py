@@ -189,12 +189,14 @@ def main(args):
         e = entropy_grad(model_func)
         mtr["local_entropy_grad_norm"] = e
         logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
 
     if 'entropy_one_direc' not in mtr.keys():
         t = time.time()
         e = entropy_one_direc(model_func)
         mtr["entropy_one_direc"] = e
         logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
 
     if 'low_pass' not in mtr.keys():
         t = time.time()
@@ -209,6 +211,7 @@ def main(args):
         logger.info(f"time required for eig:{time.time() - t}")
         with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
             np.save(f, e)
+        save(mtr)
 
     save(mtr)
     logger.info(mtr)

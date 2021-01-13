@@ -17,16 +17,9 @@ def create_path(path):
     if os.path.isdir(path) is False:
         os.makedirs(path)
     else:
-        file = glob.glob(f"{path}/*.log")[0]
-        with open(file, 'r') as f:
-            file = f.read()
-            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file or 'nan' in file:
-                print("exists")
-                quit()
-            else:
-                for file in glob.glob(path+'/*'):
-                    print(f"deleting {file}")
-                    os.remove(file)
+        for file in glob.glob(path+'/*'):
+            print(f"deleting {file}")
+            os.remove(file)
 
 
 def main(args):
@@ -54,6 +47,10 @@ def main(args):
 
         trainloss, trainerr1 = class_model_run('train', dset_loaders['train'],
                                                model, criterion, optimizer, args)
+
+        trainloss, trainerr1 = class_model_run('val', dset_loaders['train'],
+                                               model, criterion, optimizer, args)
+
         logger.info('Train_Loss = {0}, Train_Err = {1}'.format(trainloss, trainerr1))
         writer.add_scalar('Train/Train_Loss', trainloss, epoch)
         writer.add_scalar('Train/Train_Err1', trainerr1, epoch)

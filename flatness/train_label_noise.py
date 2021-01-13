@@ -32,7 +32,7 @@ def create_path(path):
 def main(args):
     logger = logging.getLogger('my_log')
 
-    dset_loaders = get_loader(args, training=True, label_noise=args.ln)
+    dset_loaders = get_loader(args, training=True)
 
     model = ResNet18()
     criterion = nn.CrossEntropyLoss()
@@ -88,9 +88,9 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.dtype == 'cifar10':
+    if args.dtype == 'cifar10_label_noise':
         args.num_classes = 10
-    elif args.dtype == 'mnist':
+    elif args.dtype == 'mnist_label_noise':
         args.num_classes = 10
     else:
         print(f"BAD COMMAND dtype: {args.dtype}")
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}_label_noise/resnet_label_noise_{args.ln}"
+    args.n = f"{args.dtype}/resnet_label_noise_{args.ln}"
 
     # Random seed
     random.seed(args.ms)

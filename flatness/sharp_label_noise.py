@@ -107,7 +107,7 @@ class model_for_sharp():
 
 def main(args):
     logger = logging.getLogger('my_log')
-    dset_loaders = get_loader(args, training=True, label_noise=args.ln)
+    dset_loaders = get_loader(args, training=True)
 
     criterion = nn.CrossEntropyLoss()
 
@@ -136,11 +136,6 @@ def main(args):
         mtr["val_acc"] = model_func.val_acc
 
     logger.info(mtr)
-    if "eps_flat" in mtr.keys():
-        mtr.pop("eps_flat")
-
-    # if "local_entropy_grad_norm" in mtr.keys():
-    #     mtr.pop("local_entropy_grad_norm")
 
     if mtr["train_acc"] < 99:
         save(mtr)
@@ -155,11 +150,10 @@ def main(args):
 
     if 'eps_flat' not in mtr.keys():
         t = time.time()
-        mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-8, use_cuda=args.use_cuda, verbose=True)
+        mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-6, use_cuda=args.use_cuda, verbose=True)
         logger.info(f"time required for eps_flat:{time.time() - t}")
         save(mtr)
         logger.info(mtr)
-        quit()
 
     if 'pac_bayes' not in mtr.keys():
         t = time.time()
@@ -202,12 +196,14 @@ def main(args):
         e = entropy_grad(model_func)
         mtr["local_entropy_grad_norm"] = e
         logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
 
     if 'entropy_one_direc' not in mtr.keys():
         t = time.time()
         e = entropy_one_direc(model_func)
         mtr["entropy_one_direc"] = e
         logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
 
     if 'eig_trace' not in mtr.keys():
         t = time.time()
@@ -216,6 +212,7 @@ def main(args):
         logger.info(f"time required for eig:{time.time() - t}")
         with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
             np.save(f, e)
+        save(mtr)
 
     save(mtr)
     logger.info(mtr)
@@ -238,12 +235,13 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.dtype == 'cifar10':
+    if args.dtype == 'cifar10_label_noise':
         args.num_classes = 10
-    elif args.dtype == 'mnist':
+    elif args.dtype == 'mnist_label_noise':
         args.num_classes = 10
     else:
         print(f"BAD COMMAND dtype: {args.dtype}")
+        quit()
 
     # This is done to run job on cluster with support for array jobs
     if args.ln > 10:
@@ -255,7 +253,7 @@ if __name__ == '__main__':
     args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}_label_noise/resnet_label_noise_{args.ln}"
+    args.n = f"{args.dtype}/resnet_label_noise_{args.ln}"
 
     # Random seed
     random.seed(args.ms)

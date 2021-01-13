@@ -4,7 +4,9 @@ from models import resnet_dd
 import numpy as np
 import random
 from utils import get_loader
-from flat_meas import fro_norm, eig_trace, eps_flatness, pac_bayes, entropy, low_pass, fim, shannon_entropy
+from flat_meas import fro_norm, entropy_one_direc, \
+                      entropy_grad, eig_trace, eps_flatness, \
+                      pac_bayes, entropy, low_pass, fim, shannon_entropy
 from utils.train_utils import AverageMeter, accuracy
 import copy
 import pickle
@@ -133,14 +135,11 @@ def main(args):
         mtr["train_acc"] = model_func.train_acc
         mtr["val_acc"] = model_func.val_acc
 
-    if "eps_flat" in mtr.keys():
-        mtr.pop("eps_flat")
-
-    if "pac_bayes" in mtr.keys():
-        mtr.pop("pac_bayes")
-
     save(mtr)
     logger.info(mtr)
+
+    if 'low_pass' in mtr.keys():
+        mtr.pop('low_pass')
 
     # compute various measures
     if 'shannon_entropy' not in mtr.keys():
@@ -191,6 +190,20 @@ def main(args):
         logger.info(f"time required for low pass:{time.time() - t}")
         save(mtr)
 
+    if 'local_entropy_grad_norm' not in mtr.keys():
+        t = time.time()
+        e = entropy_grad(model_func)
+        mtr["local_entropy_grad_norm"] = e
+        logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
+
+    # if 'entropy_one_direc' not in mtr.keys():
+    #     t = time.time()
+    #     e = entropy_one_direc(model_func)
+    #     mtr["entropy_one_direc"] = e
+    #     logger.info(f"time required for entropy_grad:{time.time() - t}")
+    #     save(mtr)
+
     if 'eig_trace' not in mtr.keys():
         t = time.time()
         e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)
@@ -199,8 +212,8 @@ def main(args):
         with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
             np.save(f, e)
 
-    save(mtr)
     logger.info(mtr)
+    save(mtr)
 
 
 def save(mtr):

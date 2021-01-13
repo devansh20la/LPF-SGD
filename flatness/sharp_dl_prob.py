@@ -5,7 +5,9 @@ from models import resnet18_narrow
 import numpy as np
 import random
 from utils import get_loader
-from flat_meas import fro_norm, eig_trace, eps_flatness, pac_bayes, entropy, low_pass, fim, shannon_entropy
+from flat_meas import fro_norm, entropy_one_direc, \
+                      entropy_grad, eig_trace, eps_flatness, \
+                      pac_bayes, entropy, low_pass, fim, shannon_entropy
 from utils.train_utils import AverageMeter, accuracy
 import copy
 import pickle
@@ -185,13 +187,20 @@ def main(args):
         logger.info(f"time required for low pass:{time.time() - t}")
         save(mtr)
 
-    if 'eig_trace' not in mtr.keys():
+    if 'local_entropy_grad_norm' not in mtr.keys():
         t = time.time()
-        e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)
-        mtr["eig_trace"] = e.sum()
-        logger.info(f"time required for eig:{time.time() - t}")
-        with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
-            np.save(f, e)
+        e = entropy_grad(model_func)
+        mtr["local_entropy_grad_norm"] = e
+        logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
+
+    # if 'eig_trace' not in mtr.keys():
+    #     t = time.time()
+    #     e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)
+    #     mtr["eig_trace"] = e.sum()
+    #     logger.info(f"time required for eig:{time.time() - t}")
+    #     with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
+    #         np.save(f, e)
 
     save(mtr)
     logger.info(mtr)

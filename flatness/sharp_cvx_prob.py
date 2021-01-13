@@ -8,11 +8,10 @@ from tqdm import tqdm, trange
 
 class func(object):
     """docstring for func"""
-    def __init__(self, H, c):
+    def __init__(self, H):
         super(func, self).__init__()
         self.H = H
         self.dim = H.shape[0]
-        self.c = c
 
     def __call__(self, x):
         return x.T @ (self.H @ x) / 2
@@ -48,7 +47,7 @@ def main():
 
         g = torch.from_numpy(V[:, -1]).reshape(-1, 1).type(torch.float32)
         theta_init = torch.randn((d, 1))
-
+        noise = torch.randn((d, 1))*1e-10
         for i in trange(0, d+2, resolution):
 
             if i > 0:
@@ -62,34 +61,33 @@ def main():
             theta_star, _ = torch.solve(torch.zeros((d, 1)), f.H)
 
             t = time.time()
-            all_data[0, i//resolution, seed] = _fro_norm(f, 100)
-            mtr["fro_norm"].update(time.time() - t, 1)
-
-            t = time.time()
-            all_data[1, i//resolution, seed] = _eig_trace(f, 95, use_cuda=False).sum()
-            mtr["eig_spec"].update(time.time() - t, 1)
-
-            t = time.time()
-            all_data[2, i//resolution, seed] = _eps_flatness(f, theta_star, g, 0.01, verbose=False)
+            all_data[0, i//resolution, seed] = _eps_flatness(f, theta_star, g, 0.01, verbose=False)
             mtr["eps_flat"].update(time.time() - t, 1)
 
             t = time.time()
-            all_data[3, i//resolution, seed] = _pac_bayes(f, theta_init, theta_star, 100, 1, 0.01, verbose=False)
+            all_data[1, i//resolution, seed] = _pac_bayes(f, theta_init, theta_star, 100, 1, 0.01, verbose=False)
             mtr["pac_bayes"].update(time.time() - t, 1)
+
+            t = time.time()
+            all_data[2, i//resolution, seed] = _fro_norm(f, 100)
+            mtr["fro_norm"].update(time.time() - t, 1)
+
+            t = time.time()
+            all_data[3, i//resolution, seed] = _fim(f, theta_star+noise)
+            mtr["fim"].update(time.time() - t, 1)
 
             t = time.time()
             all_data[4, i//resolution, seed] = _entropy(f, theta_star, 5e-4, 10000)
             mtr["local_entropy"].update(time.time() - t, 1)
 
             t = time.time()
-            all_data[5, i//resolution, seed] = _low_pass(f, theta_star, mcmc_itr=100, sigma=1)
-            mtr["low_pass"].update(time.time() - t, 1)
+            e = _eig_trace(f, 95, use_cuda=False).sum()
+            all_data[5, i//resolution, seed]  = np.sum(e)
+            mtr["eig_spec"].update(time.time() - t, 1)
 
             t = time.time()
-            all_data[6, i//resolution, seed] = _fim(f, theta_star)
-            mtr["fim"].update(time.time() - t, 1)
-
-            all_data[7, i//resolution, seed] = np.sum(E)
+            all_data[6, i//resolution, seed] = _low_pass(f, theta_star, mcmc_itr=100, sigma=1)
+            mtr["low_pass"].update(time.time() - t, 1)
 
     for x in ["fro_norm", "eig_spec", "eps_flat", "pac_bayes", "local_entropy", "low_pass"]:
         print(f"{x} took: {mtr[x].avg}s")

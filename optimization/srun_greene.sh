@@ -9,7 +9,7 @@
 #SBATCH --gres=gpu:1
 #SBATCH --output=slurm_jobs/%j.out
 
-dtype='cifar10'
+dtype='cifar100'
 mtype='resnet18'
 
 # singularity exec --nv --overlay /scratch/db3484/overlay-7.5GB-300K.ext3:ro \

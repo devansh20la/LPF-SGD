@@ -1,5 +1,4 @@
-from models.conv_net import *
-from models.resnet_narrow import resnet18_narrow
-from models.resnet import ResNet18
-from models.resnet_dd import resnet_dd
-from models.resnet_dd2 import make_resnet18k
+from models.resnet import ResNet18 as cifar_resnet18
+from models.resnet import ResNet50 as cifar_resnet50
+from models.resnet import ResNet101 as cifar_resnet101
+from models.fcnet import LeNet

@@ -1,11 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from models import ResNet18
+from models import cifar_resnet50, cifar_resnet18, cifar_resnet101, LeNet
+from torchvision.models import resnet18 as imagenet_resnet18
+from torchvision.models import resnet50 as imagenet_resnet50
+from torchvision.models import resnet101 as imagenet_resnet101
 import time
 import logging
 import numpy as np
-import glob
 import os
 import random
 from torch.utils.tensorboard import SummaryWriter
@@ -13,22 +15,17 @@ from utils import get_loader
 from utils.train_utils import AverageMeter, accuracy
 from utils import SAM
 import argparse
+import shutil
+import glob
 
 
 def create_path(path):
     if os.path.isdir(path) is False:
         os.makedirs(path)
     else:
-        file = glob.glob(f"{path}/*.log")[0]
-        with open(file, 'r') as f:
-            file = f.read()
-            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file or 'nan' in file:
-                print("exists")
-                quit()
-            else:
-                for file in glob.glob(path+'/*'):
-                    print(f"deleting {file}")
-                    os.remove(file)
+        print("exists")
+        quit()
+        shutil.rmtree(path)
 
 
 def sam_fit(phase, loader, model, criterion, optimizer, args):
@@ -99,7 +96,35 @@ def main(args):
     logger = logging.getLogger('my_log')
 
     dset_loaders = get_loader(args, training=True)
-    model = ResNet18()
+    if args.dtype == 'cifar10' or args.dtype == 'cifar100':
+        if args.mtype == 'resnet50':
+            model = cifar_resnet50(num_classes=args.num_classes)
+        elif args.mtype == 'resnet18':
+            model = cifar_resnet18(num_classes=args.num_classes)
+        elif args.mtype == 'resnet101':
+            model = cifar_resnet101(num_classes=args.num_classes)
+        else:
+            print("define model")
+            quit()
+    elif args.dtype == 'mnist':
+        if args.mtype == 'lenet':
+            model = LeNet(num_classes=args.num_classes)
+        else:
+            print("define model")
+            quit()
+    elif 'imagenet' in args.dtype:
+        if args.mtype == 'resnet50':
+            model = imagenet_resnet50(num_classes=args.num_classes)
+        elif args.mtype == 'resnet18':
+            model = imagenet_resnet18(num_classes=args.num_classes)
+        elif args.mtype == 'resnet101':
+            model = imagenet_resnet101(num_classes=args.num_classes)
+        else:
+            print("define model")
+            quit()
+    else:
+        print("define dataset type")
+
     criterion = nn.CrossEntropyLoss()
 
     if args.use_cuda:
@@ -110,10 +135,22 @@ def main(args):
     optimizer = SAM(model.parameters(), optim.SGD, lr=args.lr, momentum=args.mo, weight_decay=args.wd)
 
     writer = SummaryWriter(log_dir=args.cp_dir)
-    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[150, 200], gamma=0.1)
+    scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.milestones, gamma=0.1)
     torch.save(model.state_dict(), f"{args.cp_dir}/model_init.pth.tar")
 
-    for epoch in range(args.ep):
+    if args.loadckp:
+        state = torch.load(args.cp_dir + "trained_model.pth.tar")
+        model.load_state_dict(state['model'])
+        optimizer.load_state_dict(state['optimizer'])
+        scheduler.load_state_dict(state['scheduler'])
+        best_err = state['best_err']
+        start_epoch = state['epoch'] + 1
+
+    else:
+        start_epoch = 0
+        best_err = float('inf')
+
+    for epoch in range(start_epoch, args.ep):
 
         logger.info('Epoch: [%d | %d]' % (epoch, args.ep))
 
@@ -128,9 +165,27 @@ def main(args):
         writer.add_scalar('Val/Val_Loss', valloss, epoch)
         writer.add_scalar('Val/Val_Err1', valerr1, epoch)
         logger.info('Val_Loss = {0}, Val_Err = {1}'.format(valloss, valerr1))
-
-        torch.save(model.state_dict(), f"{args.cp_dir}/trained_model.pth.tar")
         scheduler.step()
+
+        if valerr1 < best_err:
+            state = {
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'scheduler': scheduler.state_dict(),
+                'epoch': epoch,
+                'best_err': best_err
+            }
+            torch.save(state, f"{args.cp_dir}/best_model.pth.tar")
+            best_err = valerr1
+        if epoch % 100 == 0:
+            state = {
+                'model': model.state_dict(),
+                'optimizer': optimizer.state_dict(),
+                'scheduler': scheduler.state_dict(),
+                'epoch': epoch,
+                'best_err': best_err
+            }
+            torch.save(state, f"{args.cp_dir}/ckp/model_{epoch}.pth.tar")
 
 
 def get_args(*args):
@@ -141,6 +196,7 @@ def get_args(*args):
     parser.add_argument('--print_freq', type=int, default=500)
     parser.add_argument('--dtype', type=str, default="cifar10", help='Data type')
     parser.add_argument('--ep', type=int, default=500, help='Epochs')
+    parser.add_argument('--mtype', default='resnet18')
 
     # params
     parser.add_argument('--ms', type=int, default=0, help='ms')
@@ -148,24 +204,35 @@ def get_args(*args):
     parser.add_argument('--wd', type=float, default=0.0, help='weight decay')
     parser.add_argument('--lr', type=float, default=0.1, help='learning rate')
     parser.add_argument('--bs', type=int, default=128, help='batch size')
+    parser.add_argument('--loadckp', default=False, action='store_true')
 
     args = parser.parse_args(*args)
 
     if args.dtype == 'cifar10':
         args.num_classes = 10
+        args.milestones = [100, 120]
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'cifar100':
         args.num_classes = 100
+        args.milestones = [100, 120]
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'imagenet':
         args.num_classes = 1000
+        args.milestones = [30, 60, 90]
+        args.data_dir = "/imagenet/"
+    elif args.dtype == 'tinyimagenet':
+        args.num_classes = 200
+        args.milestones = [30, 60, 90]
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'mnist':
         args.num_classes = 10
+        args.milestones = [50, 100]
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     else:
         print(f"BAD COMMAND dtype: {args.dtype}")
-
-    args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}/resnet/sam_sgd"
+    args.n = f"{args.dtype}_augment/{args.mtype}/sam_sgd"
 
     return args
 
@@ -182,7 +249,10 @@ if __name__ == '__main__':
 
     # Intialize directory and create path
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
+    files = len(glob.glob(f"{args.cp_dir}/run*"))
+    args.cp_dir = f"{args.cp_dir}/run{files}"
     create_path(args.cp_dir)
+    create_path(args.cp_dir + '/ckp/')
 
     # Logging tools
     logger = logging.getLogger('my_log')

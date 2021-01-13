@@ -21,6 +21,7 @@ def get_args(*args):
     parser.add_argument('--print_freq', type=int, default=500)
     parser.add_argument('--dtype', type=str, default="cifar10", help='Data type')
     parser.add_argument('--ep', type=int, default=500, help='Epochs')
+    parser.add_argument('--loadckp', default=False, action='store_true')
 
     # params
     parser.add_argument('--ms', type=int, default=0, help='ms')

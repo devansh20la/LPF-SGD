@@ -208,7 +208,9 @@ def get_args(*args):
     else:
         print(f"BAD COMMAND dtype: {args.dtype}")
 
+    args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
+
     args.n = f"{args.dtype}/{args.mtype}/entropy_sgd"
 
     return args
@@ -226,10 +228,15 @@ if __name__ == '__main__':
 
     # Intialize directory and create path
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
-    files = len(glob.glob(args.cp_dir + "/run*"))
-    args.cp_dir = args.cp_dir + f"/run{files}"
+    files = len(glob.glob(f"{args.cp_dir}/run*"))
+    args.cp_dir = f"{args.cp_dir}/run{files}"
     create_path(args.cp_dir)
     create_path(args.cp_dir + '/ckp/')
+    for file in glob.glob("**/*.py", recursive=True):
+        if "checkpoints" in file or "data" in file or "results" in file:
+            continue
+        os.makedirs(os.path.dirname(f"{args.cp_dir}/codes/{file}"), exist_ok=True)
+        shutil.copy(file, f"{args.cp_dir}/codes/{file}")
 
     # Logging tools
     logger = logging.getLogger('my_log')

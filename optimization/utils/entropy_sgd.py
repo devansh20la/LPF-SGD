@@ -110,7 +110,7 @@ import numpy as np
 
 class EntropySGD(Optimizer):
 
-    def __init__(self, params, wd=5e-4, lr=0.1, momentum=0, L=5, gamma_0=0.0001, gamma_1=0.001, eta_prime = 0.1, epsilon=0.0001, alpha=0.75, nesterov=False):
+    def __init__(self, params, wd=5e-4, lr=0.1, momentum=0, L=5, gamma_0=0.0001, gamma_1=0.001, eta_prime = 0.1, epsilon=0.00001, alpha=0.75, nesterov=False):
         defaults = dict(lr=lr,  wd=wd, momentum=momentum, L=L, gamma_0=gamma_0, gamma_1=gamma_1, eta_prime=eta_prime, epsilon=epsilon, alpha=alpha, nesterov=nesterov)
         super(EntropySGD, self).__init__(params, defaults)
 

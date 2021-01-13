@@ -16,6 +16,7 @@ from utils.train_utils import AverageMeter, accuracy
 from utils import EntropySGD
 import argparse
 import shutil
+import glob
 
 
 def create_path(path):
@@ -207,9 +208,7 @@ def get_args(*args):
     else:
         print(f"BAD COMMAND dtype: {args.dtype}")
 
-    args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
-
     args.n = f"{args.dtype}/{args.mtype}/entropy_sgd"
 
     return args
@@ -227,6 +226,8 @@ if __name__ == '__main__':
 
     # Intialize directory and create path
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
+    files = len(glob.glob(args.cp_dir + "/run*"))
+    args.cp_dir = args.cp_dir + f"/run{files}"
     create_path(args.cp_dir)
     create_path(args.cp_dir + '/ckp/')
 

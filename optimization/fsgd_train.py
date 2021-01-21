@@ -42,7 +42,6 @@ def fsdg_fit(phase, loader, model, criterion, optimizer, args):
     t = time.time()
 
     for batch_idx, inp_data in enumerate(loader, 1):
-
         inputs, targets = inp_data
 
         if args.use_cuda:
@@ -98,7 +97,7 @@ def fsdg_fit(phase, loader, model, criterion, optimizer, args):
 def main(args):
     logger = logging.getLogger('my_log')
 
-    dset_loaders = get_loader(args, training=True)
+    dset_loaders = get_loader(args, training=True, augment=False)
     if args.dtype == 'cifar10' or args.dtype == 'cifar100':
         if args.mtype == 'resnet50':
             model = cifar_resnet50(num_classes=args.num_classes)
@@ -144,8 +143,6 @@ def main(args):
         model.load_state_dict(state['model'])
         optimizer.load_state_dict(state['optimizer'])
         scheduler.load_state_dict(state['scheduler'])
-        from collections import Counter
-        scheduler.milestones = Counter([150, 185])
         start_epoch = state['epoch'] + 1
         best_err = state['best_err']
     else:
@@ -181,7 +178,7 @@ def main(args):
             torch.save(state, f"{args.cp_dir}/best_model.pth.tar")
             best_err = valerr1
 
-        if epoch % 10 == 0:
+        if epoch % 100 == 0:
             state = {
                 'model': model.state_dict(),
                 'optimizer': optimizer.state_dict(),
@@ -214,16 +211,16 @@ def get_args(*args):
     args = parser.parse_args(*args)
     if args.dtype == 'cifar10':
         args.num_classes = 10
-        args.milestones = [100, 120]
+        args.milestones = [100, 150]
         args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'cifar100':
         args.num_classes = 100
-        args.milestones = [100, 120]
+        args.milestones = [100, 150]
         args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'imagenet':
         args.num_classes = 1000
         args.milestones = [30, 60, 90]
-        args.data_dir = "/imagenet/"
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'tinyimagenet':
         args.num_classes = 200
         args.milestones = [30, 60, 90]
@@ -237,7 +234,7 @@ def get_args(*args):
         quit()
 
     args.use_cuda = torch.cuda.is_available()
-    args.n = f"{args.dtype}_augment/{args.mtype}/fsgd"
+    args.n = f"{args.dtype}_walltime/{args.mtype}/fsgd"
 
     return args
 

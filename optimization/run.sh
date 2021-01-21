@@ -23,8 +23,8 @@ get_device() {
 }
 
 # for mtype in 'resnet18'; do
-# 	for optim in 'sgd' 'sam_sgd' 'fsgd'; do
-# 		for dtype in 'tinyimagenet'; do
+# 	for optim in 'fsgd'; do
+# 		for dtype in 'imagenet'; do
 # 			for ms in {0..4}; do
 # 				get_device
 # 				CUDA_VISIBLE_DEVICES=$((device)) nohup python test.py --dtype=${dtype} --mtype=${mtype} --ms=${ms} --optim=${optim} &
@@ -66,17 +66,17 @@ get_device() {
 # done
 
 
-for ms in 0 1 2 3 4; do
-	get_device
-	CUDA_VISIBLE_DEVICES=$((device)) nohup python entropy_train.py \
-	  	--ep=200 \
-	  	--bs=128 \
-	  	--dtype='cifar10' \
-	  	--mtype='resnet50' \
-	  	--print_freq=100 \
-	  	--mo=0.9 \
-	  	--lr=0.1 \
-	  	--ms=${ms} \
-	  	--wd=5e-4 &
-	sleep 30
-done
+# for ms in 0 1 2 3 4; do
+# 	get_device
+# 	CUDA_VISIBLE_DEVICES=$((device)) nohup python entropy_train.py \
+# 	  	--ep=200 \
+# 	  	--bs=128 \
+# 	  	--dtype='cifar10' \
+# 	  	--mtype='resnet50' \
+# 	  	--print_freq=100 \
+# 	  	--mo=0.9 \
+# 	  	--lr=0.1 \
+# 	  	--ms=${ms} \
+# 	  	--wd=5e-4 &
+# 	sleep 30
+# done

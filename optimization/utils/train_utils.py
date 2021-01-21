@@ -4,13 +4,13 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import CIFAR10, CIFAR100, ImageNet, MNIST, ImageFolder
 
 
-def get_loader(args, training):
+def get_loader(args, training, augment=False):
     """ function to get data loader specific to different datasets
     """
     if args.dtype == 'cifar10':
-        dsets = cifar10_dsets(args, training)
+        dsets = cifar10_dsets(args, training, augment)
     elif args.dtype == 'cifar100':
-        dsets = cifar100_dsets(args, training)
+        dsets = cifar100_dsets(args, training, augment)
     elif args.dtype == 'imagenet':
         dsets = imagenet_dsets(args, training)
     elif args.dtype == 'tinyimagenet':
@@ -21,68 +21,85 @@ def get_loader(args, training):
         dset_loaders = {
             'train': DataLoader(dsets['train'], batch_size=args.bs,
                                 shuffle=True, pin_memory=True,
-                                num_workers=8),
+                                num_workers=4),
             'val': DataLoader(dsets['val'], batch_size=128,
                               shuffle=False, pin_memory=True,
-                              num_workers=8)
+                              num_workers=4)
             }
     else:
         dset_loaders = {
             'test': DataLoader(dsets['test'], batch_size=128,
                                shuffle=False, pin_memory=True,
-                               num_workers=8)
+                               num_workers=4)
         }
     return dset_loaders
 
 
-def cifar10_dsets(args, training):
+def cifar10_dsets(args, training, augment=False):
     """ Function to load cifar10 data"""
+    tf = {}
     normalize = transforms.Normalize((0.4914, 0.4822, 0.4465),
                                      (0.2023, 0.1994, 0.2010))
-    transform = {
-        'train': transforms.Compose([transforms.ToTensor(),
-                                     normalize]),
-        'val': transforms.Compose([transforms.ToTensor(),
-                                   normalize])
-        }
+    if augment:
+        tf['train'] = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize])
+    else:
+        tf['train'] = transforms.Compose([
+            transforms.ToTensor(),
+            normalize])
+    tf['val'] = transforms.Compose([
+        transforms.ToTensor(),
+        normalize])
+
     if training is True:
         dsets = {
             'train': CIFAR10(root=args.data_dir, train=True,
-                             download=False, transform=transform['train']),
+                             download=False, transform=tf['train']),
             'val': CIFAR10(root=args.data_dir, train=False,
-                           download=False, transform=transform['val'])
+                           download=False, transform=tf['val'])
             }
     else:
         dsets = {
             'test': CIFAR10(root=args.data_dir, train=False,
-                            download=False, transform=transform['val'])
+                            download=False, transform=tf['val'])
             }
     return dsets
 
 
-def cifar100_dsets(args, training):
+def cifar100_dsets(args, training, augment=False):
     """ Function to load cifar10 data"""
-    transform = {
-        'train': transforms.Compose([transforms.ToTensor(),
-                                     transforms.Normalize(
-                                    (0.4914, 0.4822, 0.4465),
-                                    (0.2023, 0.1994, 0.2010))]),
-        'val': transforms.Compose([transforms.ToTensor(),
-                                   transforms.Normalize(
-                                    (0.4914, 0.4822, 0.4465),
-                                    (0.2023, 0.1994, 0.2010))])
-        }
+    tf = {}
+    normalize = transforms.Normalize((0.4914, 0.4822, 0.4465),
+                                     (0.2023, 0.1994, 0.2010))
+    if augment:
+        tf['train'] = transforms.Compose([
+            transforms.RandomCrop(32, padding=4),
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize])
+    else:
+        tf['train'] = transforms.Compose([
+            transforms.ToTensor(),
+            normalize])
+
+    tf['val'] = transforms.Compose([
+        transforms.ToTensor(),
+        normalize])
+
     if training is True:
         dsets = {
             'train': CIFAR100(root=args.data_dir, train=True,
-                              download=False, transform=transform['train']),
+                              download=False, transform=tf['train']),
             'val': CIFAR100(root=args.data_dir, train=False,
-                            download=False, transform=transform['val'])
+                            download=False, transform=tf['val'])
             }
     else:
         dsets = {
             'test': CIFAR100(root=args.data_dir, train=False,
-                             download=False, transform=transform['val'])
+                             download=False, transform=tf['val'])
             }
     return dsets
 

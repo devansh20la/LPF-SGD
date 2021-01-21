@@ -25,7 +25,6 @@ def create_path(path):
     else:
         print("exists")
         quit()
-        shutil.rmtree(path)
 
 
 def sam_fit(phase, loader, model, criterion, optimizer, args):
@@ -39,12 +38,10 @@ def sam_fit(phase, loader, model, criterion, optimizer, args):
     else:
         model.eval()
 
-    loss = AverageMeter()
-    err1 = AverageMeter()
+    loss, err1 = AverageMeter(), AverageMeter()
     t = time.time()
 
     for batch_idx, inp_data in enumerate(loader, 1):
-
         inputs, targets = inp_data
 
         if args.use_cuda:
@@ -84,10 +81,10 @@ def sam_fit(phase, loader, model, criterion, optimizer, args):
         err1.update(float(100.0 - batch_err), inputs.size(0))
 
         if batch_idx % args.print_freq == 0:
-            logger.info("Phase:{0} -- Batch_idx:{1}/{2} -- {3:.2f} samples/sec"
-                        "-- Loss:{4:.2f} -- Error1:{5:.2f}".format(
-                          phase, batch_idx, len(loader),
-                          err1.count / (time.time() - t), loss.avg, err1.avg))
+            info = f"Phase:{phase} -- Batch_idx:{batch_idx}/{len(loader)}" \
+                   f"-- {err1.count / (time.time() - t):.2f} samples/sec" \
+                   f"-- Loss:{loss.avg:.2f} -- Error1:{err1.avg:.2f}"
+            logger.info(info)
 
     return loss.avg, err1.avg
 
@@ -95,7 +92,7 @@ def sam_fit(phase, loader, model, criterion, optimizer, args):
 def main(args):
     logger = logging.getLogger('my_log')
 
-    dset_loaders = get_loader(args, training=True)
+    dset_loaders = get_loader(args, training=True, augment=True)
     if args.dtype == 'cifar10' or args.dtype == 'cifar100':
         if args.mtype == 'resnet50':
             model = cifar_resnet50(num_classes=args.num_classes)
@@ -210,16 +207,16 @@ def get_args(*args):
 
     if args.dtype == 'cifar10':
         args.num_classes = 10
-        args.milestones = [100, 120]
+        args.milestones = [100, 150]
         args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'cifar100':
         args.num_classes = 100
-        args.milestones = [100, 120]
+        args.milestones = [100, 150]
         args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'imagenet':
         args.num_classes = 1000
         args.milestones = [30, 60, 90]
-        args.data_dir = "/imagenet/"
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'tinyimagenet':
         args.num_classes = 200
         args.milestones = [30, 60, 90]
@@ -232,7 +229,7 @@ def get_args(*args):
         print(f"BAD COMMAND dtype: {args.dtype}")
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}_augment/{args.mtype}/sam_sgd"
+    args.n = f"{args.dtype}_walltime/{args.mtype}/sam_sgd"
 
     return args
 

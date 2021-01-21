@@ -1,3 +1,8 @@
+# check augmentation
+# check milestones
+# check folder name
+
+
 import argparse
 import torch
 from models import cifar_resnet50, cifar_resnet18, cifar_resnet101, LeNet
@@ -97,7 +102,7 @@ if __name__ == '__main__':
     elif args.dtype == 'imagenet':
         args.num_classes = 1000
         args.milestones = [30, 60, 90]
-        args.data_dir = "/imagenet/"
+        args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'tinyimagenet':
         args.num_classes = 200
         args.milestones = [30, 60, 90]

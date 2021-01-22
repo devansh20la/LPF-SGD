@@ -1,0 +1,38 @@
+I0121 13:42:36.303793 22967718065984 train.py:126] {'logtostderr': False, 'alsologtostderr': False, 'log_dir': '', 'v': 0, 'verbosity': 0, 'logger_levels': {}, 'stderrthreshold': 'fatal', 'showprefixforinfo': True, 'run_with_pdb': False, 'pdb_post_mortem': False, 'pdb': False, 'run_with_profiling': False, 'profile_file': None, 'use_cprofile_for_profiling': True, 'only_check_args': False, 'op_conversion_fallback_to_while_loop': True, 'runtime_oom_exit': True, 'hbm_oom_exit': True, 'test_random_seed': 301, 'test_srcdir': '', 'test_tmpdir': '/state/partition1/job-1398237/absl_testing', 'test_randomize_ordering_seed': '', 'xml_output_file': '', 'cutout_length': 16, 'wikipedia_auto_select_flume_mode': True, 'use_test_set': True, 'randaug_num_layers': 2, 'randaug_magnitude': 9, 'imagenet_mixup_alpha': 0.0, 'from_pretrained_checkpoint': False, 'efficientnet_checkpoint_path': None, 'use_additional_skip_connections': False, 'gradient_clipping': 5.0, 'learning_rate': 0.1, 'use_learning_rate_schedule': True, 'use_std_schedule': True, 'weight_decay': 0.001, 'run_seed': 0, 'use_rmsprop': False, 'lr_schedule': 'cosine', 'std_schedule': 'cosine', 'save_progress_seconds': 3600, 'additional_checkpoints_at_epochs': [], 'also_eval_on_training_set': False, 'compute_top_5_error_rate': False, 'label_smoothing': 0.0, 'ema_decay': 0.0, 'no_weight_decay_on_bn': False, 'evaluate_every': 1, 'ssgd_std': 0.0001, 'sam_rho': -1.0, 'sync_perturbations': False, 'inner_group_size': None, 'dataset': 'cifar10', 'model_name': 'WideResnet28x10', 'num_epochs': 200, 'batch_size': 128, 'output_dir': 'checkpoints/', 'image_level_augmentations': 'basic', 'batch_level_augmentations': 'none', '?': False, 'help': False, 'helpshort': False, 'helpfull': False, 'helpxml': False}
+I0121 13:43:54.751201 22967718065984 train.py:141] Total batch size: 128 (128 x 1 replicas)
+I0121 13:43:54.751938 22967718065984 dataset_info.py:354] Load dataset info from tf_data/cifar10/3.0.2
+I0121 13:43:54.753703 22967718065984 dataset_builder.py:354] Reusing dataset cifar10 (tf_data/cifar10/3.0.2)
+I0121 13:43:54.753797 22967718065984 dataset_builder.py:569] Constructing tf.data.Dataset for split train[0:50000], from tf_data/cifar10/3.0.2
+I0121 13:43:54.794306 22967718065984 dataset_info.py:354] Load dataset info from tf_data/cifar10/3.0.2
+I0121 13:43:54.795291 22967718065984 dataset_builder.py:354] Reusing dataset cifar10 (tf_data/cifar10/3.0.2)
+I0121 13:43:54.795380 22967718065984 dataset_builder.py:569] Constructing tf.data.Dataset for split test, from tf_data/cifar10/3.0.2
+I0121 13:43:54.812216 22967718065984 dataset_source.py:191] Used test set instead of validation set.
+I0121 13:44:02.981076 22967718065984 flax_training.py:866] Starting training from scratch.
+I0121 13:46:07.487651 22967718065984 flax_training.py:810] Whole training step done in 123.20364093780518 (390 steps)
+I0121 13:46:07.494011 22967718065984 flax_training.py:923] Epoch 0 finished in 123.21s.
+I0121 13:46:07.494141 22967718065984 flax_training.py:928] Evaluating at end of epoch 0 (0-indexed)
+I0121 13:46:15.519545 22967718065984 flax_training.py:962] Evaluated model in 8.03.
+I0121 13:47:50.026307 22967718065984 flax_training.py:810] Whole training step done in 94.50637912750244 (390 steps)
+I0121 13:47:50.030253 22967718065984 flax_training.py:923] Epoch 1 finished in 94.51s.
+I0121 13:47:50.030385 22967718065984 flax_training.py:928] Evaluating at end of epoch 1 (0-indexed)
+I0121 13:47:55.042250 22967718065984 flax_training.py:962] Evaluated model in 5.01.
+I0121 13:49:29.452415 22967718065984 flax_training.py:810] Whole training step done in 94.40988326072693 (390 steps)
+I0121 13:49:29.456142 22967718065984 flax_training.py:923] Epoch 2 finished in 94.41s.
+I0121 13:49:29.456266 22967718065984 flax_training.py:928] Evaluating at end of epoch 2 (0-indexed)
+I0121 13:49:34.466803 22967718065984 flax_training.py:962] Evaluated model in 5.01.
+I0121 13:51:08.822973 22967718065984 flax_training.py:810] Whole training step done in 94.35587859153748 (390 steps)
+I0121 13:51:08.830902 22967718065984 flax_training.py:923] Epoch 3 finished in 94.36s.
+I0121 13:51:08.831023 22967718065984 flax_training.py:928] Evaluating at end of epoch 3 (0-indexed)
+I0121 13:51:13.837961 22967718065984 flax_training.py:962] Evaluated model in 5.01.
+I0121 13:52:48.088989 22967718065984 flax_training.py:810] Whole training step done in 94.25063514709473 (390 steps)
+I0121 13:52:48.093988 22967718065984 flax_training.py:923] Epoch 4 finished in 94.26s.
+I0121 13:52:48.094110 22967718065984 flax_training.py:928] Evaluating at end of epoch 4 (0-indexed)
+I0121 13:52:53.107595 22967718065984 flax_training.py:962] Evaluated model in 5.01.
+I0121 13:54:27.300090 22967718065984 flax_training.py:810] Whole training step done in 94.19229316711426 (390 steps)
+I0121 13:54:27.303301 22967718065984 flax_training.py:923] Epoch 5 finished in 94.20s.
+I0121 13:54:27.303421 22967718065984 flax_training.py:928] Evaluating at end of epoch 5 (0-indexed)
+I0121 13:54:32.312790 22967718065984 flax_training.py:962] Evaluated model in 5.01.
+I0121 13:56:06.457941 22967718065984 flax_training.py:810] Whole training step done in 94.1448712348938 (390 steps)
+I0121 13:56:06.461576 22967718065984 flax_training.py:923] Epoch 6 finished in 94.15s.
+I0121 13:56:06.461692 22967718065984 flax_training.py:928] Evaluating at end of epoch 6 (0-indexed)
+I0121 13:56:11.464704 22967718065984 flax_training.py:962] Evaluated model in 5.00.

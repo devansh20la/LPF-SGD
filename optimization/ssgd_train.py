@@ -126,7 +126,8 @@ def main(args):
 
     optimizer = optim.SGD(
         [{'params': model.parameters(), 'lr': args.lr, 'weight_decay': args.wd}] +
-        [{'params': x, 'lr': args.lr} for x in noise], momentum=args.mo)
+        [{'params': x, 'lr': args.lr} for x in noise], momentum=args.mo
+    )
     writer = SummaryWriter(log_dir=args.cp_dir)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.milestones, gamma=0.1)
 

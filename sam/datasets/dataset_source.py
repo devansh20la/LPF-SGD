@@ -234,7 +234,7 @@ class Cifar100(CifarDatasetSource):
                batch_level_augmentations: str, image_size: int = None):
     """See parent class for more information."""
     super().__init__(batch_size, 'cifar100', image_level_augmentations,
-                     batch_level_augmentations, "/home/devansh/gen_v_sharp/sam/tf_data/", image_size)
+                     batch_level_augmentations, "tf_data/", image_size)
     self._num_classes = 100
     self._dataset_name = 'cifar100'
 

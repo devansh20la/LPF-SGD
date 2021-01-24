@@ -30,40 +30,40 @@ do
 done
 
 # regular
-# for ((exp_num = ${a[0]}; exp_num <= ${a[1]}; exp_num++ )); do
-# 	get_device
-# 	CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python grad_norm.py \
-# 		--exp_num=${exp_num} \
-# 		--dtype='cifar10'" > jobs/${exp_num}.out 2>&1 &
-# 	sleep 3
-# 	# python train.py \
-# 	# 	--ep=500 \
-# 	# 	--dtype='cifar10' \
-# 	# 	--print_freq=500 \
-# 	# 	--exp_num=${exp_num} && \
-# done
+for ((exp_num = ${a[0]}; exp_num <= ${a[1]}; exp_num++ )); do
+	get_device
+	CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python sharp_dl_prob.py \
+		--exp_num=${exp_num} \
+		--dtype='cifar10'" > jobs/${exp_num}.out 2>&1 &
+	# sleep 3
+	# python train.py \
+	# 	--ep=500 \
+	# 	--dtype='cifar10' \
+	# 	--print_freq=500 \
+	# 	--exp_num=${exp_num} && \
+done
 
 
 # label noise
-for ln in $(seq ${a[0]} 1 ${a[1]}); do
-# 	get_device
-# 	# CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python train_label_noise.py \
-# 	# 	--dtype='cifar10' \
-# 	# 	--ep=350 \
-# 	# 	--ms=0 \
-# 	# 	--mo=0.9 \
-# 	# 	--wd=5e-4 \
-# 	# 	--lr=0.1 \
-# 	# 	--bs=128 \
-# 	# 	--ln=${ln} \
-# 	# 	--print_freq=50" > jobs/${ln}.out 2>&1 &
-	CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python sharp_label_noise.py \
-		--dtype='cifar10' \
-		--ms=0 \
-		--bs=512 \
-		--ln=${ln}" > jobs/${ln}.out 2>&1 &
-	sleep 10
-done
+# for ln in $(seq ${a[0]} 1 ${a[1]}); do
+# # 	get_device
+# # 	# CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python train_label_noise.py \
+# # 	# 	--dtype='cifar10' \
+# # 	# 	--ep=350 \
+# # 	# 	--ms=0 \
+# # 	# 	--mo=0.9 \
+# # 	# 	--wd=5e-4 \
+# # 	# 	--lr=0.1 \
+# # 	# 	--bs=128 \
+# # 	# 	--ln=${ln} \
+# # 	# 	--print_freq=50" > jobs/${ln}.out 2>&1 &
+# 	CUDA_VISIBLE_DEVICES=$((device)) nohup bash -c "python sharp_label_noise.py \
+# 		--dtype='cifar10' \
+# 		--ms=0 \
+# 		--bs=512 \
+# 		--ln=${ln}" > jobs/${ln}.out 2>&1 &
+# 	sleep 10
+# done
 
 
 # double descent

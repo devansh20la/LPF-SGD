@@ -48,10 +48,6 @@ flags.DEFINE_bool('use_learning_rate_schedule', True,
                   'Whether to use a cosine schedule or keep the learning rate '
                   'constant. Training on cifar should always use the schedule '
                   ', this flag is mostly for testing purpose.')
-flags.DEFINE_bool('use_std_schedule', False,
-                  'Whether to use a cosine schedule or keep the std rate '
-                  'constant. Training on cifar should always use the schedule '
-                  ', this flag is mostly for testing purpose.')
 flags.DEFINE_float('weight_decay', 0.001, 'Weight decay coefficient.')
 flags.DEFINE_integer('run_seed', 0,
                      'Seed to use to generate pseudo random number during '
@@ -60,8 +56,6 @@ flags.DEFINE_integer('run_seed', 0,
 flags.DEFINE_bool('use_rmsprop', False, 'If True, uses RMSprop instead of SGD')
 flags.DEFINE_enum('lr_schedule', 'cosine', ['cosine', 'exponential'],
                   'Learning rate schedule to use.')
-flags.DEFINE_enum('std_schedule', 'cosine', ['cosine'],
-                  'std schedule to use.')
 
 # Additional flags that don't affect the model.
 flags.DEFINE_integer('save_progress_seconds', 3600, 'Save progress every...s')
@@ -86,13 +80,12 @@ flags.DEFINE_integer('evaluate_every', 1,
 # SSGD related flags:
 flags.DEFINE_float('ssgd_std', 0.001,
 									 'std for ssgd')
-flags.DEFINE_integer('ssgd_itr', 1, 'iterations for ssgd')
 
 # SAM related flags.
 flags.DEFINE_float('sam_rho', -1,
                    'Size of the neighborhood considered for the SAM '
                    'perturbation. If set to zero, SAM will not be used.')
-flags.DEFINE_bool('sync_perturbations', False,
+flags.DEFINE_bool('sync_perturbations', True,
                   'If set to True, sync the adversarial perturbation between '
                   'replicas.')
 flags.DEFINE_integer('inner_group_size', None,
@@ -406,18 +399,6 @@ def get_cosine_schedule(num_epochs: int, learning_rate: float,
       warmup_length=0)
   return learning_rate_fn
 
-def get_std_cosine_schedule(num_epochs: int, std: float,
-                            num_training_obs: int,
-                            batch_size: int) -> Callable[[int], float]:
-  
-  steps_per_epoch = int(math.floor(num_training_obs / batch_size))
-  halfwavelength_steps = num_epochs * steps_per_epoch
-
-  def std_rate_fn(step):
-    scale_factor = jnp.cos(step * jnp.pi / halfwavelength_steps - jnp.pi) * 0.5 + 0.5
-    return std * (scale_factor * 10 + 1)
-
-  return std_rate_fn
 
 def get_exponential_schedule(num_epochs: int, learning_rate: float,
                              num_training_obs: int,
@@ -492,7 +473,6 @@ def train_step(
     batch: Dict[str, jnp.ndarray],
     prng_key: jnp.ndarray,
     learning_rate_fn: Callable[[int], float],
-    std_fn: Callable[[int], float],
     l2_reg: float
 ) -> Tuple[flax.optim.Optimizer, flax.nn.Collection, Dict[str, float], float]:
   """Performs one gradient step.
@@ -579,35 +559,16 @@ def train_step(
     """
     # compute gradient on the whole batch
     _, (inner_state, _) = forward_and_loss(model, true_gradient=True)
-    prng_key = jax.random.PRNGKey(FLAGS.run_seed)
-    
-    # implement non-batch-norm update
-    # def non_bn_update(a):
-    #   if a.ndim > 1:
-    #     return a + jax.random.normal(prng_key, shape=a.shape) * (jnp.linalg.norm(a)*std + 1e-16)
-    #   else:
-    #     return a
-    # noised_model = jax.tree_map(non_bn_update, model)
-    
-    # implement filter-wise norm update
-    
     # add noise to all parameters and use norm of entire filter
-    grad = None
-    for _ in range(FLAGS.ssgd_itr):
-      noise = jax.tree_map(lambda a: jax.random.normal(prng_key, shape=a.shape) * (jnp.linalg.norm(a)*std + 1e-16),
-                            model)
-      model = jax.tree_multimap(lambda a, b: a + b, model, noise)
 
-      if grad is None:
-        (_, (_, logits)), grad = jax.value_and_grad(
-          lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(model)
-        grad = jax.tree_map(lambda a: a / 10, grad)
-      else:
-        (_, (_, logits)), temp = jax.value_and_grad(
-          lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(model)
-        grad = jax.tree_multimap(lambda a,b: a + b / 10, grad, temp)
-        del temp
-      model = jax.tree_multimap(lambda a, b: a - b, model, noise)
+    noised_model = jax.tree_map(lambda a: a + jax.random.normal(prng_key, shape=a.shape)*(jnp.linalg.norm(a)*std + 1e-16),
+                                model)
+    (_, (_, logits)), grad = jax.value_and_grad(
+        lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(noised_model)
+    
+    # syncing 
+    if FLAGS.sync_perturbations:
+      grad = jax.lax.pmean(grad, 'batch')
 
     return (inner_state, logits), grad
 
@@ -615,15 +576,13 @@ def train_step(
   rho = FLAGS.sam_rho
 
   if rho > 0:  # SAM loss
-    std = 0.0
     (new_state, logits), grad = get_sam_gradient(optimizer.target, rho)
   elif rho == 0:  # Standard SGD
-    std = 0.0
     (_, (new_state, logits)), grad = jax.value_and_grad(
         forward_and_loss, has_aux=True)(
             optimizer.target)
   elif rho < 0:
-  	std = std_fn(step)
+  	std = FLAGS.ssgd_std
   	(new_state, logits), grad = get_ssgd_gradient(optimizer.target, std)
 
   # We synchronize the gradients across replicas by averaging them.
@@ -646,7 +605,7 @@ def train_step(
              'gradient_norm': gradient_norm,
              'param_norm': param_norm}
 
-  return new_optimizer, new_state, metrics, lr, std
+  return new_optimizer, new_state, metrics, lr
 
 
 # Shorthand notation for typing the function defined above.
@@ -658,8 +617,7 @@ _TrainStep = Callable[[
     Dict[str, jnp.ndarray],  # batch.
     jnp.ndarray  # PRNG key
 ], Tuple[flax.optim.Optimizer, flax.nn.Collection, Dict[str, float],  # metrics.
-         jnp.ndarray,  # learning rate.
-         jnp.ndarray # std
+         jnp.ndarray  # learning rate.
         ]]
 
 
@@ -805,7 +763,7 @@ def train_for_one_epoch(
     # Shard the step PRNG key.
     sharded_keys = common_utils.shard_prng_key(step_key)
 
-    optimizer, state, metrics, lr, std = pmapped_train_step(
+    optimizer, state, metrics, lr = pmapped_train_step(
         optimizer, state, batch, sharded_keys)
     cnt += 1
 
@@ -817,7 +775,6 @@ def train_for_one_epoch(
   # Get training epoch summary for logging.
   train_summary = jax.tree_map(lambda x: x.mean(), train_metrics)
   train_summary['learning_rate'] = lr[0]
-  train_summary['std'] = std[0]
   current_step = int(optimizer.state.step[0])
   info = 'Whole training step done in {} ({} steps)'.format(
       time.time()-start_time, cnt)
@@ -897,23 +854,12 @@ def train(optimizer: flax.optim.Optimizer,
       raise ValueError('Wrong schedule: ' + FLAGS.lr_schedule)
   else:
     learning_rate_fn = lambda step: FLAGS.learning_rate
-  
-  if FLAGS.use_std_schedule:
-    if FLAGS.std_schedule == 'cosine':
-      std_fn = get_std_cosine_schedule(num_epochs, FLAGS.ssgd_std,
-                                       dataset_source.num_training_obs,
-                                       dataset_source.batch_size)
-    else:
-      raise ValueError('Wrong schedule: ' + FLAGS.std_schedule)
-  else:
-    std_fn = lambda step: FLAGS.ssgd_std
 
   # pmap the training and evaluation functions.
   pmapped_train_step = jax.pmap(
       functools.partial(
           train_step,
           learning_rate_fn=learning_rate_fn,
-          std_fn = std_fn,
           l2_reg=FLAGS.weight_decay),
       axis_name='batch',
       donate_argnums=(0, 1))

@@ -194,6 +194,23 @@ def main(args):
         logger.info(f"time required for entropy_grad:{time.time() - t}")
         save(mtr)
 
+    if 'dist_from_init' not in mtr.keys():
+        t = time.time()
+        model_init = resnet18_narrow(args)
+        model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
+        if args.use_cuda:
+            model_init = model_init.cuda()
+        model_init.norm()
+
+        param_norm_sq = 0.0
+        for init, star in zip(model_init.parameters(), model_func.model.parameters()):
+            param_norm_sq += (init.view(-1) - star.view(-1)).norm().item()**2
+        
+        mtr["dist_from_init"] = param_norm_sq
+        logger.info(f"time required for dist_from_init:{time.time() - t}")
+        del model_init
+        save(mtr)
+
     # if 'eig_trace' not in mtr.keys():
     #     t = time.time()
     #     e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)

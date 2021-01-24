@@ -38,7 +38,7 @@ def get_args(*args):
     args = parser.parse_args(*args)
 
     from sklearn.model_selection import ParameterGrid
-    param_grid = {'ms': [1],  # seed
+    param_grid = {'ms': [0],  # seed
                   'mo': [0.0, 0.5, 0.9],  # momentum
                   'width': [4, 6, 8],  # network width
                   'wd': [0.0, 1e-4, 5e-4],  # weight decay

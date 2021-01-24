@@ -92,28 +92,24 @@ def main(_):
   # replicate an experiment several times.
   output_dir_suffix = os.path.join(
     str(FLAGS.dataset),
-    str(FLAGS.model_name))
+    str(FLAGS.model_name),
+    str(FLAGS.image_level_augmentations),
+    str(FLAGS.batch_level_augmentations))
 
   if FLAGS.sam_rho == 0:
     output_dir_suffix = os.path.join(
       output_dir_suffix,
       "sgd",
-      'lr_' + str(FLAGS.learning_rate),
-      'wd_' + str(FLAGS.weight_decay),
       'seed_' + str(FLAGS.run_seed))
   elif FLAGS.sam_rho > 0:
     output_dir_suffix = os.path.join(
       output_dir_suffix,
       "sam",
-      'lr_' + str(FLAGS.learning_rate),
-      'wd_' + str(FLAGS.weight_decay),
       'seed_' + str(FLAGS.run_seed))  
   else:
     output_dir_suffix = os.path.join(
       output_dir_suffix,
       "ssgd",
-      'lr_' + str(FLAGS.learning_rate),
-      'wd_' + str(FLAGS.weight_decay),
       'seed_' + str(FLAGS.run_seed),
       'std_' + str(FLAGS.ssgd_std))
 
@@ -156,8 +152,10 @@ def main(_):
     else:
       image_size = None
     dataset_source = dataset_source_lib.Cifar100(
-        FLAGS.batch_size // jax.host_count(), FLAGS.image_level_augmentations,
-        FLAGS.batch_level_augmentations, image_size=image_size)
+        FLAGS.batch_size // jax.host_count(), 
+        FLAGS.image_level_augmentations,
+        FLAGS.batch_level_augmentations, 
+        image_size=image_size)
 
   elif FLAGS.dataset == 'fashion_mnist':
     dataset_source = dataset_source_lib.FashionMnist(

@@ -6,7 +6,7 @@
 #SBATCH --time=20:00:00
 #SBATCH --mem=16GB
 #SBATCH --job-name=flatness
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:4
 #SBATCH --output=slurm_jobs/%j.out
 
 singularity exec --nv --overlay /scratch/$(whoami)/jax_overlay.ext3:ro \

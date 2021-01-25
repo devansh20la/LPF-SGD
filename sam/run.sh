@@ -36,11 +36,20 @@
 # done
 
 for dtype in 'cifar10' 'cifar100'; do
-	for img_aug in 'basic'; do
-		for img_batch_aug in 'none' 'cutout'; do
-			for std in 0.001; do
-				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
+	for img_aug in 'basic' 'autoaugment'; do
+		if [[ $img_aug == "basic" ]]
+		then
+			for img_batch_aug in 'none' 'cutout'; do
+				for std in 0.0001; do
+					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
+				done
 			done
-		done
+		else
+			for img_batch_aug in 'cutout'; do
+				for std in 0.0001; do
+					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
+				done
+			done
+		fi
 	done
 done

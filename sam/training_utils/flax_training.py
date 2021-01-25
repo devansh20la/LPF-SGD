@@ -48,6 +48,9 @@ flags.DEFINE_bool('use_learning_rate_schedule', True,
                   'Whether to use a cosine schedule or keep the learning rate '
                   'constant. Training on cifar should always use the schedule '
                   ', this flag is mostly for testing purpose.')
+flags.DEFINE_bool('use_std_schedule', True,
+                  'Whether to use a cosine schedule or keep the std rate '
+                  'constant.')
 flags.DEFINE_float('weight_decay', 0.001, 'Weight decay coefficient.')
 flags.DEFINE_integer('run_seed', 0,
                      'Seed to use to generate pseudo random number during '
@@ -56,6 +59,8 @@ flags.DEFINE_integer('run_seed', 0,
 flags.DEFINE_bool('use_rmsprop', False, 'If True, uses RMSprop instead of SGD')
 flags.DEFINE_enum('lr_schedule', 'cosine', ['cosine', 'exponential'],
                   'Learning rate schedule to use.')
+flags.DEFINE_enum('std_schedule', 'exponential', ['cosine', 'exponential'],
+                  'std schedule to use.')
 
 # Additional flags that don't affect the model.
 flags.DEFINE_integer('save_progress_seconds', 3600, 'Save progress every...s')
@@ -399,6 +404,28 @@ def get_cosine_schedule(num_epochs: int, learning_rate: float,
       warmup_length=0)
   return learning_rate_fn
 
+def get_std_cosine_schedule(num_epochs: int, std: float,
+                            num_training_obs: int,
+                            batch_size: int) -> Callable[[int], float]:
+  steps_per_epoch = int(math.floor(num_training_obs / batch_size))
+  halfwavelength_steps = num_epochs * steps_per_epoch
+
+  def std_rate_fn(step):
+    scale_factor = -jnp.cos(step * jnp.pi / halfwavelength_steps) * 0.5 + 0.5
+    return std * (scale_factor * 6 + 1)
+
+  return std_rate_fn
+
+def get_std_exp_schedule(num_epochs: int, std: float,
+                         num_training_obs: int,
+                         batch_size: int) -> Callable[[int], float]:
+  steps_per_epoch = int(math.floor(num_training_obs / batch_size))
+  halfwavelength_steps = num_epochs * steps_per_epoch
+
+  def std_rate_fn(step):
+    scale_factor = (7)**(step/halfwavelength_steps)
+    return std * scale_factor
+  return std_rate_fn
 
 def get_exponential_schedule(num_epochs: int, learning_rate: float,
                              num_training_obs: int,
@@ -473,6 +500,7 @@ def train_step(
     batch: Dict[str, jnp.ndarray],
     prng_key: jnp.ndarray,
     learning_rate_fn: Callable[[int], float],
+    std_rate_fn: Callable[[int], float],
     l2_reg: float
 ) -> Tuple[flax.optim.Optimizer, flax.nn.Collection, Dict[str, float], float]:
   """Performs one gradient step.
@@ -576,13 +604,15 @@ def train_step(
   rho = FLAGS.sam_rho
 
   if rho > 0:  # SAM loss
+    std = 0.0
     (new_state, logits), grad = get_sam_gradient(optimizer.target, rho)
   elif rho == 0:  # Standard SGD
+    std = 0.0
     (_, (new_state, logits)), grad = jax.value_and_grad(
         forward_and_loss, has_aux=True)(
             optimizer.target)
   elif rho < 0:
-  	std = FLAGS.ssgd_std
+  	std = std_rate_fn(step)
   	(new_state, logits), grad = get_ssgd_gradient(optimizer.target, std)
 
   # We synchronize the gradients across replicas by averaging them.
@@ -605,7 +635,7 @@ def train_step(
              'gradient_norm': gradient_norm,
              'param_norm': param_norm}
 
-  return new_optimizer, new_state, metrics, lr
+  return new_optimizer, new_state, metrics, lr, std
 
 
 # Shorthand notation for typing the function defined above.
@@ -617,7 +647,8 @@ _TrainStep = Callable[[
     Dict[str, jnp.ndarray],  # batch.
     jnp.ndarray  # PRNG key
 ], Tuple[flax.optim.Optimizer, flax.nn.Collection, Dict[str, float],  # metrics.
-         jnp.ndarray  # learning rate.
+         jnp.ndarray,  # learning rate.
+         jnp.ndarray  # std rate.
         ]]
 
 
@@ -763,7 +794,7 @@ def train_for_one_epoch(
     # Shard the step PRNG key.
     sharded_keys = common_utils.shard_prng_key(step_key)
 
-    optimizer, state, metrics, lr = pmapped_train_step(
+    optimizer, state, metrics, lr, std = pmapped_train_step(
         optimizer, state, batch, sharded_keys)
     cnt += 1
 
@@ -775,6 +806,7 @@ def train_for_one_epoch(
   # Get training epoch summary for logging.
   train_summary = jax.tree_map(lambda x: x.mean(), train_metrics)
   train_summary['learning_rate'] = lr[0]
+  train_summary['std_rate'] = std[0]
   current_step = int(optimizer.state.step[0])
   info = 'Whole training step done in {} ({} steps)'.format(
       time.time()-start_time, cnt)
@@ -855,11 +887,26 @@ def train(optimizer: flax.optim.Optimizer,
   else:
     learning_rate_fn = lambda step: FLAGS.learning_rate
 
+  if FLAGS.use_std_schedule:
+    if FLAGS.std_schedule == 'cosine':
+      std_rate_fn = get_std_cosine_schedule(num_epochs, FLAGS.ssgd_std,
+                                            dataset_source.num_training_obs,
+                                            dataset_source.batch_size)
+    elif FLAGS.std_schedule == 'exponential':
+      std_rate_fn = get_std_exp_schedule(num_epochs, FLAGS.ssgd_std,
+                                         dataset_source.num_training_obs,
+                                         dataset_source.batch_size)
+    else:
+      raise ValueError('Wrong schedule: ' + FLAGS.std_schedule)
+  else:
+    std_rate_fn = lambda step: FLAGS.ssgd_std
+
   # pmap the training and evaluation functions.
   pmapped_train_step = jax.pmap(
       functools.partial(
           train_step,
           learning_rate_fn=learning_rate_fn,
+          std_rate_fn = std_rate_fn,
           l2_reg=FLAGS.weight_decay),
       axis_name='batch',
       donate_argnums=(0, 1))

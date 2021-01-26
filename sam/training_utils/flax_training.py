@@ -19,6 +19,7 @@ import math
 import os
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
+import numpy as onp
 
 from absl import flags
 from absl import logging
@@ -57,7 +58,7 @@ flags.DEFINE_integer('run_seed', 0,
                      'training (for dropout for instance). Has no influence on '
                      'the dataset shuffling.')
 flags.DEFINE_bool('use_rmsprop', False, 'If True, uses RMSprop instead of SGD')
-flags.DEFINE_enum('lr_schedule', 'cosine', ['cosine', 'exponential'],
+flags.DEFINE_enum('lr_schedule', 'multistep', ['cosine', 'exponential', 'multistep'],
                   'Learning rate schedule to use.')
 flags.DEFINE_enum('std_schedule', 'exponential', ['cosine', 'exponential'],
                   'std schedule to use.')
@@ -449,6 +450,72 @@ def get_exponential_schedule(num_epochs: int, learning_rate: float,
   lamba = - num_epochs / math.log(end_lr_ratio)
   learning_rate_fn = create_exponential_learning_rate_schedule(
       learning_rate, steps_per_epoch // jax.host_count(), lamba)
+  return learning_rate_fn
+
+
+def create_stepped_learning_rate_schedule(base_learning_rate, steps_per_epoch,
+                                          lr_sched_steps, warmup_length=0.0):
+  """Create a stepped learning rate schedule with optional warmup.
+  A stepped learning rate schedule decreases the learning rate
+  by specified amounts at specified epochs. The steps are given as
+  the `lr_sched_steps` parameter. A common ImageNet schedule decays the
+  learning rate by a factor of 0.1 at epochs 30, 60 and 80. This would be
+  specified as:
+  [
+    [30, 0.1],
+    [60, 0.01],
+    [80, 0.001]
+  ]
+  This function also offers a learing rate warmup as per
+  https://arxiv.org/abs/1706.02677, for the purpose of training with large
+  mini-batches.
+  Args:
+    base_learning_rate: the base learning rate
+    steps_per_epoch: the number of iterations per epoch
+    lr_sched_steps: the schedule as a list of steps, each of which is
+      a `[epoch, lr_factor]` pair; the step occurs at epoch `epoch` and
+      sets the learning rate to `base_learning_rage * lr_factor`
+    warmup_length: if > 0, the learning rate will be modulated by a warmup
+      factor that will linearly ramp-up from 0 to 1 over the first
+      `warmup_length` epochs
+  Returns:
+    Function `f(step) -> lr` that computes the learning rate for a given step.
+  """
+  def _piecewise_constant(boundaries, values, t):
+      index = jnp.sum(boundaries < t)
+      return jnp.take(values, index)
+
+  boundaries = [step[0] for step in lr_sched_steps]
+  decays = [step[1] for step in lr_sched_steps]
+  boundaries = onp.array(boundaries) * steps_per_epoch
+  boundaries = onp.round(boundaries).astype(int)
+  values = onp.array([1.0] + decays) * base_learning_rate
+
+  def learning_rate_fn(step):
+    lr = _piecewise_constant(boundaries, values, step)
+    if warmup_length > 0.0:
+      lr = lr * jnp.minimum(1., step / float(warmup_length) / steps_per_epoch)
+    return lr
+  return learning_rate_fn
+
+def get_multistep_schedule(num_epochs: int, learning_rate: float,
+                           num_training_obs: int,
+                           batch_size: int) -> Callable[[int], float]:
+  """Returns an exponential learning rate schedule, without warm up.
+
+  Args:
+    num_epochs: Number of epochs the model will be trained for.
+    learning_rate: Initial learning rate.
+    num_training_obs: Number of training observations.
+    batch_size: Total batch size (number of samples seen per gradient step).
+
+  Returns:
+    A function that takes as input the current step and returns the learning
+      rate to use.
+  """
+  steps_per_epoch = int(math.floor(num_training_obs / batch_size))
+  learning_rate_fn = create_stepped_learning_rate_schedule(learning_rate, steps_per_epoch,
+                          [[100, 0.01], [150, 0.001]], warmup_length=0.0)
   return learning_rate_fn
 
 
@@ -882,6 +949,10 @@ def train(optimizer: flax.optim.Optimizer,
       learning_rate_fn = get_exponential_schedule(
           num_epochs, FLAGS.learning_rate, dataset_source.num_training_obs,
           dataset_source.batch_size)
+    elif FLAGS.lr_schedule == 'multistep':
+      learning_rate_fn = get_multistep_schedule(
+          num_epochs, FLAGS.learning_rate, dataset_source.num_training_obs,
+          dataset_source.batch_size)      
     else:
       raise ValueError('Wrong schedule: ' + FLAGS.lr_schedule)
   else:

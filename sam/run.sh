@@ -25,9 +25,7 @@
 for dtype in 'cifar10'; do
 	for img_aug in 'basic'; do
 		for img_batch_aug in 'none'; do
-			for stdinc in {2..10}; do
-				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${stdinc}
-			done
+			sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${stdinc}
 		done
 	done
 done

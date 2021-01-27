@@ -14,15 +14,14 @@ singularity exec --nv --overlay /scratch/$(whoami)/jax_overlay.ext3:ro \
 	/bin/bash -c "cd /scratch/$(whoami)/gen_v_sharp/sam/; 
 			  	  /ext3/anaconda3/bin/python3 -m train \
 			  	  --dataset ${1} \
-			  	  --model_name lenet \
 			  	  --output_dir checkpoints/ \
 			  	  --image_level_augmentations ${2} \
 			  	  --batch_level_augmentations ${3} \
-			  	  --num_epochs 300 \
+			  	  --num_epochs 200 \
 			  	  --weight_decay 0.0001 \
-			  	  --batch_size 128 \
-			  	  --learning_rate 0.01 \
+			  	  --batch_size 256 \
+			  	  --learning_rate 0.1 \
 			  	  --sam_rho -1 \
 			  	  --ssgd_std 0.0001 \
-			  	  --std_inc ${4}
+			  	  --std_inc 0
 			  	  --run_seed 0"

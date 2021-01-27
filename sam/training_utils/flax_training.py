@@ -655,18 +655,21 @@ def train_step(
     """Returns the gradient of the SSGD loss loss, updated state and logits.
     """
     # compute gradient on the whole batch
-    _, (inner_state, _) = forward_and_loss(model, true_gradient=True)
-    # add noise to all parameters and use norm of entire filter
-
-    noised_model = jax.tree_map(lambda a: a + jax.random.normal(prng_key, shape=a.shape)*(jnp.linalg.norm(a)*std + 1e-16),
-                                model)
-    (_, (_, logits)), grad = jax.value_and_grad(
-        lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(noised_model)
-    
-    # syncing 
+    (_, (inner_state, _)), grad = jax.value_and_grad(
+        lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(model)
     if FLAGS.sync_perturbations:
-      grad = jax.lax.pmean(grad, 'batch')
-
+      if FLAGS.inner_group_size is None:
+        grad = jax.lax.pmean(grad, 'batch')
+      else:
+        grad = jax.lax.pmean(
+            grad, 'batch',
+            axis_index_groups=local_replica_groups(FLAGS.inner_group_size))
+    # add noise to all parameters and use norm of entire filter
+    grad = dual_vector(grad)
+    noised_model = jax.tree_multimap(lambda a, b: a + 0.05*b + jax.random.normal(prng_key, shape=a.shape)*(jnp.linalg.norm(a)*std + 1e-16),
+                                     model, grad)
+    (_, (_, logits)), grad = jax.value_and_grad(
+        forward_and_loss, has_aux=True)(noised_model)
     return (inner_state, logits), grad
 
   lr = learning_rate_fn(step)

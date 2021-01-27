@@ -22,34 +22,31 @@
 # 	done
 # }
 
-# for ms in 0 1 2 3 4; do
-# 	get_device
-# 	CUDA_VISIBLE_DEVICES=$((device)) nohup python3 -m train \
-# 		--dataset cifar10 \
-# 		--model_name WideResnet28x10 \
-# 		--output_dir checkpoints/ \
-# 		--image_level_augmentations basic \
-# 		--num_epochs 200 \
-# 		--ssgd_std 0.001 \
-# 		--run_seed ${ms} & 
-# 	sleep 30
-# done
-
-for dtype in 'cifar10' 'cifar100'; do
-	for img_aug in 'basic' 'autoaugment'; do
-		if [[ $img_aug == "basic" ]]
-		then
-			for img_batch_aug in 'none' 'cutout'; do
-				for std in 0.0001; do
-					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
-				done
+for dtype in 'cifar10'; do
+	for img_aug in 'basic'; do
+		for img_batch_aug in 'none'; do
+			for stdinc in {2..10}; do
+				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${stdinc}
 			done
-		else
-			for img_batch_aug in 'cutout'; do
-				for std in 0.0001; do
-					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
-				done
-			done
-		fi
+		done
 	done
 done
+
+# for dtype in 'cifar10' 'cifar100'; do
+# 	for img_aug in 'basic' 'autoaugment'; do
+# 		if [[ $img_aug == "basic" ]]
+# 		then
+# 			for img_batch_aug in 'none' 'cutout'; do
+# 				for std in 0.0001; do
+# 					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
+# 				done
+# 			done
+# 		else
+# 			for img_batch_aug in 'cutout'; do
+# 				for std in 0.0001; do
+# 					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${std}
+# 				done
+# 			done
+# 		fi
+# 	done
+# done

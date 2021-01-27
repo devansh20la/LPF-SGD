@@ -23,9 +23,10 @@ from jax import random
 from models import pyramidnet
 from models import wide_resnet
 from models import wide_resnet_shakeshake
-
+from models import lenet
 
 _AVAILABLE_MODEL_NAMES = [
+    'lenet',
     'WideResnet28x10',
     'WideResnet28x6_ShakeShake',
     'Pyramid_ShakeDrop',
@@ -85,7 +86,10 @@ def get_model(
   Raises:
     ValueError if the name of the architecture is not recognized.
   """
-  if model_name == 'WideResnet28x10':
+  if model_name == 'lenet':
+    module = lenet.LeNet.partial(
+        num_outputs=num_classes)
+  elif model_name == 'WideResnet28x10':
     module = wide_resnet.WideResnet.partial(
         blocks_per_group=4,
         channel_multiplier=10,

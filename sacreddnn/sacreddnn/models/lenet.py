@@ -157,6 +157,7 @@ class LeNet(nn.Module):
         self.dropout1d = nn.Dropout(p=dropout)
 
     def forward(self, x):
+        # print(type(self.relu), type(self.conv1))
         x = self.relu(self.conv1(x))
         x = self.max_pool(x)
         x = self.relu(self.conv2(x))
@@ -222,3 +223,9 @@ class LeNet_bn(nn.Module):
         x = self.dropout1d(x)      # dropout
         x = self.fc2(x)
         return x
+
+if __name__ == '__main__':
+    m = LeNet(dim=32, in_channels=3, nclasses=10, activation=nn.ReLU(), dropout=0.1)
+    print(m)
+
+

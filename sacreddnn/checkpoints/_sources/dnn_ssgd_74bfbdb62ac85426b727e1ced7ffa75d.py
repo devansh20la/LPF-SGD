@@ -29,17 +29,50 @@ from sacreddnn.parse_args import get_dataset, get_loss_function, get_model_type,
 from sacreddnn.utils import num_params, l2_norm, run_and_config_to_path,\
                             file_observer_dir, to_gpuid_string
 from sacreddnn.activations import replace_relu_
+import math
 
-def train(loss, model, device, train_loader, optimizer):
+def get_std_cosine_schedule(num_epochs: int, std: float,
+                            num_training_obs: int,
+                            batch_size: int):
+  steps_per_epoch = int(math.floor(num_training_obs / batch_size))
+  halfwavelength_steps = num_epochs * steps_per_epoch
+
+  def std_rate_fn(step):
+    scale_factor = -np.cos(step * np.pi / halfwavelength_steps) * 0.5 + 0.5
+    return std * (scale_factor * 9 + 1)
+
+  return std_rate_fn
+
+
+def train(loss, model, device, train_loader, optimizer, std_rate_fn, ep, args):
     model.train()
     t = tqdm(train_loader) # progress bar integration
     train_loss, accuracy, ndata = 0, 0, 0    
-    for data, target in t:
+    for batch_itr, (data, target) in enumerate(t, 1):
+        args.std = std_rate_fn(len(train_loader)*(ep-1) + batch_itr)
         data, target = data.to(device), target.to(device)
         optimizer.zero_grad()
-        output = model(data)
-        l = loss(output, target)
-        l.backward()
+        itr = 1
+        for _ in range(itr):
+            # add noise to theta
+            with torch.no_grad():
+                noise = []
+                for mp in model.parameters():
+                    temp = torch.empty_like(mp, device=mp.data.device)
+                    temp.normal_(0, args.std * mp.view(-1).norm().item() + 1e-16)
+                    noise.append(temp)
+                    mp.data.add_(noise[-1])
+
+            # single sample convolution approximation
+            with torch.set_grad_enabled(True):
+                output = model(data)
+                l = loss(output, target) * 1/itr
+                l.backward()
+
+            # going back to without theta
+            with torch.no_grad():
+                for mp, n in zip(model.parameters(), noise):
+                    mp.data.sub_(n)        
         optimizer.step()
 
         train_loss += l.item()*len(data)
@@ -74,6 +107,7 @@ def initialization_rescaling(model, gain_factor):
 
 @ex.config  # Configuration is defined through local variables.
 def cfg():
+    std = 0.001
     batch_size = 128       # input batch size for training
     epochs = 300           # number of epochs to train
     lr = 0.01               # learning rate
@@ -88,7 +122,7 @@ def cfg():
     last_epoch = 0         # last_epoch for lr_scheduler
     droplr = 10             # learning rate drop factor (use 0 for no-drop)
     drop_mstones = "drop_150_225" # learning rate milestones (epochs at which applying the drop factor)
-    opt = "nesterov"       # optimizer type
+    opt = "momentum"       # optimizer type
     loss = "nll"           # classification loss [nll, mse]
     model = "lenet"        # model type  [lenet, densenet, resnet_cifar, efficientnet-b{1-7}(-pretrained)]  
     dataset = "cifar10"    # dataset  [mnist, fashion, cifar10, cifar100]
@@ -218,6 +252,10 @@ def main(_run, _config):
     ## LOSS FUNCTION
     loss = get_loss_function(args)
 
+    std_rate_fn = get_std_cosine_schedule(args.epochs + 1, args.std,
+                                          len(train_loader.dataset),
+                                          args.batch_size)
+
     ## REPORT CALLBACK
     def report(epoch):
         model.eval()
@@ -225,6 +263,7 @@ def main(_run, _config):
         o = dict() # store observations
         o["epoch"] = epoch
         o["lr"] = optimizer.param_groups[0]["lr"]
+        o["std"] = args.std
         o["train_loss"], o["train_error"] = \
             eval_loss_and_error(loss, model, device, train_loader)
         o["test_loss"], o["test_error"] = \
@@ -240,7 +279,7 @@ def main(_run, _config):
     ## START TRAINING
     report(args.last_epoch)
     for epoch in range(args.last_epoch + 1, args.epochs + 1):
-        train(loss, model, device, train_loader, optimizer)
+        train(loss, model, device, train_loader, optimizer, std_rate_fn, epoch, args)
         # torch.cuda.empty_cache()
         if epoch % args.logtime == 0:
             report(epoch)

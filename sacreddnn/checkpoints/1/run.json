@@ -1,0 +1,103 @@
+{
+  "artifacts": [],
+  "command": "main",
+  "experiment": {
+    "base_dir": "/home/devansh/gen_v_sharp/sacreddnn/scripts",
+    "dependencies": [
+      "numpy==1.16.4",
+      "pandas==0.25.3",
+      "sacred==0.8.1",
+      "torch==1.3.1",
+      "tqdm==4.35.0"
+    ],
+    "mainfile": "dnn_ssgd.py",
+    "name": "DNN",
+    "repositories": [],
+    "sources": [
+      [
+        "dnn_ssgd.py",
+        "_sources/dnn_ssgd_2002cd2a8f8de369fd76aa73d502a0d9.py"
+      ]
+    ]
+  },
+  "fail_trace": [
+    "Traceback (most recent call last):\n",
+    "  File \"/home/devansh/anaconda3/envs/sacred37/lib/python3.7/site-packages/sacred/config/captured_function.py\", line 42, in captured_function\n    result = wrapped(*args, **kwargs)\n",
+    "  File \"scripts/dnn_ssgd.py\", line 256, in main\n    args.batch_size)\n",
+    "  File \"scripts/dnn_ssgd.py\", line 37, in get_std_cosine_schedule\n    steps_per_epoch = int(math.floor(num_training_obs / batch_size))\n",
+    "NameError: name 'math' is not defined\n"
+  ],
+  "heartbeat": "2021-01-26T23:23:02.071628",
+  "host": {
+    "ENV": {},
+    "cpu": "Intel(R) Core(TM) i7-6850K CPU @ 3.60GHz",
+    "gpus": {
+      "driver_version": "450.51.06",
+      "gpus": [
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8118
+        },
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8119
+        },
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8119
+        },
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8119
+        }
+      ]
+    },
+    "hostname": "anna-devbox02",
+    "os": [
+      "Linux",
+      "Linux-4.15.0-132-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.3"
+  },
+  "meta": {
+    "command": "main",
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": "checkpoints/",
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "gpu=0^Codel=lenet",
+        "dataset=cifar10",
+        "preprocess=2"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-01-26T23:22:59.566048",
+  "status": "FAILED",
+  "stop_time": "2021-01-26T23:23:02.074171"
+}

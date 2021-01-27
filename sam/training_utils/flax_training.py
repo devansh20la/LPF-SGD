@@ -58,9 +58,9 @@ flags.DEFINE_integer('run_seed', 0,
                      'training (for dropout for instance). Has no influence on '
                      'the dataset shuffling.')
 flags.DEFINE_bool('use_rmsprop', False, 'If True, uses RMSprop instead of SGD')
-flags.DEFINE_enum('lr_schedule', 'multistep', ['cosine', 'exponential', 'multistep'],
+flags.DEFINE_enum('lr_schedule', 'cosine', ['cosine', 'exponential', 'multistep'],
                   'Learning rate schedule to use.')
-flags.DEFINE_enum('std_schedule', 'exponential', ['cosine', 'exponential'],
+flags.DEFINE_enum('std_schedule', 'cosine', ['cosine', 'exponential'],
                   'std schedule to use.')
 
 # Additional flags that don't affect the model.
@@ -86,7 +86,8 @@ flags.DEFINE_integer('evaluate_every', 1,
 # SSGD related flags:
 flags.DEFINE_float('ssgd_std', 0.001,
 									 'std for ssgd')
-
+flags.DEFINE_integer('std_inc', 9,
+                     'std inc')
 # SAM related flags.
 flags.DEFINE_float('sam_rho', -1,
                    'Size of the neighborhood considered for the SAM '
@@ -407,13 +408,14 @@ def get_cosine_schedule(num_epochs: int, learning_rate: float,
 
 def get_std_cosine_schedule(num_epochs: int, std: float,
                             num_training_obs: int,
-                            batch_size: int) -> Callable[[int], float]:
+                            batch_size: int,
+                            inc: int) -> Callable[[int], float]:
   steps_per_epoch = int(math.floor(num_training_obs / batch_size))
   halfwavelength_steps = num_epochs * steps_per_epoch
 
   def std_rate_fn(step):
     scale_factor = -jnp.cos(step * jnp.pi / halfwavelength_steps) * 0.5 + 0.5
-    return std * (scale_factor * 6 + 1)
+    return std * (scale_factor * inc + 1)
 
   return std_rate_fn
 
@@ -962,7 +964,8 @@ def train(optimizer: flax.optim.Optimizer,
     if FLAGS.std_schedule == 'cosine':
       std_rate_fn = get_std_cosine_schedule(num_epochs, FLAGS.ssgd_std,
                                             dataset_source.num_training_obs,
-                                            dataset_source.batch_size)
+                                            dataset_source.batch_size,
+                                            FLAGS.std_inc - 1)
     elif FLAGS.std_schedule == 'exponential':
       std_rate_fn = get_std_exp_schedule(num_epochs, FLAGS.ssgd_std,
                                          dataset_source.num_training_obs,

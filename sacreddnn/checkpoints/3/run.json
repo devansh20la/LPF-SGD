@@ -1,0 +1,96 @@
+{
+  "artifacts": [],
+  "command": "main",
+  "experiment": {
+    "base_dir": "/home/devansh/gen_v_sharp/sacreddnn/scripts",
+    "dependencies": [
+      "numpy==1.16.4",
+      "pandas==0.25.3",
+      "sacred==0.8.1",
+      "torch==1.3.1",
+      "tqdm==4.35.0"
+    ],
+    "mainfile": "dnn_ssgd.py",
+    "name": "DNN",
+    "repositories": [],
+    "sources": [
+      [
+        "dnn_ssgd.py",
+        "_sources/dnn_ssgd_59d4f871dc78ffd6484143c664ee77a4.py"
+      ]
+    ]
+  },
+  "heartbeat": "2021-01-26T23:26:05.608687",
+  "host": {
+    "ENV": {},
+    "cpu": "Intel(R) Core(TM) i7-6850K CPU @ 3.60GHz",
+    "gpus": {
+      "driver_version": "450.51.06",
+      "gpus": [
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8118
+        },
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8119
+        },
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8119
+        },
+        {
+          "model": "GeForce GTX 1080",
+          "persistence_mode": false,
+          "total_memory": 8119
+        }
+      ]
+    },
+    "hostname": "anna-devbox02",
+    "os": [
+      "Linux",
+      "Linux-4.15.0-132-generic-x86_64-with-debian-buster-sid"
+    ],
+    "python_version": "3.7.3"
+  },
+  "meta": {
+    "command": "main",
+    "options": {
+      "--beat-interval": null,
+      "--capture": null,
+      "--comment": null,
+      "--debug": false,
+      "--enforce_clean": false,
+      "--file_storage": "checkpoints/",
+      "--force": false,
+      "--help": false,
+      "--loglevel": null,
+      "--mongo_db": null,
+      "--name": null,
+      "--pdb": false,
+      "--print-config": false,
+      "--priority": null,
+      "--queue": false,
+      "--s3": null,
+      "--sql": null,
+      "--tiny_db": null,
+      "--unobserved": false,
+      "COMMAND": null,
+      "UPDATE": [
+        "gpu=0^Codel=lenet",
+        "dataset=cifar10",
+        "preprocess=2"
+      ],
+      "help": false,
+      "with": true
+    }
+  },
+  "resources": [],
+  "result": null,
+  "start_time": "2021-01-26T23:24:19.670544",
+  "status": "INTERRUPTED",
+  "stop_time": "2021-01-26T23:26:05.612603"
+}

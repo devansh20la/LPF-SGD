@@ -146,8 +146,8 @@ def initialization_rescaling(model, gain_factor):
 @ex.config  # Configuration is defined through local variables.
 def cfg():
     batch_size = 128       # input batch size for training
-    epochs = 100           # number of epochs to train
-    lr = 0.1               # learning rate
+    epochs = 60           # number of epochs to train
+    lr = 0.05               # learning rate
     weight_decay = 5e-4    # weight decay param (=L2 reg. Good value is 5e-4)
     mom = 0.9              # momentum
     dropout = 0.           # dropout
@@ -158,14 +158,14 @@ def cfg():
     load_model = ""        # load model from path
     last_epoch = 0         # last_epoch for schedulers
     droplr = 5             # learning rate drop factor (use 0 for no-drop)
-    drop_mstones = "drop_150_225" # learning rate milestones (epochs at which applying the drop factor)
+    drop_mstones = "drop_30_45" # learning rate milestones (epochs at which applying the drop factor)
     warmup = False         # GradualWarmupScheduler
     opt = "entropy-sgd"    # optimizer type
     loss = "nll"           # classification loss [nll, mse]
     flood = 0.             # flood value (train loss will not go under this value)
     model = "lenet"        # model type  [lenet, densenet, resnet_cifar, efficientnet-b{1-7}(-pretrained)]  
-    dataset = "fashion"    # dataset  [mnist, fashion, cifar10, cifar100]
-    datapath = '~/data/'   # folder containing the datasets (e.g. mnist will be in "data/MNIST")
+    dataset = "cifar10"    # dataset  [mnist, fashion, cifar10, cifar100]
+    datapath = f'data/{dataset}'   # folder containing the datasets (e.g. mnist will be in "data/MNIST")
     logtime = 2            # report every logtime epochs
     #M = -1                # take only first M training examples 
     #Mtest = -1            # take only first Mtest test examples 
@@ -197,7 +197,7 @@ def cfg():
     mom_sgld = 0.9              # sgld momentum
     
     ## CHANGE ACTIVATIONS
-    activation = None   # Change to e.g. "swish" to replace each relu of the model with a new activation
+    activation = relu   # Change to e.g. "swish" to replace each relu of the model with a new activation
                         # ["swish", "quadu", "mish", ...]
 
 @ex.automain

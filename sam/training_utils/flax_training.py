@@ -84,10 +84,8 @@ flags.DEFINE_integer('evaluate_every', 1,
                      'Evaluate on the test set every n epochs.')
 
 # SSGD related flags:
-flags.DEFINE_float('ssgd_std', 0.001,
-									 'std for ssgd')
-flags.DEFINE_integer('std_inc', 9,
-                     'std inc')
+flags.DEFINE_float('ssgd_std', 0.001,'std for ssgd')
+flags.DEFINE_integer('std_inc', 0, 'std inc')
 # SAM related flags.
 flags.DEFINE_float('sam_rho', -1,
                    'Size of the neighborhood considered for the SAM '
@@ -664,10 +662,8 @@ def train_step(
         grad = jax.lax.pmean(
             grad, 'batch',
             axis_index_groups=local_replica_groups(FLAGS.inner_group_size))
-    # add noise to all parameters and use norm of entire filter
-    grad = dual_vector(grad)
-    noised_model = jax.tree_multimap(lambda a, b: a + 0.05*b + jax.random.normal(prng_key, shape=a.shape)*(jnp.linalg.norm(a)*std + 1e-16),
-                                     model, grad)
+
+    noised_model = jax.tree_multimap(lambda a,b: a + jax.random.normal(prng_key, shape=a.shape)*jnp.abs(b)*std, model, grad)
     (_, (_, logits)), grad = jax.value_and_grad(
         forward_and_loss, has_aux=True)(noised_model)
     return (inner_state, logits), grad

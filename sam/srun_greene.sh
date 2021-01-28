@@ -18,10 +18,10 @@ singularity exec --nv --overlay /scratch/$(whoami)/jax_overlay.ext3:ro \
 			  	  --image_level_augmentations ${2} \
 			  	  --batch_level_augmentations ${3} \
 			  	  --num_epochs 200 \
-			  	  --weight_decay 0.0001 \
+			  	  --weight_decay 0.0005 \
 			  	  --batch_size 256 \
 			  	  --learning_rate 0.1 \
 			  	  --sam_rho -1 \
 			  	  --ssgd_std 0.0001 \
-			  	  --std_inc 0
+			  	  --std_inc ${4}
 			  	  --run_seed 0"

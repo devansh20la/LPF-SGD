@@ -1,14 +1,14 @@
 #!/bin/bash
 
-rsync -avP * db2:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
- 	--exclude='*/results/' --exclude="sync"
+# rsync -avP * db2:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
+#  	--exclude='*/results/' --exclude="sync"
 
 # rsync -avP * db12:gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
 # 	--exclude='*/results/' --exclude="sync"
 
-rsync -avP * greene:/scratch/db3484/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
-	--exclude='*/results/' --exclude="sync"
+# rsync -avP * greene:/scratch/db3484/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
+# 	--exclude='*/results/' --exclude="sync"
 
-rsync -avP * hzgreene:/scratch/hz1922/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
-	--exclude='*/results/' --exclude="sync"
+# rsync -avP * hzgreene:/scratch/hz1922/gen_v_sharp/ --exclude='*/checkpoints/' --exclude='*/data/' --exclude='*/tf_data/' --exclude="*/checkpoints/" \
+# 	--exclude='*/results/' --exclude="sync"
 

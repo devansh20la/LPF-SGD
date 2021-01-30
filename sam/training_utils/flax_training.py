@@ -613,6 +613,10 @@ def train_step(optimizer: flax.optim.Optimizer,
     (_, (_, logits)), grad = jax.value_and_grad(
         lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(noised_model)
     
+    # syncing 
+    if FLAGS.sync_perturbations:
+      grad = jax.lax.pmean(grad, 'batch')
+
     return (inner_state, logits), grad
 
   lr = learning_rate_fn(step)
@@ -801,23 +805,20 @@ def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
     # Load and shard the TF batch.
     batch = tensorflow_to_numpy(batch)
     batch = shard_batch(batch)
-
     # Shard the step PRNG key.
     sharded_keys = common_utils.shard_prng_key(step_key)
 
     grad, state, metrics, lr, std = pmapped_train_step(
         optimizer, state, batch, sharded_keys)
-    
-    if batch_idx % 2 == 0:
-      acc_grad = jax.tree_map(lambda a: a / (batch['image'].shape[1]*2), acc_grad)
-      optimizer = optimizer.apply_gradient(acc_grad, learning_rate=lr[0])
+    if batch_idx % 8 == 0:
+      acc_grad = jax.tree_map(lambda a: a / (batch['image'].shape[1]*8),acc_grad)
+      optimizer = optimizer.apply_gradient(acc_grad, learning_rate=lr)
       acc_grad = None
     else:
       if acc_grad is not None:
-        acc_grad = jax.tree_multimap(lambda a,b: a.mean(0, keepdims=True)*batch['image'].shape[1] + b, grad, acc_grad)
+        acc_grad = jax.tree_multimap(lambda a,b: a*batch['image'].shape[1] + b, grad, acc_grad)
       else:
-        acc_grad = jax.tree_map(lambda a: a.mean(0, keepdims=True)*batch['image'].shape[1], grad)
-
+        acc_grad = jax.tree_map(lambda a: a*batch['image'].shape[1], grad)
     cnt += 1
 
     if moving_averages is not None:
@@ -896,7 +897,7 @@ def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
     if FLAGS.lr_schedule == 'cosine':
       learning_rate_fn = get_cosine_schedule(num_epochs, FLAGS.learning_rate,
                                              dataset_source.num_training_obs,
-                                             dataset_source.batch_size * 2)
+                                             dataset_source.batch_size * 8)
     elif FLAGS.lr_schedule == 'exponential':
       learning_rate_fn = get_exponential_schedule(
           num_epochs, FLAGS.learning_rate, dataset_source.num_training_obs,
@@ -914,7 +915,7 @@ def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
     if FLAGS.std_schedule == 'cosine':
       std_rate_fn = get_std_cosine_schedule(num_epochs, FLAGS.ssgd_std,
                                             dataset_source.num_training_obs,
-                                            dataset_source.batch_size * 2,
+                                            dataset_source.batch_size * 8,
                                             FLAGS.std_inc - 1)
     elif FLAGS.std_schedule == 'exponential':
       std_rate_fn = get_std_exp_schedule(num_epochs, FLAGS.ssgd_std,

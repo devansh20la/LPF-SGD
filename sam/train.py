@@ -15,8 +15,6 @@
 """Trains a model on cifar10, cifar100, SVHN, F-MNIST or imagenet."""
 
 import os
-
-
 from absl import app
 from absl import flags
 from absl import logging
@@ -47,7 +45,7 @@ flags.DEFINE_enum('model_name', 'WideResnet28x10', [
 flags.DEFINE_integer('num_epochs', 200,
                      'How many epochs the model should be trained for.')
 flags.DEFINE_integer(
-    'batch_size', 128, 'Global batch size. If multiple '
+    'batch_size', 256, 'Global batch size. If multiple '
     'replicas are used, each replica will receive '
     'batch_size / num_replicas examples. Batch size should be divisible by '
     'the number of available devices.')

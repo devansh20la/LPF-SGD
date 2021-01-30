@@ -1,19 +1,3 @@
-# Copyright 2020 The Authors.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-"""Functions to train the networks for image classification tasks."""
-
 import functools
 import math
 import os
@@ -37,7 +21,7 @@ from datasets import dataset_source as dataset_source_lib
 from efficientnet import optim as efficientnet_optim
 import tensorflow as tf
 from tensorflow.io import gfile
-
+import copy
 
 FLAGS = flags.FLAGS
 
@@ -84,8 +68,10 @@ flags.DEFINE_integer('evaluate_every', 1,
                      'Evaluate on the test set every n epochs.')
 
 # SSGD related flags:
-flags.DEFINE_float('ssgd_std', 0.001,'std for ssgd')
-flags.DEFINE_integer('std_inc', 0, 'std inc')
+flags.DEFINE_float('ssgd_std', 0.001,
+									 'std for ssgd')
+flags.DEFINE_integer('std_inc', 9,
+                     'std inc')
 # SAM related flags.
 flags.DEFINE_float('sam_rho', -1,
                    'Size of the neighborhood considered for the SAM '
@@ -150,11 +136,8 @@ def local_replica_groups(inner_group_size: int) -> List[List[int]]:
                           for o in range(outer_group_size)]
   return inner_replica_groups
 
-
-def restore_checkpoint(
-    optimizer: flax.optim.Optimizer,
-    model_state: Any,
-    directory: str) -> Tuple[flax.optim.Optimizer, flax.nn.Collection, int]:
+def restore_checkpoint(optimizer: flax.optim.Optimizer, 
+  model_state: Any, directory: str) -> Tuple[flax.optim.Optimizer, flax.nn.Collection, int]:
   """Restores a model and its state from a given checkpoint.
 
   If several checkpoints are saved in the checkpoint directory, the latest one
@@ -175,11 +158,8 @@ def restore_checkpoint(
           restored_state['model_state'],
           restored_state['epoch'])
 
-
 def save_checkpoint(optimizer: flax.optim.Optimizer,
-                    model_state: Any,
-                    directory: str,
-                    epoch: int):
+  model_state: Any,directory: str,epoch: int):
   """Saves a model and its state.
 
   Removes a checkpoint if it already exists for a given epoch. For multi-host
@@ -203,10 +183,8 @@ def save_checkpoint(optimizer: flax.optim.Optimizer,
     gfile.remove(os.path.join(directory, 'checkpoint_' + str(epoch)))
   checkpoints.save_checkpoint(directory, train_state, epoch, keep=2)
 
-
-def create_optimizer(model: flax.nn.Model,
-                     learning_rate: float,
-                     beta: float = 0.9) -> flax.optim.Optimizer:
+def create_optimizer(model: flax.nn.Model, 
+  learning_rate: float, beta: float = 0.9) -> flax.optim.Optimizer:
   """Creates an optimizer.
 
   Learning rate will be ignored when using a learning rate schedule.
@@ -230,10 +208,8 @@ def create_optimizer(model: flax.nn.Model,
   optimizer = optimizer_def.create(model)
   return optimizer
 
-
-def cross_entropy_loss(logits: jnp.ndarray,
-                       one_hot_labels: jnp.ndarray,
-                       mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
+def cross_entropy_loss(logits: jnp.ndarray, 
+  one_hot_labels: jnp.ndarray, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
   """Returns the cross entropy loss between some logits and some labels.
 
   Args:
@@ -256,10 +232,8 @@ def cross_entropy_loss(logits: jnp.ndarray,
   loss = -jnp.sum(one_hot_labels * log_softmax_logits * mask) / mask.sum()
   return jnp.nan_to_num(loss)  # Set to zero if there is no non-masked samples.
 
-
 def error_rate_metric(logits: jnp.ndarray,
-                      one_hot_labels: jnp.ndarray,
-                      mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
+  one_hot_labels: jnp.ndarray,mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
   """Returns the error rate between some predictions and some labels.
 
   Args:
@@ -279,11 +253,8 @@ def error_rate_metric(logits: jnp.ndarray,
   # Set to zero if there is no non-masked samples.
   return jnp.nan_to_num(error_rate)
 
-
 def top_k_error_rate_metric(logits: jnp.ndarray,
-                            one_hot_labels: jnp.ndarray,
-                            k: int = 5,
-                            mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
+  one_hot_labels: jnp.ndarray, k: int = 5, mask: Optional[jnp.ndarray] = None) -> jnp.ndarray:
   """Returns the top-K error rate between some predictions and some labels.
 
   Args:
@@ -306,7 +277,6 @@ def top_k_error_rate_metric(logits: jnp.ndarray,
   # Set to zero if there is no non-masked samples.
   return jnp.nan_to_num(error_rate)
 
-
 def tensorflow_to_numpy(xs):
   """Converts a tree of tensorflow tensors to numpy arrays.
 
@@ -321,7 +291,6 @@ def tensorflow_to_numpy(xs):
   # Use _numpy() for zero-copy conversion between TF and NumPy.
   xs = jax.tree_map(lambda x: x._numpy(), xs)  # pylint: disable=protected-access
   return xs
-
 
 def shard_batch(xs):
   """Shards a batch across all available replicas.
@@ -342,7 +311,6 @@ def shard_batch(xs):
     return x.reshape((local_device_count, -1) + x.shape[1:])
   return jax.tree_map(_prepare, xs)
 
-
 def load_and_shard_tf_batch(xs):
   """Converts to numpy arrays and distribute a tensorflow batch.
 
@@ -356,12 +324,10 @@ def load_and_shard_tf_batch(xs):
   """
   return shard_batch(tensorflow_to_numpy(xs))
 
-
-def create_exponential_learning_rate_schedule(
-    base_learning_rate: float,
-    steps_per_epoch: int,
-    lamba: float,
-    warmup_epochs: int = 0) -> Callable[[int], float]:
+def create_exponential_learning_rate_schedule(base_learning_rate: float,
+  steps_per_epoch: int,
+  lamba: float,
+  warmup_epochs: int = 0) -> Callable[[int], float]:
   """Creates a exponential learning rate schedule with optional warmup.
 
   Args:
@@ -382,10 +348,8 @@ def create_exponential_learning_rate_schedule(
 
   return learning_rate_fn
 
-
-def get_cosine_schedule(num_epochs: int, learning_rate: float,
-                        num_training_obs: int,
-                        batch_size: int) -> Callable[[int], float]:
+def get_cosine_schedule(num_epochs: int, learning_rate: float, num_training_obs: int,
+  batch_size: int) -> Callable[[int], float]:
   """Returns a cosine learning rate schedule, without warm up.
 
   Args:
@@ -405,9 +369,9 @@ def get_cosine_schedule(num_epochs: int, learning_rate: float,
   return learning_rate_fn
 
 def get_std_cosine_schedule(num_epochs: int, std: float,
-                            num_training_obs: int,
-                            batch_size: int,
-                            inc: int) -> Callable[[int], float]:
+  num_training_obs: int,
+  batch_size: int,
+  inc: int) -> Callable[[int], float]:
   steps_per_epoch = int(math.floor(num_training_obs / batch_size))
   halfwavelength_steps = num_epochs * steps_per_epoch
 
@@ -418,8 +382,8 @@ def get_std_cosine_schedule(num_epochs: int, std: float,
   return std_rate_fn
 
 def get_std_exp_schedule(num_epochs: int, std: float,
-                         num_training_obs: int,
-                         batch_size: int) -> Callable[[int], float]:
+  num_training_obs: int,
+  batch_size: int) -> Callable[[int], float]:
   steps_per_epoch = int(math.floor(num_training_obs / batch_size))
   halfwavelength_steps = num_epochs * steps_per_epoch
 
@@ -429,8 +393,8 @@ def get_std_exp_schedule(num_epochs: int, std: float,
   return std_rate_fn
 
 def get_exponential_schedule(num_epochs: int, learning_rate: float,
-                             num_training_obs: int,
-                             batch_size: int) -> Callable[[int], float]:
+  num_training_obs: int,
+  batch_size: int) -> Callable[[int], float]:
   """Returns an exponential learning rate schedule, without warm up.
 
   Args:
@@ -452,9 +416,8 @@ def get_exponential_schedule(num_epochs: int, learning_rate: float,
       learning_rate, steps_per_epoch // jax.host_count(), lamba)
   return learning_rate_fn
 
-
 def create_stepped_learning_rate_schedule(base_learning_rate, steps_per_epoch,
-                                          lr_sched_steps, warmup_length=0.0):
+  lr_sched_steps, warmup_length=0.0):
   """Create a stepped learning rate schedule with optional warmup.
   A stepped learning rate schedule decreases the learning rate
   by specified amounts at specified epochs. The steps are given as
@@ -499,8 +462,7 @@ def create_stepped_learning_rate_schedule(base_learning_rate, steps_per_epoch,
   return learning_rate_fn
 
 def get_multistep_schedule(num_epochs: int, learning_rate: float,
-                           num_training_obs: int,
-                           batch_size: int) -> Callable[[int], float]:
+  num_training_obs: int, batch_size: int) -> Callable[[int], float]:
   """Returns an exponential learning rate schedule, without warm up.
 
   Args:
@@ -518,7 +480,6 @@ def get_multistep_schedule(num_epochs: int, learning_rate: float,
                           [[100, 0.01], [150, 0.001]], warmup_length=0.0)
   return learning_rate_fn
 
-
 def global_norm(updates) -> jnp.ndarray:
   """Returns the l2 norm of the input.
 
@@ -527,7 +488,6 @@ def global_norm(updates) -> jnp.ndarray:
   """
   return jnp.sqrt(
       sum([jnp.sum(jnp.square(x)) for x in jax.tree_leaves(updates)]))
-
 
 def clip_by_global_norm(updates):
   """Clips the gradient by global norm.
@@ -548,7 +508,6 @@ def clip_by_global_norm(updates):
         updates)
   return updates
 
-
 def dual_vector(y: jnp.ndarray) -> jnp.ndarray:
   """Returns the solution of max_x y^T x s.t. ||x||_2 <= 1.
 
@@ -560,16 +519,10 @@ def dual_vector(y: jnp.ndarray) -> jnp.ndarray:
   normalized_gradient = jax.tree_map(lambda x: x / gradient_norm, y)
   return normalized_gradient
 
-
-def train_step(
-    optimizer: flax.optim.Optimizer,
-    state: flax.nn.Collection,
-    batch: Dict[str, jnp.ndarray],
-    prng_key: jnp.ndarray,
-    learning_rate_fn: Callable[[int], float],
-    std_rate_fn: Callable[[int], float],
-    l2_reg: float
-) -> Tuple[flax.optim.Optimizer, flax.nn.Collection, Dict[str, float], float]:
+def train_step(optimizer: flax.optim.Optimizer,
+  state: flax.nn.Collection, batch: Dict[str, jnp.ndarray],
+  prng_key: jnp.ndarray, learning_rate_fn: Callable[[int], float],
+  std_rate_fn: Callable[[int], float], l2_reg: float) -> Tuple[flax.nn.base.Model, flax.nn.Collection, Dict[str, float], float]:
   """Performs one gradient step.
 
   Args:
@@ -653,19 +606,13 @@ def train_step(
     """Returns the gradient of the SSGD loss loss, updated state and logits.
     """
     # compute gradient on the whole batch
-    (_, (inner_state, _)), grad = jax.value_and_grad(
-        lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(model)
-    if FLAGS.sync_perturbations:
-      if FLAGS.inner_group_size is None:
-        grad = jax.lax.pmean(grad, 'batch')
-      else:
-        grad = jax.lax.pmean(
-            grad, 'batch',
-            axis_index_groups=local_replica_groups(FLAGS.inner_group_size))
+    _, (inner_state, _) = forward_and_loss(model, true_gradient=True)
 
-    noised_model = jax.tree_multimap(lambda a,b: a + jax.random.normal(prng_key, shape=a.shape)*jnp.abs(b)*std, model, grad)
+    noised_model = jax.tree_map(lambda a: a + jax.random.normal(prng_key, shape=a.shape)*(jnp.linalg.norm(a)*std + 1e-16),
+                                model)
     (_, (_, logits)), grad = jax.value_and_grad(
-        forward_and_loss, has_aux=True)(noised_model)
+        lambda m: forward_and_loss(m, true_gradient=True), has_aux=True)(noised_model)
+    
     return (inner_state, logits), grad
 
   lr = learning_rate_fn(step)
@@ -688,22 +635,20 @@ def train_step(
 
   # Gradient is clipped after being synchronized.
   grad = clip_by_global_norm(grad)
-  new_optimizer = optimizer.apply_gradient(grad, learning_rate=lr)
 
   # Compute some norms to log on tensorboard.
   gradient_norm = jnp.sqrt(sum(
       [jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(grad)]))
   param_norm = jnp.sqrt(sum(
       [jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(
-          new_optimizer.target)]))
+          optimizer.target)]))
 
   # Compute some metrics to monitor the training.
   metrics = {'train_error_rate': error_rate_metric(logits, batch['label']),
              'train_loss': cross_entropy_loss(logits, batch['label']),
              'gradient_norm': gradient_norm,
              'param_norm': param_norm}
-
-  return new_optimizer, new_state, metrics, lr, std
+  return grad, new_state, metrics, lr, std
 
 
 # Shorthand notation for typing the function defined above.
@@ -714,14 +659,13 @@ _TrainStep = Callable[[
     flax.nn.Collection,  # state.
     Dict[str, jnp.ndarray],  # batch.
     jnp.ndarray  # PRNG key
-], Tuple[flax.optim.Optimizer, flax.nn.Collection, Dict[str, float],  # metrics.
+], Tuple[flax.nn.base.Model, flax.nn.Collection, Dict[str, float],  # metrics.
          jnp.ndarray,  # learning rate.
          jnp.ndarray  # std rate.
         ]]
 
-
 def eval_step(model: flax.nn.Model, state: flax.nn.Collection,
-              batch: Dict[str, jnp.ndarray]) -> Dict[str, float]:
+  batch: Dict[str, jnp.ndarray]) -> Dict[str, float]:
   """Evaluates the model on a single batch.
 
   Args:
@@ -764,16 +708,14 @@ def eval_step(model: flax.nn.Model, state: flax.nn.Collection,
   metrics = jax.lax.psum(metrics, 'batch')
   return metrics
 
-
 # Shorthand notation for typing the function defined above.
 _EvalStep = Callable[
         [flax.nn.Model, flax.nn.Collection, Dict[str, jnp.ndarray]],
         Dict[str, float]]
 
 
-def eval_on_dataset(
-    model: flax.nn.Model, state: flax.nn.Collection, dataset: tf.data.Dataset,
-    pmapped_eval_step: _EvalStep):
+def eval_on_dataset(model: flax.nn.Model, state: flax.nn.Collection, dataset: tf.data.Dataset,
+  pmapped_eval_step: _EvalStep):
   """Evaluates the model on the whole dataset.
 
   Args:
@@ -822,14 +764,12 @@ _EMAUpdateStep = Callable[[
 ], efficientnet_optim.ExponentialMovingAverage]
 
 
-def train_for_one_epoch(
-    dataset_source: dataset_source_lib.DatasetSource,
-    optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
-    prng_key: jnp.ndarray, pmapped_train_step: _TrainStep,
-    pmapped_update_ema: Optional[_EMAUpdateStep],
-    moving_averages: Optional[efficientnet_optim.ExponentialMovingAverage],
-    summary_writer: tensorboard.SummaryWriter
-) -> Tuple[flax.optim.Optimizer, flax.nn.Collection,
+def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
+  optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
+  prng_key: jnp.ndarray, pmapped_train_step: _TrainStep,
+  pmapped_update_ema: Optional[_EMAUpdateStep],
+  moving_averages: Optional[efficientnet_optim.ExponentialMovingAverage],
+  summary_writer: tensorboard.SummaryWriter) -> Tuple[flax.optim.Optimizer, flax.nn.Collection,
            Optional[efficientnet_optim.ExponentialMovingAverage]]:
   """Trains the model for one epoch.
 
@@ -853,17 +793,31 @@ def train_for_one_epoch(
   start_time = time.time()
   cnt = 0
   train_metrics = []
-  for batch in dataset_source.get_train(use_augmentations=True):
+  acc_grad = None
+
+  for batch_idx, batch in enumerate(dataset_source.get_train(use_augmentations=True), 1):
     # Generate a PRNG key that will be rolled into the batch.
     step_key = jax.random.fold_in(prng_key, optimizer.state.step[0])
     # Load and shard the TF batch.
     batch = tensorflow_to_numpy(batch)
     batch = shard_batch(batch)
+
     # Shard the step PRNG key.
     sharded_keys = common_utils.shard_prng_key(step_key)
 
-    optimizer, state, metrics, lr, std = pmapped_train_step(
+    grad, state, metrics, lr, std = pmapped_train_step(
         optimizer, state, batch, sharded_keys)
+    
+    if batch_idx % 2 == 0:
+      acc_grad = jax.tree_map(lambda a: a / (batch['image'].shape[1]*2), acc_grad)
+      optimizer = optimizer.apply_gradient(acc_grad, learning_rate=lr[0])
+      acc_grad = None
+    else:
+      if acc_grad is not None:
+        acc_grad = jax.tree_multimap(lambda a,b: a.mean(0, keepdims=True)*batch['image'].shape[1] + b, grad, acc_grad)
+      else:
+        acc_grad = jax.tree_map(lambda a: a.mean(0, keepdims=True)*batch['image'].shape[1], grad)
+
     cnt += 1
 
     if moving_averages is not None:
@@ -884,11 +838,8 @@ def train_for_one_epoch(
   summary_writer.flush()
   return optimizer, state, moving_averages
 
-
-def train(optimizer: flax.optim.Optimizer,
-          state: flax.nn.Collection,
-          dataset_source: dataset_source_lib.DatasetSource,
-          training_dir: str, num_epochs: int):
+def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection, 
+  dataset_source: dataset_source_lib.DatasetSource, training_dir: str, num_epochs: int):
   """Trains the model.
 
   Args:
@@ -945,7 +896,7 @@ def train(optimizer: flax.optim.Optimizer,
     if FLAGS.lr_schedule == 'cosine':
       learning_rate_fn = get_cosine_schedule(num_epochs, FLAGS.learning_rate,
                                              dataset_source.num_training_obs,
-                                             dataset_source.batch_size)
+                                             dataset_source.batch_size * 2)
     elif FLAGS.lr_schedule == 'exponential':
       learning_rate_fn = get_exponential_schedule(
           num_epochs, FLAGS.learning_rate, dataset_source.num_training_obs,
@@ -963,7 +914,7 @@ def train(optimizer: flax.optim.Optimizer,
     if FLAGS.std_schedule == 'cosine':
       std_rate_fn = get_std_cosine_schedule(num_epochs, FLAGS.ssgd_std,
                                             dataset_source.num_training_obs,
-                                            dataset_source.batch_size,
+                                            dataset_source.batch_size * 2,
                                             FLAGS.std_inc - 1)
     elif FLAGS.std_schedule == 'exponential':
       std_rate_fn = get_std_exp_schedule(num_epochs, FLAGS.ssgd_std,
@@ -981,8 +932,7 @@ def train(optimizer: flax.optim.Optimizer,
           learning_rate_fn=learning_rate_fn,
           std_rate_fn = std_rate_fn,
           l2_reg=FLAGS.weight_decay),
-      axis_name='batch',
-      donate_argnums=(0, 1))
+      axis_name='batch')
   pmapped_eval_step = jax.pmap(eval_step, axis_name='batch')
 
   time_at_last_checkpoint = time.time()

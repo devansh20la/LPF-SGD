@@ -16,6 +16,7 @@ from utils import get_loader
 from utils.train_utils import AverageMeter, accuracy
 import argparse
 import shutil
+import copy
 
 
 def create_path(path):
@@ -27,7 +28,7 @@ def create_path(path):
         shutil.rmtree(path)
 
 
-def fsdg_fit(phase, loader, model, criterion, optimizer, args):
+def fsdg_fit(phase, init_state, loader, model, criterion, optimizer, args):
     """
         Function to forward pass through classification problem
     """
@@ -54,10 +55,10 @@ def fsdg_fit(phase, loader, model, criterion, optimizer, args):
                 # add noise to theta
                 with torch.no_grad():
                     noise = []
-                    for mp in model.parameters():
+                    for mp, init_mp in zip(model.parameters(), init_state):
                         temp = torch.empty_like(mp, device=mp.data.device)
-                        temp.normal_(0, args.std*mp.view(-1).norm().item() + 1e-16)
-                        noise.append(temp)
+                        temp.normal_(0, args.std*mp.view(-1).norm().item())
+                        noise.append(- init_mp - temp)
                         mp.data.add_(noise[-1])
 
                 # single sample convolution approximation
@@ -133,6 +134,7 @@ def main(args):
         criterion = criterion.cuda()
         torch.backends.cudnn.benchmark = True
 
+    init_state = copy.deepcopy([p for p in model.parameters()])
     optimizer = optim.SGD(model.parameters(), lr=args.lr,
                           momentum=args.mo, weight_decay=args.wd)
     writer = SummaryWriter(log_dir=args.cp_dir)
@@ -154,13 +156,13 @@ def main(args):
 
         logger.info('Epoch: [%d | %d]' % (epoch, args.ep))
 
-        trainloss, trainerr1 = fsdg_fit('train', dset_loaders['train'],
+        trainloss, trainerr1 = fsdg_fit('train', init_state, dset_loaders['train'],
                                         model, criterion, optimizer, args)
         logger.info('Train_Loss = {0}, Train_Err = {1}'.format(trainloss, trainerr1))
         writer.add_scalar('Train/Train_Loss', trainloss, epoch)
         writer.add_scalar('Train/Train_Err1', trainerr1, epoch)
 
-        valloss, valerr1 = fsdg_fit('val', dset_loaders['val'], model,
+        valloss, valerr1 = fsdg_fit('val', init_state, dset_loaders['val'], model,
                                     criterion, optimizer, args)
         writer.add_scalar('Val/Val_Loss', valloss, epoch)
         writer.add_scalar('Val/Val_Err1', valerr1, epoch)
@@ -211,11 +213,11 @@ def get_args(*args):
     args = parser.parse_args(*args)
     if args.dtype == 'cifar10':
         args.num_classes = 10
-        args.milestones = [100, 150]
+        args.milestones = [100, 120]
         args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'cifar100':
         args.num_classes = 100
-        args.milestones = [100, 150]
+        args.milestones = [100, 120]
         args.data_dir = f"{args.dir}/data/{args.dtype}"
     elif args.dtype == 'imagenet':
         args.num_classes = 1000

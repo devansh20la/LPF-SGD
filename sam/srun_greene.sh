@@ -3,7 +3,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=20:00:00
+#SBATCH --time=56:00:00
 #SBATCH --mem=16GB
 #SBATCH --job-name=flatness
 #SBATCH --gres=gpu:1
@@ -19,9 +19,9 @@ singularity exec --nv --overlay /scratch/$(whoami)/jax_overlay.ext3:ro \
 			  	  --batch_level_augmentations ${3} \
 			  	  --num_epochs 200 \
 			  	  --weight_decay 0.0005 \
-			  	  --batch_size 256 \
+			  	  --batch_size 32 \
 			  	  --learning_rate 0.1 \
 			  	  --sam_rho -1 \
 			  	  --ssgd_std 0.0001 \
-			  	  --std_inc ${4}
+			  	  --std_inc ${4} \
 			  	  --run_seed 0"

@@ -48,9 +48,11 @@ flags.DEFINE_enum('std_schedule', 'cosine', ['cosine', 'exponential'],
                   'std schedule to use.')
 
 # Additional flags that don't affect the model.
+flags.DEFINE_string('load_checkpoint', None, 'Load checkpoint')
+
 flags.DEFINE_integer('save_progress_seconds', 3600, 'Save progress every...s')
 flags.DEFINE_multi_integer(
-    'additional_checkpoints_at_epochs', [],
+    'additional_checkpoints_at_epochs', [10, 20, 50, 75, 100, 150],
     'Additional epochs when we should save the model for later analysis. '
     'No matter the value of this flag, the most recent version of the model '
     'will be saved regularly to resume training if needed.')
@@ -68,10 +70,11 @@ flags.DEFINE_integer('evaluate_every', 1,
                      'Evaluate on the test set every n epochs.')
 
 # SSGD related flags:
-flags.DEFINE_float('ssgd_std', 0.001,
-									 'std for ssgd')
-flags.DEFINE_integer('std_inc', 9,
-                     'std inc')
+flags.DEFINE_float('ssgd_std', 0.001, 'std for ssgd')
+flags.DEFINE_integer('std_inc', 9, 'std inc')
+flags.DEFINE_integer('M', 8, 'M')
+
+
 # SAM related flags.
 flags.DEFINE_float('sam_rho', -1,
                    'Size of the neighborhood considered for the SAM '
@@ -377,7 +380,7 @@ def get_std_cosine_schedule(num_epochs: int, std: float,
 
   def std_rate_fn(step):
     scale_factor = -jnp.cos(step * jnp.pi / halfwavelength_steps) * 0.5 + 0.5
-    return std * (scale_factor * inc + 1)
+    return std * (scale_factor*inc + 1)
 
   return std_rate_fn
 
@@ -634,24 +637,9 @@ def train_step(optimizer: flax.optim.Optimizer,
   	std = std_rate_fn(step)
   	(new_state, logits), grad = get_ssgd_gradient(optimizer.target, std)
 
-  # We synchronize the gradients across replicas by averaging them.
-  grad = jax.lax.pmean(grad, 'batch')
-
-  # Gradient is clipped after being synchronized.
-  grad = clip_by_global_norm(grad)
-
-  # Compute some norms to log on tensorboard.
-  gradient_norm = jnp.sqrt(sum(
-      [jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(grad)]))
-  param_norm = jnp.sqrt(sum(
-      [jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(
-          optimizer.target)]))
-
   # Compute some metrics to monitor the training.
   metrics = {'train_error_rate': error_rate_metric(logits, batch['label']),
-             'train_loss': cross_entropy_loss(logits, batch['label']),
-             'gradient_norm': gradient_norm,
-             'param_norm': param_norm}
+             'train_loss': cross_entropy_loss(logits, batch['label'])}
   return grad, new_state, metrics, lr, std
 
 
@@ -810,24 +798,46 @@ def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
 
     grad, state, metrics, lr, std = pmapped_train_step(
         optimizer, state, batch, sharded_keys)
-    if batch_idx % 8 == 0:
-      acc_grad = jax.tree_map(lambda a: a / (batch['image'].shape[1]*8),acc_grad)
-      optimizer = optimizer.apply_gradient(acc_grad, learning_rate=lr)
-      acc_grad = None
+
+    if acc_grad is not None:
+      batch_metric.append(metrics)
+      acc_grad = jax.tree_multimap(lambda a,b: a + b, grad, acc_grad)
     else:
-      if acc_grad is not None:
-        acc_grad = jax.tree_multimap(lambda a,b: a*batch['image'].shape[1] + b, grad, acc_grad)
-      else:
-        acc_grad = jax.tree_map(lambda a: a*batch['image'].shape[1], grad)
+      batch_metric = [metrics]
+      acc_grad = jax.tree_map(lambda a: a, grad)
+
+    if batch_idx % (FLAGS.M) == 0:
+      acc_grad = jax.tree_map(lambda a: a / (FLAGS.M), acc_grad)
+
+      # Gradient is clipped after being synchronized.
+      acc_grad = clip_by_global_norm(acc_grad)
+
+      # take gradient step
+      optimizer = optimizer.apply_gradient(acc_grad, learning_rate=lr)
+
+      # Compute some norms to log on tensorboard.
+      batch_metric = common_utils.get_metrics(batch_metric)
+      batch_metric = jax.tree_map(lambda x: x.mean(), batch_metric)
+      batch_metric["gradient_norm"] = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(acc_grad)]))
+      batch_metric["param_norm"] = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(optimizer.target)]))
+      train_metrics.append(batch_metric)
+
+      acc_grad = None
+
     cnt += 1
 
     if moving_averages is not None:
       moving_averages = pmapped_update_ema(optimizer, state, moving_averages)
+  
+  def stack_forest(forest):
+    stack_args = lambda *args: np.stack(args)
+    return jax.tree_multimap(stack_args, *forest)
 
-    train_metrics.append(metrics)
-  train_metrics = common_utils.get_metrics(train_metrics)
+  train_summary = stack_forest(train_metrics)
+  
   # Get training epoch summary for logging.
-  train_summary = jax.tree_map(lambda x: x.mean(), train_metrics)
+  train_summary = jax.tree_map(lambda x: x.mean(), train_summary)
+    
   train_summary['learning_rate'] = lr[0]
   train_summary['std_rate'] = std[0]
   current_step = int(optimizer.state.step[0])
@@ -871,14 +881,14 @@ def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
     pmapped_update_ema = moving_averages = None
 
   # Log initial results:
-  if gfile.exists(checkpoint_dir):
+  if FLAGS.load_checkpoint is not None:
     if FLAGS.ema_decay:
       optimizer, (state,
                   moving_averages), epoch_last_checkpoint = restore_checkpoint(
-                      optimizer, (state, moving_averages), checkpoint_dir)
+                      optimizer, (state, moving_averages), FLAGS.load_checkpoint)
     else:
       optimizer, state, epoch_last_checkpoint = restore_checkpoint(
-          optimizer, state, checkpoint_dir)
+          optimizer, state, FLAGS.load_checkpoint)
     # If last checkpoint was saved at the end of epoch n, then the first
     # training epochs to do when we resume training is n+1.
     initial_epoch = epoch_last_checkpoint + 1
@@ -897,15 +907,15 @@ def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
     if FLAGS.lr_schedule == 'cosine':
       learning_rate_fn = get_cosine_schedule(num_epochs, FLAGS.learning_rate,
                                              dataset_source.num_training_obs,
-                                             dataset_source.batch_size * 8)
+                                             dataset_source.batch_size * FLAGS.M)
     elif FLAGS.lr_schedule == 'exponential':
       learning_rate_fn = get_exponential_schedule(
           num_epochs, FLAGS.learning_rate, dataset_source.num_training_obs,
-          dataset_source.batch_size)
+          dataset_source.batch_size * FLAGS.M)
     elif FLAGS.lr_schedule == 'multistep':
       learning_rate_fn = get_multistep_schedule(
           num_epochs, FLAGS.learning_rate, dataset_source.num_training_obs,
-          dataset_source.batch_size)      
+          dataset_source.batch_size * FLAGS.M)      
     else:
       raise ValueError('Wrong schedule: ' + FLAGS.lr_schedule)
   else:
@@ -915,12 +925,12 @@ def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
     if FLAGS.std_schedule == 'cosine':
       std_rate_fn = get_std_cosine_schedule(num_epochs, FLAGS.ssgd_std,
                                             dataset_source.num_training_obs,
-                                            dataset_source.batch_size * 8,
+                                            dataset_source.batch_size * FLAGS.M,
                                             FLAGS.std_inc - 1)
     elif FLAGS.std_schedule == 'exponential':
       std_rate_fn = get_std_exp_schedule(num_epochs, FLAGS.ssgd_std,
                                          dataset_source.num_training_obs,
-                                         dataset_source.batch_size)
+                                         dataset_source.batch_size * FLAGS.M)
     else:
       raise ValueError('Wrong schedule: ' + FLAGS.std_schedule)
   else:

@@ -33,6 +33,8 @@ import shutil
 
 FLAGS = flags.FLAGS
 
+os.environ["CUDA_VISIBLE_DEVICES"]="3"
+
 flags.DEFINE_enum('dataset', 'cifar10', [
     'cifar10', 'cifar100', 'fashion_mnist', 'svhn', 'imagenet', 'Birdsnap',
     'cifar100_brain', 'Stanford_Cars', 'Flowers', 'FGVC_Aircraft',
@@ -112,7 +114,7 @@ def main(_):
       'std_' + str(FLAGS.ssgd_std))
 
   files = len(glob.glob(f"{os.path.join(FLAGS.output_dir, output_dir_suffix)}/run*"))
-  output_dir = os.path.join(FLAGS.output_dir, output_dir_suffix, f"run{files}")
+  output_dir = os.path.join(FLAGS.output_dir, output_dir_suffix, f"run_{files}")
 
   if not gfile.exists(output_dir):
     gfile.makedirs(output_dir)

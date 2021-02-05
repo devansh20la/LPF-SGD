@@ -28,11 +28,11 @@ for dtype in 'cifar10' 'cifar100'; do
 			if [[ $img_aug == "basic" ]]
 			then
 				for img_batch_aug in 'none' 'cutout'; do
-					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} 7
+					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
 				done
 			else
 				for img_batch_aug in 'cutout'; do
-					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} 7
+					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
 				done
 			fi
 		done

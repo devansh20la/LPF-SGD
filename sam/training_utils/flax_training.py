@@ -635,7 +635,23 @@ def train_step(optimizer: flax.optim.Optimizer,
             optimizer.target)
   elif rho < 0:
   	std = std_rate_fn(step)
-  	(new_state, logits), grad = get_ssgd_gradient(optimizer.target, std)
+    best_sim = float('-inf')
+    best_std = None
+    for std in jnp.linspace(1e-4, 1e-1, 100):
+      (new_state, logits), grad_sam = get_sam_gradient(optimizer.target, rho)
+      (new_state, logits), grad_ssgd = get_ssgd_gradient(optimizer.target, std)
+      ssgd_norm = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(grad_ssgd)]))
+      sam_norm = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(grad_sam)]))
+      dot = 0.0
+      for a,b in jax.tree_leaves(grad_ssgd, grad_sam):
+        dot += jnp.dot(a.reshape(-1), b.reshape(-1))
+
+      dot = dot / (ssgd_norm * sam_norm)
+      logging.info(f"Dot: {dor}, std:{std}")
+      if dot.item() > best_sim:
+        best_sim = dot
+        best_std = std
+
 
   # Compute some metrics to monitor the training.
   metrics = {'train_error_rate': error_rate_metric(logits, batch['label']),

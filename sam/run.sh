@@ -23,16 +23,24 @@
 # }
 
 for dtype in 'cifar10' 'cifar100'; do
+	if [[ $dtype == "cifar10" ]]
+	then	
+		wd=0.0005
+		inc=7
+	else
+		wd=0.001
+		inc=10
+	fi
 	for img_aug in 'basic' 'autoaugment'; do
 		for img_batch_aug in 'none'; do
 			if [[ $img_aug == "basic" ]]
 			then
 				for img_batch_aug in 'none' 'cutout'; do
-					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
+					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${wd} ${inc}
 				done
 			else
 				for img_batch_aug in 'cutout'; do
-					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
+					sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug} ${wd} ${inc}
 				done
 			fi
 		done

@@ -32,15 +32,16 @@ import glob
 import shutil 
 
 FLAGS = flags.FLAGS
+logging.set_stderrthreshold('info')
 
-os.environ["CUDA_VISIBLE_DEVICES"]="3"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
 
 flags.DEFINE_enum('dataset', 'cifar10', [
     'cifar10', 'cifar100', 'fashion_mnist', 'svhn', 'imagenet', 'Birdsnap',
     'cifar100_brain', 'Stanford_Cars', 'Flowers', 'FGVC_Aircraft',
     'Oxford_IIIT_Pets', 'Food_101'
 ], 'Name of the dataset.')
-flags.DEFINE_enum('model_name', 'WideResnet28x10', [
+flags.DEFINE_enum('model_name', 'Pyramid_ShakeDrop', [
     'lenet','WideResnet28x10', 'WideResnet28x6_ShakeShake', 'Pyramid_ShakeDrop',
     'Resnet50', 'Resnet101', 'Resnet152'
 ] + list(efficientnet.MODEL_CONFIGS.keys()), 'Name of the model to train.')

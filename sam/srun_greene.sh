@@ -15,16 +15,32 @@ singularity exec --nv --overlay /scratch/$(whoami)/jax_overlay.ext3:ro \
 		/ext3/anaconda3/bin/python3 -m train \
 		--dataset ${1} \
 		--output_dir checkpoints/ \
+		--model_name WideResnet28x10 \
 		--image_level_augmentations ${2} \
 		--batch_level_augmentations ${3} \
-		--num_epochs 25 \
-		--weight_decay 0.0005 \
-		--batch_size 256 \
+		--num_epochs 200 \
+		--weight_decay ${4} \
+		--batch_size 32 \
 		--learning_rate 0.1 \
 		--sam_rho -1 \
 		--ssgd_std 0.0001 \
-		--std_inc 7 \
+		--std_inc ${5} \
 		--M 8 \
 		--run_seed 0"
 
-# --load_checkpoint /scratch/hz1922/gen_v_sharp/sam/checkpoints/cifar100/WideResnet28x10/basic/none/ssgd/seed_0/std_0.0001/exp_run/checkpoints/"
+python3 -m train \
+		--dataset cifar100 \
+		--output_dir checkpoints/ \
+		--model_name WideResnet28x10 \
+		--image_level_augmentations basic \
+		--batch_level_augmentations none \
+		--num_epochs 200 \
+		--weight_decay 0.001 \
+		--batch_size 32 \
+		--learning_rate 0.1 \
+		--sam_rho -1 \
+		--ssgd_std 0.0001 \
+		--std_inc 1 \
+		--M 8 \
+		--load_checkpoint "checkpoints/cifar100/exp_run/run_0/checkpoints/" \
+		--run_seed 0

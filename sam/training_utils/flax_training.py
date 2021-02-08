@@ -242,7 +242,7 @@ def error_rate_metric(logits: jnp.ndarray,
   Args:
     logits: Output of the model.
     one_hot_labels: One-hot encoded labels. Dimensions should match the logits.
-    mask: Mask to apply to the loss to ign
+    mask: Mask to apply to the loss to ignore some samples (usually, the padding
       of the batch). Array of ones and zeros.
 
   Returns:
@@ -480,7 +480,7 @@ def get_multistep_schedule(num_epochs: int, learning_rate: float,
   """
   steps_per_epoch = int(math.floor(num_training_obs / batch_size))
   learning_rate_fn = create_stepped_learning_rate_schedule(learning_rate, steps_per_epoch,
-                          [[60, 0.02], [120, 0.004], [160, 0.0008]], warmup_length=0.0)
+                          [[100, 0.01], [150, 0.001]], warmup_length=0.0)
   return learning_rate_fn
 
 def global_norm(updates) -> jnp.ndarray:
@@ -525,7 +525,7 @@ def dual_vector(y: jnp.ndarray) -> jnp.ndarray:
 def train_step(optimizer: flax.optim.Optimizer,
   state: flax.nn.Collection, batch: Dict[str, jnp.ndarray],
   prng_key: jnp.ndarray, learning_rate_fn: Callable[[int], float],
-  std_rate_fn: Callable[[int], float], l2_reg: float) -> Tuple[flax.nn.base.Model, flax.nn.Collection, Dict[str, float], float]:
+  std_rate_fn: Callable[[int], float], l2_reg: float) -> Tuple[float, flax.nn.base.Model, flax.nn.Collection, Dict[str, float], float]:
   """Performs one gradient step.
 
   Args:
@@ -625,38 +625,31 @@ def train_step(optimizer: flax.optim.Optimizer,
   lr = learning_rate_fn(step)
   rho = FLAGS.sam_rho
 
-  if rho > 0:
+  if rho > 0:  # SAM loss
     std = 0.0
     (new_state, logits), grad = get_sam_gradient(optimizer.target, rho)
-  elif rho == 0:
+  elif rho == 0:  # Standard SGD
     std = 0.0
     (_, (new_state, logits)), grad = jax.value_and_grad(
         forward_and_loss, has_aux=True)(
             optimizer.target)
   elif rho < 0:
-  	std = std_rate_fn(step)
-    best_sim = float('-inf')
-    best_std = None
-    for std in jnp.linspace(1e-4, 1e-1, 100):
-      (new_state, logits), grad_sam = get_sam_gradient(optimizer.target, rho)
-      (new_state, logits), grad_ssgd = get_ssgd_gradient(optimizer.target, std)
-      ssgd_norm = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(grad_ssgd)]))
-      sam_norm = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(grad_sam)]))
-      dot = 0.0
-      for a,b in jax.tree_leaves(grad_ssgd, grad_sam):
-        dot += jnp.dot(a.reshape(-1), b.reshape(-1))
+    std = std_rate_fn(step)
+    (_, _), sam_grad = get_sam_gradient(optimizer.target, 0.05)
+    (new_state, logits), ssgd_grad = get_ssgd_gradient(optimizer.target, std)
+    
+    dot = 0.0
+    for a, b in zip(jax.tree_leaves(sam_grad), jax.tree_leaves(ssgd_grad)):
+      dot += jnp.dot(a.reshape(-1), b.reshape(-1))
 
-      dot = dot / (ssgd_norm * sam_norm)
-      logging.info(f"Dot: {dor}, std:{std}")
-      if dot.item() > best_sim:
-        best_sim = dot
-        best_std = std
-
+    a_norm = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(ssgd_grad)]))
+    b_norm = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(sam_grad)]))
 
   # Compute some metrics to monitor the training.
   metrics = {'train_error_rate': error_rate_metric(logits, batch['label']),
-             'train_loss': cross_entropy_loss(logits, batch['label'])}
-  return grad, new_state, metrics, lr, std
+             'train_loss': cross_entropy_loss(logits, batch['label']),
+             'dot': dot / (a_norm * b_norm)}
+  return ssgd_grad, new_state, metrics, lr, std
 
 
 # Shorthand notation for typing the function defined above.
@@ -763,7 +756,6 @@ def eval_on_dataset(model: flax.nn.Model, state: flax.nn.Collection, dataset: tf
   # cross entropy.
   eval_summary = jax.tree_map(lambda x: x.sum() / total_num_samples,
                               eval_metrics)
-
   return eval_summary
 
 
@@ -807,11 +799,9 @@ def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
   for batch_idx, batch in enumerate(dataset_source.get_train(use_augmentations=True), 1):
     # Generate a PRNG key that will be rolled into the batch.
     step_key = jax.random.fold_in(prng_key, optimizer.state.step[0])
-    
     # Load and shard the TF batch.
     batch = tensorflow_to_numpy(batch)
     batch = shard_batch(batch)
-    
     # Shard the step PRNG key.
     sharded_keys = common_utils.shard_prng_key(step_key)
 
@@ -820,10 +810,10 @@ def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
 
     if acc_grad is not None:
       batch_metric.append(metrics)
-      acc_grad = jax.tree_multimap(lambda a,b: a[0] + b, grad, acc_grad)
+      acc_grad = jax.tree_multimap(lambda a,b: a + b, grad, acc_grad)
     else:
       batch_metric = [metrics]
-      acc_grad = jax.tree_map(lambda a: a[0], grad)
+      acc_grad = jax.tree_map(lambda a: a, grad)
 
     if batch_idx % (FLAGS.M) == 0:
       acc_grad = jax.tree_map(lambda a: a / (FLAGS.M), acc_grad)
@@ -840,6 +830,7 @@ def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
       batch_metric["gradient_norm"] = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(acc_grad)]))
       batch_metric["param_norm"] = jnp.sqrt(sum([jnp.sum(jnp.square(e)) for e in jax.tree_util.tree_leaves(optimizer.target)]))
       train_metrics.append(batch_metric)
+
       acc_grad = None
 
     cnt += 1
@@ -862,12 +853,9 @@ def train_for_one_epoch(dataset_source: dataset_source_lib.DatasetSource,
   info = 'Whole training step done in {} ({} steps)'.format(
       time.time()-start_time, cnt)
   logging.info(info)
-  info = f"Avgtrain_loss: {train_summary['train_loss']:0.3f}," \
-  f"Avgtrain_err:{train_summary['train_error_rate']:0.3f},"
-  logging.info(info)
-
   for metric_name, metric_value in train_summary.items():
     summary_writer.scalar(metric_name, metric_value, current_step)
+    logging.info(f"{metric_name}: {metric_value:0.4f}")
   summary_writer.flush()
   return optimizer, state, moving_averages
 
@@ -1019,9 +1007,6 @@ def train(optimizer: flax.optim.Optimizer, state: flax.nn.Collection,
           summary_writer.scalar('test_' + metric_name,
                                 metric_value, current_step)
         summary_writer.flush()
-        info = f"Avgtest_loss: {test_metrics['loss']:0.3f}," \
-        f"Avgtest_err:{test_metrics['error_rate']:0.3f},"
-        logging.info(info)
 
         tock = time.time()
         info = 'Evaluated model in {:.2f}.'.format(tock - tick)

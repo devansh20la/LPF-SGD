@@ -38,6 +38,52 @@ class BasicBlock(nn.Module):
         out = F.relu(out)
         return out
 
+    def norm(self):
+        self.params_for_norm = []
+
+        for l in self.children():
+            if isinstance(l, nn.Conv2d):
+                s = l.weight.data.shape
+                p = l.weight.data.view(s[0], -1).norm(dim=1, keepdim=True)
+                l.weight.data.view(s[0], -1).div_(p)
+                self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+            elif isinstance(l, nn.BatchNorm2d):
+                p = l.weight.data.abs().view(-1,1) + l.bias.data.abs().view(-1,1)
+                s = l.weight.data.shape
+                l.weight.data.view(s[0], -1).div_(p)
+                l.bias.data.div_(p.reshape(-1))
+                self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+            elif isinstance(l, nn.Sequential):
+                if len(list(l.children())) > 1:
+                    s = l[0].weight.data.shape
+                    p = l[0].weight.data.view(s[0], -1).norm(dim=1, keepdim=True)
+                    l[0].weight.data.view(s[0], -1).div_(p)
+                    self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+
+                    p = l[1].weight.data.abs().view(-1,1) + l[1].bias.data.abs().view(-1,1)
+                    s = l[1].weight.data.shape
+                    l[1].weight.data.view(s[0], -1).div_(p)
+                    l[1].bias.data.div_(p.reshape(-1))
+                    self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+
+        def new_forward(x):
+            out = F.conv2d(self.conv1(x), self.params_for_norm[0], bias=None, groups= self.params_for_norm[0].shape[0])
+            out = F.conv2d(self.bn1(out), self.params_for_norm[1], bias=None, groups= self.params_for_norm[1].shape[0])
+            out = F.relu(out)
+
+            out = F.conv2d(self.conv2(out), self.params_for_norm[2], bias=None, groups= self.params_for_norm[2].shape[0])
+            out = F.conv2d(self.bn2(out), self.params_for_norm[3], bias=None, groups= self.params_for_norm[3].shape[0])
+
+            r = 4 
+            for l in self.shortcut.children():
+                x = F.conv2d(l(x), self.params_for_norm[r], bias=None, groups= self.params_for_norm[r].shape[0])
+                r+=1
+
+            out += x
+            out = F.relu(out)
+            return out
+
+        self.forward = new_forward
 
 class Bottleneck(nn.Module):
     expansion = 4
@@ -68,6 +114,57 @@ class Bottleneck(nn.Module):
         out += self.shortcut(x)
         out = F.relu(out)
         return out
+
+    def norm(self):
+        self.params_for_norm = []
+
+        for l in self.children():
+            if isinstance(l, nn.Conv2d):
+                s = l.weight.data.shape
+                p = l.weight.data.view(s[0], -1).norm(dim=1, keepdim=True)
+                l.weight.data.view(s[0], -1).div_(p)
+                self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+            elif isinstance(l, nn.BatchNorm2d):
+                p = l.weight.data.abs().view(-1,1) + l.bias.data.abs().view(-1,1)
+                s = l.weight.data.shape
+                l.weight.data.view(s[0], -1).div_(p)
+                l.bias.data.div_(p.reshape(-1))
+                self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+            elif isinstance(l, nn.Sequential):
+                if len(list(l.children())) > 1:
+                    s = l[0].weight.data.shape
+                    p = l[0].weight.data.view(s[0], -1).norm(dim=1, keepdim=True)
+                    l[0].weight.data.view(s[0], -1).div_(p)
+                    self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+
+                    p = l[1].weight.data.abs().view(-1,1) + l[1].bias.data.abs().view(-1,1)
+                    s = l[1].weight.data.shape
+                    l[1].weight.data.view(s[0], -1).div_(p)
+                    l[1].bias.data.div_(p.reshape(-1))
+                    self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+
+        def new_forward(x):
+            out = F.conv2d(self.conv1(x), self.params_for_norm[0], bias=None, groups= self.params_for_norm[0].shape[0])
+            out = F.conv2d(self.bn1(out), self.params_for_norm[1], bias=None, groups= self.params_for_norm[1].shape[0])
+            out = F.relu(out)
+
+            out = F.conv2d(self.conv2(out), self.params_for_norm[2], bias=None, groups= self.params_for_norm[2].shape[0])
+            out = F.conv2d(self.bn2(out), self.params_for_norm[3], bias=None, groups= self.params_for_norm[3].shape[0])
+            out = F.relu(out)
+
+            out = F.conv2d(self.conv3(out), self.params_for_norm[4], bias=None, groups= self.params_for_norm[4].shape[0])
+            out = F.conv2d(self.bn3(out), self.params_for_norm[5], bias=None, groups= self.params_for_norm[5].shape[0])
+
+            r = 6 
+            for l in self.shortcut.children():
+                x = F.conv2d(l(x), self.params_for_norm[r], bias=None, groups= self.params_for_norm[r].shape[0])
+                r+=1
+
+            out += x
+            out = F.relu(out)
+            return out
+
+        self.forward = new_forward
 
 
 class ResNet(nn.Module):
@@ -103,6 +200,39 @@ class ResNet(nn.Module):
         out = self.linear(out)
         return out
 
+    def norm(self):
+        self.params_for_norm = []
+        for l in self.children():
+            if isinstance(l, nn.Conv2d):
+                s = l.weight.data.shape
+                p = l.weight.data.view(s[0], -1).norm(dim=1, keepdim=True)
+                l.weight.data.view(s[0], -1).div_(p)
+                self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+            elif isinstance(l, nn.BatchNorm2d):
+                p = l.weight.data.abs().view(-1,1) + l.bias.data.abs().view(-1,1)
+                s = l.weight.data.shape
+                l.weight.data.view(s[0], -1).div_(p).view(s)
+                l.bias.data.div_(p.reshape(-1))
+                self.params_for_norm.append(p.reshape(-1, 1, 1, 1))
+            elif isinstance(l, nn.Sequential):
+                for l in l.children():
+                    l.norm()
+
+        def new_forward(x):
+            out = F.conv2d(self.conv1(x), self.params_for_norm[0], bias=None, groups= self.params_for_norm[0].shape[0])
+            out = F.conv2d(self.bn1(out), self.params_for_norm[1], bias=None, groups= self.params_for_norm[1].shape[0])
+            out = F.relu(out)
+
+            out = self.layer1(out)
+            out = self.layer2(out)
+            out = self.layer3(out)
+            out = self.layer4(out)
+            out = F.avg_pool2d(out, 4)
+            out = out.view(out.size(0), -1)
+            out = self.linear(out)
+            return out
+
+        self.forward = new_forward
 
 def ResNet18(num_classes=10):
     return ResNet(BasicBlock, [2, 2, 2, 2], num_classes)
@@ -124,8 +254,13 @@ def ResNet152(num_classes=10):
     return ResNet(Bottleneck, [3, 8, 36, 3], num_classes)
 
 
-def test():
-    net = ResNet18()
-    y = net(torch.randn(1, 3, 32, 32))
+if __name__ == "__main__":
+    net = ResNet50()
+    net.eval()
+    # net.load_state_dict(torch.load("../checkpoints/cifar10/resnet50/sgd/run_ms_0/best_model.pth.tar")['model'])
 
-# test()
+    x = torch.randn(1, 3, 32, 32)
+    print(net(x))
+    net.norm()
+    print(net(x))
+

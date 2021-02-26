@@ -36,10 +36,8 @@ _AVAILABLE_MODEL_NAMES = [
 ]
 
 
-def create_image_model(
-    prng_key: jnp.ndarray, batch_size: int, image_size: int,
-    module: flax.nn.Module,
-    num_channels: int = 3) -> Tuple[flax.nn.Model, flax.nn.Collection]:
+def create_image_model(prng_key: jnp.ndarray, batch_size: int, image_size: int,
+    module: flax.nn.Module, num_channels: int = 3) -> Tuple[flax.nn.Model, flax.nn.Collection]:
   """Instantiates a FLAX model and its state.
 
   Args:

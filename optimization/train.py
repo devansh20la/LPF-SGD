@@ -127,7 +127,6 @@ def main(args):
         scheduler.load_state_dict(state['scheduler'])
         best_err = state['best_err']
         start_epoch = state['epoch'] + 1
-
     else:
         start_epoch = 0
         best_err = float('inf')

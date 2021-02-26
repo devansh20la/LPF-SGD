@@ -49,34 +49,38 @@ get_device() {
 # 	done
 # done
 
-
-# for ms in 0 1 2 3 4; do
-# 	get_device
-# 	CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
-# 	  	--ep=100 \
-# 	  	--bs=128 \
-# 	  	--dtype='cifar10' \
-# 	  	--mtype='resnet18' \
-# 	  	--print_freq=100 \
-# 	  	--mo=0.9 \
-# 	  	--lr=0.1 \
-# 	  	--ms=${ms} \
-# 	  	--wd=1e-4 &
-# 	sleep 30
+############## compute sharpness #######################
+# for ms in 0; do
+# 	for mtype in 'lenet'; do
+# 		for dtype in 'mnist'; do
+# 			get_device
+# 			CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dl.py \
+# 				--dtype=${dtype} \
+# 				--mtype=${mtype} \
+# 				--cp_dir=checkpoints/mnist/lenet/sgd/run_ms_${ms} > jobs/sgd.out 2>&1 &
+# 			sleep 10
+# 			get_device
+# 			CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dl.py \
+# 				--dtype=${dtype} \
+# 				--mtype=${mtype} \
+# 				--cp_dir=checkpoints/mnist/lenet/sam_sgd/run_ms_${ms} > jobs/sam.out 2>&1 &
+# 			sleep 10
+# 			get_device
+# 			CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dl.py \
+# 				--dtype=${dtype} \
+# 				--mtype=${mtype} \
+# 				--cp_dir=checkpoints/mnist/lenet/fsgd/run_ms_${ms} > jobs/fsgd.out 2>&1 &
+# 			sleep 10
+# 		done
+# 	done
 # done
 
-
 # for ms in 0 1 2 3 4; do
-# 	get_device
-# 	CUDA_VISIBLE_DEVICES=$((device)) nohup python entropy_train.py \
-# 	  	--ep=200 \
-# 	  	--bs=128 \
-# 	  	--dtype='cifar10' \
-# 	  	--mtype='resnet50' \
-# 	  	--print_freq=100 \
-# 	  	--mo=0.9 \
-# 	  	--lr=0.1 \
-# 	  	--ms=${ms} \
-# 	  	--wd=5e-4 &
-# 	sleep 30
+# 	for dtype in 'cifar10' 'cifar100'; do
+# 		for mtype in 'resnet50' 'resnet101'; do
+# 			for opt in 'sgd' 'sam_sgd' 'fsgd'; do
+# 				sbatch srun_greene.sh ${mtype} ${dtype} ${ms} ${opt}
+# 			done
+# 		done
+# 	done
 # done

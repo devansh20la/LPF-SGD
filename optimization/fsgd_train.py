@@ -57,7 +57,7 @@ def fsdg_fit(phase, init_state, loader, model, criterion, optimizer, args):
                     noise = []
                     for mp, init_mp in zip(model.parameters(), init_state):
                         temp = torch.empty_like(mp, device=mp.data.device)
-                        temp.normal_(0, args.std*mp.view(-1).norm().item())
+                        temp.normal_(0, args.std*(mp.view(-1).norm().item() + 1e-16))
                         noise.append(- init_mp - temp)
                         mp.data.add_(noise[-1])
 
@@ -72,6 +72,7 @@ def fsdg_fit(phase, init_state, loader, model, criterion, optimizer, args):
                 with torch.no_grad():
                     for mp, n in zip(model.parameters(), noise):
                         mp.data.sub_(n)
+                        mp.grad.add_((-(n**2 + 1) / mp.view(-1).norm().item())*batch_loss.item())
 
             optimizer.step()
 

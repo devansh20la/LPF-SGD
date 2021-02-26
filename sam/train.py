@@ -128,13 +128,8 @@ def main(_):
       os.makedirs(os.path.dirname(f"{output_dir}/codes/{file}"), exist_ok=True)
       shutil.copy(file, f"{output_dir}/codes/{file}")
 
-
-  num_devices = jax.local_device_count() * jax.host_count()
-  assert FLAGS.batch_size % num_devices == 0
-  local_batch_size = FLAGS.batch_size // num_devices
-  info = 'Total batch size: {} ({} x {} replicas)'.format(
-      FLAGS.batch_size, local_batch_size, num_devices)
-
+  local_batch_size = FLAGS.batch_size
+  info = 'Total batch size: {}'.format(FLAGS.batch_size)
   logging.info(info)
 
   if FLAGS.dataset == 'cifar10':
@@ -143,7 +138,7 @@ def main(_):
     else:
       image_size = None
     dataset_source = dataset_source_lib.Cifar10(
-        FLAGS.batch_size // jax.host_count(),
+        FLAGS.batch_size,
         FLAGS.image_level_augmentations,
         FLAGS.batch_level_augmentations,
         image_size=image_size)
@@ -153,7 +148,7 @@ def main(_):
     else:
       image_size = None
     dataset_source = dataset_source_lib.Cifar100(
-        FLAGS.batch_size // jax.host_count(), 
+        FLAGS.batch_size, 
         FLAGS.image_level_augmentations,
         FLAGS.batch_level_augmentations, 
         image_size=image_size)
@@ -169,7 +164,7 @@ def main(_):
   elif FLAGS.dataset == 'imagenet':
     imagenet_image_size = efficientnet.name_to_image_size(FLAGS.model_name)
     dataset_source = dataset_source_imagenet.Imagenet(
-        FLAGS.batch_size // jax.host_count(), imagenet_image_size,
+        FLAGS.batch_size, imagenet_image_size,
         FLAGS.image_level_augmentations)
   else:
     raise ValueError('Dataset not recognized.')
@@ -198,13 +193,11 @@ def main(_):
     model, state = load_model.get_model(FLAGS.model_name,
                                         local_batch_size, image_size,
                                         num_classes, num_channels)
-
   # Learning rate will be overwritten by the lr schedule, we set it to zero.
   optimizer = flax_training.create_optimizer(model, 0.0)
 
   flax_training.train(optimizer, state, dataset_source, output_dir,
                       FLAGS.num_epochs)
-
 
 if __name__ == '__main__':
   tf.enable_v2_behavior()

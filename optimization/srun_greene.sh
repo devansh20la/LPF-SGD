@@ -76,14 +76,14 @@
 
 
 ########################## computing sharpness ########################################
-singularity exec --nv --overlay /scratch/$(whoami)/overlay-7.5GB-300K.ext3:ro \
-	/scratch/work/public/singularity/cuda10.2-cudnn8-devel-ubuntu18.04.sif \
-	/bin/bash -c "cd /scratch/$(whoami)/gen_v_sharp/optimization/; 
-		/ext3/anaconda3/bin/python sharp_dl.py \
-		--bs=1024 \
-		--dtype=${2} \
-		--mtype=${1} \
-		--cp_dir=/scratch/db3484/gen_v_sharp/optimization/checkpoints/${2}/${1}/${4}/run_ms_${3}/run0/"
+# singularity exec --nv --overlay /scratch/$(whoami)/overlay-7.5GB-300K.ext3:ro \
+# 	/scratch/work/public/singularity/cuda10.2-cudnn8-devel-ubuntu18.04.sif \
+# 	/bin/bash -c "cd /scratch/$(whoami)/gen_v_sharp/optimization/; 
+# 		/ext3/anaconda3/bin/python sharp_dl.py \
+# 		--bs=1024 \
+# 		--dtype=${2} \
+# 		--mtype=${1} \
+# 		--cp_dir=/scratch/db3484/gen_v_sharp/optimization/checkpoints/${2}/${1}/${4}/run_ms_${3}/run0/"
 
 
 

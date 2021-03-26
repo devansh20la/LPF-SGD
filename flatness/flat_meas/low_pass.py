@@ -18,7 +18,6 @@ def load_weights(model, params):
     for mp, p in zip(model.parameters(), params):
         mp.data = copy.deepcopy(p.data)
 
-
 def low_pass(model_func, sigma, mcmc_itr):
     out = 0.0
     with torch.no_grad():
@@ -29,6 +28,20 @@ def low_pass(model_func, sigma, mcmc_itr):
             mp.data.copy_(p + torch.zeros(p.shape, device=mp.data.device).normal_(0, sigma))
 
         out += model_func.compute_loss()[0]
+
+    load_weights(model_func.model, theta_star)
+    return out/mcmc_itr
+
+def low_pass2(model_func, sigma, mcmc_itr):
+    out = 0.0
+    with torch.no_grad():
+        theta_star = [p.data.clone() for p in model_func.model.parameters()]
+    for i in tqdm(range(mcmc_itr)):
+
+        for mp, p in zip(model_func.model.parameters(), theta_star):
+            mp.data.copy_(p + torch.zeros(p.shape, device=mp.data.device).normal_(0, sigma))
+
+        out += np.abs(model_func.compute_loss()[0] - model_func.train_loss) / model_func.train_loss
 
     load_weights(model_func.model, theta_star)
     return out/mcmc_itr

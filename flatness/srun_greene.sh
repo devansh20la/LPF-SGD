@@ -3,31 +3,31 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4
-#SBATCH --time=40:00:00
+#SBATCH --time=20:00:00
 #SBATCH --mem=16GB
 #SBATCH --job-name=flatness
 #SBATCH --gres=gpu:1
 #SBATCH --output=slurm_jobs/%a.out
 
 # Regular
-# singularity exec --nv --overlay /scratch/db3484/overlay-7.5GB-300K.ext3:ro \
-# 	/scratch/work/public/singularity/cuda10.2-cudnn8-devel-ubuntu18.04.sif \
-# 	/bin/bash -c "cd /scratch/db3484/gen_v_sharp/flatness/; 
-# 	/ext3/anaconda3/bin/python grad_norm.py \
-# 		      	  		--exp_num=$SLURM_ARRAY_TASK_ID \
-# 		      	  		--dtype='cifar10'"
-# 			  	  # /ext3/anaconda3/bin/python train.py \
-# 					  	# --ep=500 \
-# 					  	# --print_freq=500 \
-# 					  	# --dtype='cifar10' \
-# 					  	# --exp_num=$SLURM_ARRAY_TASK_ID; \
-
-# data noise
-let SLURM_ARRAY_TASK_ID=$(($SLURM_ARRAY_TASK_ID*2))
 singularity exec --nv --overlay /scratch/db3484/overlay-7.5GB-300K.ext3:ro \
 	/scratch/work/public/singularity/cuda10.2-cudnn8-devel-ubuntu18.04.sif \
-	/bin/bash -c "cd /scratch/db3484/gen_v_sharp/flatness/; \
-	/ext3/anaconda3/bin/python sharp_data_noise.py --dtype='cifar10_noisy' --ms=0 --bs=512 --dn=$SLURM_ARRAY_TASK_ID"
+	/bin/bash -c "cd /scratch/db3484/gen_v_sharp/flatness/; 
+	/ext3/anaconda3/bin/python sharp_dl_prob.py \
+		--exp_num=$SLURM_ARRAY_TASK_ID \
+		--dtype='cifar10'"
+			  	  # /ext3/anaconda3/bin/python train.py \
+					  	# --ep=500 \
+					  	# --print_freq=500 \
+					  	# --dtype='cifar10' \
+					  	# --exp_num=$SLURM_ARRAY_TASK_ID; \
+
+# data noise
+# let SLURM_ARRAY_TASK_ID=$(($SLURM_ARRAY_TASK_ID*2))
+# singularity exec --nv --overlay /scratch/db3484/overlay-7.5GB-300K.ext3:ro \
+# 	/scratch/work/public/singularity/cuda10.2-cudnn8-devel-ubuntu18.04.sif \
+# 	/bin/bash -c "cd /scratch/db3484/gen_v_sharp/flatness/; \
+# 	/ext3/anaconda3/bin/python sharp_data_noise.py --dtype='cifar10_noisy' --ms=0 --bs=512 --dn=$SLURM_ARRAY_TASK_ID"
 
 		# /ext3/anaconda3/bin/python train_data_noise.py \
 		# 	--dtype='cifar10_noisy' \

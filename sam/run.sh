@@ -23,16 +23,24 @@
 # }
 
 for dtype in 'cifar10' 'cifar100'; do
-	for img_aug in 'basic' 'autoaugment'; do
-		if [[ $img_aug == "basic" ]]
-		then
-			for img_batch_aug in 'none' 'cutout'; do
-				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
-			done
-		else
-			for img_batch_aug in 'cutout'; do
-				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
-			done
-		fi
+	for img_aug in 'basic'; do
+		for seed in 0 1 2 3 4; do
+			sbatch srun_greene.sh ${dtype} ${img_aug} ${seed}
+		done
 	done
 done
+
+# for dtype in 'cifar10' 'cifar100'; do
+# 	for img_aug in 'basic' 'autoaugment'; do
+# 		if [[ $img_aug == "basic" ]]
+# 		then
+# 			for img_batch_aug in 'none' 'cutout'; do
+# 				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
+# 			done
+# 		else
+# 			for img_batch_aug in 'cutout'; do
+# 				sbatch srun_greene.sh ${dtype} ${img_aug} ${img_batch_aug}
+# 			done
+# 		fi
+# 	done
+# done

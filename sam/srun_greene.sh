@@ -11,18 +11,16 @@
 
 singularity exec --nv --overlay /scratch/$(whoami)/jax_overlay.ext3:ro \
 	/scratch/work/public/singularity/cuda11.0-cudnn8-devel-ubuntu18.04.sif \
-	/bin/bash -c "cd /scratch/$(whoami)/gen_v_sharp/sam/; 
+	/bin/bash -c "cd /scratch/$(whoami)/gen_v_sharp/jax/sam/; 
 		/ext3/anaconda3/bin/python3 -m train \
 		--dataset ${1} \
 		--output_dir checkpoints/ \
 		--model_name WideResnet28x10 \
 		--image_level_augmentations ${2} \
-		--batch_level_augmentations ${3} \
+		--batch_level_augmentations cutout \
 		--num_epochs 200 \
 		--weight_decay 0.0005 \
 		--batch_size 256 \
 		--learning_rate 0.1 \
-		--sam_rho 0 \
-		--ssgd_std 0.0 \
-		--M 1 \
-		--run_seed 42"
+		--sam_rho 0.0 \
+		--run_seed ${3}"

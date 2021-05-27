@@ -78,37 +78,33 @@ We can train lpfsgd models as:
 ```
 
 ### Hyper-parameters
-\begin{table}[H]
-    \setlength\tabcolsep{2.2pt}
-    \renewcommand{\arraystretch}{1.3}
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|}
-        \hline
-        Dataset & Model & BS & WD & MO & Epochs  & LR (Policy)\\ \hline
-        MNIST & LeNet & 128 & $5e^{-4}$ & 0.9 & 150 & 0.01 (x 0.1 at ep=[50,100])  \\ 
-        CIFAR10, 100 & ResNet-18, 50, 101 & 128 & $5e^{-4}$ & 0.9 & 200 & 0.1 (x 0.1 at ep=[100,120])  \\ 
-        TinyImageNet & ResNet-18 & 128 & $1e^{-4}$ & 0.9 & 100 & 0.1 (x 0.1 at ep=[30, 60, 90]) \\ 
-        ImageNet & ResNet-18 & 256 & $1e^{-4}$ & 0.9 & 100 & 0.1 (x 0.1 at ep=[30, 60, 90]) \\ \hline
-    \end{tabular}
-    \caption{Training hyper-parameters common to all optimizers utilized for Table~\ref{tab:exp1}.Here BS: batch size, WD: weight decay, MO: SGD momentum.}
-    \label{tab:exp1_1}
-\end{table}
+<div id="tab:exp1_1">
 
-\begin{table}[H]
-    \setlength\tabcolsep{2.2pt}
-    \renewcommand{\arraystretch}{1.3}
-    \centering
-    \begin{tabular}{|c|c|c|}
-        \hline
-        Dataset & Model & $\rho$ (policy) \\ \hline
-        MNIST & LeNet & 0.05 (fixed) \\
-        CIFAR & ResNet18,50,101 & 0.05 (fixed) \\ 
-        TinyImageNet & ResNet18 & 0.05 (fixed) \\ 
-        ImageNet & ResNet18 & 0.05 (fixed) \\ \hline
-    \end{tabular}
-    \caption{Summary of SAM hyper-parameters utilized for table~\ref{tab:exp1}.}
-    \label{tab:exp1_3}
-\end{table}
+|   Dataset    |       Model        | BS  |         WD          | MO  | Epochs |           LR (Policy)            |
+|:------------:|:------------------:|:---:|:-------------------:|:---:|:------:|:--------------------------------:|
+|    MNIST     |       LeNet        | 128 | 5*e*<sup> − 4</sup> | 0.9 |  150   |  0.01 (x 0.1 at ep=\[50,100\])   |
+| CIFAR10, 100 | ResNet-18, 50, 101 | 128 | 5*e*<sup> − 4</sup> | 0.9 |  200   |  0.1 (x 0.1 at ep=\[100,120\])   |
+| TinyImageNet |     ResNet-18      | 128 | 1*e*<sup> − 4</sup> | 0.9 |  100   | 0.1 (x 0.1 at ep=\[30, 60, 90\]) |
+|   ImageNet   |     ResNet-18      | 256 | 1*e*<sup> − 4</sup> | 0.9 |  100   | 0.1 (x 0.1 at ep=\[30, 60, 90\]) |
+
+Training hyper-parameters common to all optimizers utilized for
+Table [\[tab:exp1\]][1].Here BS: batch size, WD: weight decay, MO: SGD
+momentum.
+
+</div>
+
+<div id="tab:exp1_2">
+
+|   Dataset    |      Model      | *ρ* (policy) |
+|:------------:|:---------------:|:------------:|
+|    MNIST     |      LeNet      | 0.05 (fixed) |
+|    CIFAR     | ResNet18,50,101 | 0.05 (fixed) |
+| TinyImageNet |    ResNet18     | 0.05 (fixed) |
+|   ImageNet   |    ResNet18     | 0.05 (fixed) |
+
+Summary of SAM hyper-parameters utilized for table [\[tab:exp1\]][1].
+
+</div>
 
 ## Experiments 2
 

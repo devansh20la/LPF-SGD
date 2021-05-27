@@ -17,16 +17,8 @@ def create_path(path):
     if os.path.isdir(path) is False:
         os.makedirs(path)
     else:
-        file = glob.glob(f"{path}/*.log")[0]
-        with open(file, 'r') as f:
-            file = f.read()
-            if 'Epoch: [499 | 500]' in file or 'Stopping criterion achieved' in file or 'nan' in file:
-                print("exists")
-                quit()
-            else:
-                for file in glob.glob(path+'/*'):
-                    print(f"deleting {file}")
-                    os.remove(file)
+        print("File exists")
+        quit()
 
 
 def main(args):
@@ -103,7 +95,7 @@ if __name__ == '__main__':
     args.data_dir = f"{args.dir}/data/{args.dtype}"
     args.use_cuda = torch.cuda.is_available()
 
-    args.n = f"{args.dtype}/resnet_data_noise_{args.dn}"
+    args.n = f"{args.dtype}_data_noise/resnet_data_noise_{args.dn}"
 
     # Random seed
     random.seed(args.ms)

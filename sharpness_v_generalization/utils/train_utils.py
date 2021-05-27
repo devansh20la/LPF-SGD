@@ -77,12 +77,12 @@ def cifar10_noisy_dsets(args, training, data_noise):
     dsets = {
       'train': CIFAR10_NOISY(root=args.data_dir, train=True, data_noise=args.dn),
       'val': CIFAR10(root=args.data_dir.split('cifar10_noisy')[0]+"cifar10/", train=False,
-                     download=False, transform=transform['val'])
+                     download=True, transform=transform['val'])
     }
   else:
     dsets = {
       'test': CIFAR10(root=args.data_dir.split('cifar10_noisy')[0]+"cifar10/", train=False,
-                      download=False, transform=transform['val'])
+                      download=True, transform=transform['val'])
     }
 
   return dsets
@@ -105,14 +105,14 @@ def cifar10_dsets(args, training, data_load_fraction, label_noise):
     dsets = {
       'train': CIFAR10(root=args.data_dir, data_load_fraction=data_load_fraction,
                        label_noise=label_noise, train=True,
-                       download=False, transform=transform['train']),
+                       download=True, transform=transform['train']),
       'val': CIFAR10(root=args.data_dir, train=False,
-                     download=False, transform=transform['val'])
+                     download=True, transform=transform['val'])
     }
   else:
     dsets = {
       'test': CIFAR10(root=args.data_dir, train=False,
-                      download=False, transform=transform['val'])
+                      download=True, transform=transform['val'])
     }
 
   return dsets

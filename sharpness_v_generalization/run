@@ -1,0 +1,122 @@
+#!/bin/bash
+
+query_device() {
+	for d in 0 1 2 3
+	do
+		dmem="$(nvidia-smi -q -i ${d} -d Memory |grep -A4 GPU | grep Used | grep -Eo '[0-9]{1,5}')"
+		if (($dmem < 10)); then
+		    device=${d}
+		fi
+	done
+}
+
+get_device() {
+	unset device
+	while [[ -z "${device}" ]]
+	do
+		query_device
+		if [[ -z "${device}" ]]; then
+			echo "All devices are busy, sleeping for 10s"
+			sleep 10
+		fi
+	done
+}
+
+# sharpness vs generalization
+for ((exp_num = 0; exp_num <= 5000; exp_num++ )); do
+	get_device
+	CUDA_VISIBLE_DEVICES=$((device)) nohup python train.py \
+		--ep=500 \
+		--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
+	sleep 10
+done
+
+for ((exp_num = 0; exp_num <= 5000; exp_num++ )); do
+	get_device
+	CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp.py \
+		--exp_num=${exp_num} > jobs/${exp_num}.out 2>&1 &
+	sleep 10
+done
+
+
+# label noise
+for ms in 0 1 2 3 4; do
+	for ln in $(seq 0 1 10); do
+		get_device
+		CUDA_VISIBLE_DEVICES=$((device)) nohup python train_ln.py \
+			--ep=350 \
+			--ms=${ms} \
+			--mo=0.9 \
+			--wd=5e-4 \
+			--lr=0.1 \
+			--bs=128 \
+			--ln=${ln} \
+			--print_freq=50 > jobs/${ln}.out 2>&1 &
+		sleep 10
+	done
+done
+
+for ms in 0 1 2 3 4; do
+	for ln in $(seq 0 1 10); do
+		get_device
+		CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_ln.py \
+			--ms=0 \
+			--bs=512 \
+			--ln=${ln} > jobs/${ln}.out 2>&1 &
+		sleep 10
+	done
+done
+
+
+# data noise
+for ms in 0 1 2 3 4; do
+	for dn in $(seq 0 40 2); do
+		get_device
+		CUDA_VISIBLE_DEVICES=$((device)) nohup python train_dn.py \
+			--ep=350 \
+			--ms=${ms} \
+			--mo=0.9 \
+			--wd=5e-4 \
+			--lr=0.1 \
+			--bs=128 \
+			--dn=${dn} \
+			--print_freq=50 > jobs/${ln}.out 2>&1 &
+		sleep 10
+	done
+done
+
+for ms in 0 1 2 3 4; do
+	for dn in $(seq 0 40 2); do
+		get_device
+		CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dn.py \
+			--ms=0 \
+			--bs=512 \
+			--dn=${ln} > jobs/${dn}.out 2>&1 &
+		sleep 10
+	done
+done
+
+# double descent
+for ms in 0 1 2 3 4; do
+	for width in $(seq 1 2 65); do
+		get_device
+		CUDA_VISIBLE_DEVICES=$((device)) nohup python train_dd.py \
+			--ep=4000 \
+			--ms=${ms} \
+			--mo=0.0 \
+			--wd=0.0 \
+			--lr=0.0001 \
+			--bs=128 \
+			--width=${width} \
+			--print_freq=50 > jobs/${width}.out 2>&1 &
+		sleep 10
+	done
+done
+for ms in 0 1 2 3 4; do
+	for width in $(seq 1 1 64); do
+		get_device
+		CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dd.py \
+			--ms=${ms} --bs=1024 --width=${width} > jobs/${width}.out 2>&1 &
+		sleep 10
+	done
+done

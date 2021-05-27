@@ -139,91 +139,69 @@ def main(args):
         quit()
 
     # compute various measures
-    # if 'shannon_entropy' not in mtr.keys():
-    #     t = time.time()
-    #     mtr['shannon_entropy'] = shannon_entropy(model_func)
-    #     logger.info(f"time required for shannon_entropy:{time.time() - t}")
-    #     save(mtr)
-
-    # if 'eps_flat' not in mtr.keys():
-    #     t = time.time()
-    #     mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-6, use_cuda=args.use_cuda, verbose=True)
-    #     logger.info(f"time required for eps_flat:{time.time() - t}")
-    #     save(mtr)
-
-    # if 'pac_bayes' not in mtr.keys():
-    #     t = time.time()
-    #     model_init = resnet18_narrow(args)
-    #     model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
-    #     if args.use_cuda:
-    #         model_init = model_init.cuda()
-    #     model_init.norm()
-    #     mtr["pac_bayes"] = pac_bayes(model_func, 10, 0.1, theta_init=model_init.parameters(), tol=1e-6, verbose=True)
-    #     logger.info(f"time required for pac_bayes:{time.time() - t}")
-    #     del model_init
-    #     save(mtr)
-
-    # if 'fro_norm' not in mtr.keys():
-    #     t = time.time()
-    #     mtr['fro_norm'] = fro_norm(model_func, 10)
-    #     logger.info(f"time required for fro_norm:{time.time() - t}")
-    #     save(mtr)
-
-    # if 'fim' not in mtr.keys():
-    #     t = time.time()
-    #     mtr['fim'] = fim(model_func)
-    #     logger.info(f"time required for fim:{time.time() - t}")
-    #     save(mtr)
-
-    # if 'local_entropy' not in mtr.keys():
-    #     t = time.time()
-    #     mtr['local_entropy'] = entropy(model_func, 100, 100)
-    #     logger.info(f"time required for entropy:{time.time() - t}")
-    #     save(mtr)
-
-    # if 'low_pass' not in mtr.keys():
-    #     t = time.time()
-    #     mtr['low_pass'] = low_pass(model_func, 0.01, 100)
-    #     logger.info(f"time required for low pass:{time.time() - t}")
-    #     save(mtr)
-
-    if 'low_pass3' not in mtr.keys():
+    if 'shannon_entropy' not in mtr.keys():
         t = time.time()
-        mtr['low_pass3'] = low_pass2(model_func, 0.001, 100)
-        logger.info(f"time required for low_pass2:{time.time() - t}")
+        mtr['shannon_entropy'] = shannon_entropy(model_func)
+        logger.info(f"time required for shannon_entropy:{time.time() - t}")
         save(mtr)
 
-    # if 'local_entropy_grad_norm' not in mtr.keys():
-    #     t = time.time()
-    #     e = entropy_grad(model_func)
-    #     mtr["local_entropy_grad_norm"] = e
-    #     logger.info(f"time required for entropy_grad:{time.time() - t}")
-    #     save(mtr)
+    if 'eps_flat' not in mtr.keys():
+        t = time.time()
+        mtr['eps_flat'] = eps_flatness(model_func, 0.1, tol=1e-6, use_cuda=args.use_cuda, verbose=True)
+        logger.info(f"time required for eps_flat:{time.time() - t}")
+        save(mtr)
 
-    # if 'dist_from_init' not in mtr.keys():
-    #     t = time.time()
-    #     model_init = resnet18_narrow(args)
-    #     model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
-    #     if args.use_cuda:
-    #         model_init = model_init.cuda()
-    #     model_init.norm()
+    if 'pac_bayes' not in mtr.keys():
+        t = time.time()
+        model_init = resnet18_narrow(args)
+        model_init.load_state_dict(torch.load(f"{args.cp_dir}/model_init.pth.tar", map_location='cpu'))
+        if args.use_cuda:
+            model_init = model_init.cuda()
+        model_init.norm()
+        mtr["pac_bayes"] = pac_bayes(model_func, 10, 0.1, theta_init=model_init.parameters(), tol=1e-6, verbose=True)
+        logger.info(f"time required for pac_bayes:{time.time() - t}")
+        del model_init
+        save(mtr)
 
-    #     param_norm_sq = 0.0
-    #     for init, star in zip(model_init.parameters(), model_func.model.parameters()):
-    #         param_norm_sq += (init.view(-1) - star.view(-1)).norm().item()**2
-        
-    #     mtr["dist_from_init"] = param_norm_sq
-    #     logger.info(f"time required for dist_from_init:{time.time() - t}")
-    #     del model_init
-    #     save(mtr)
+    if 'fro_norm' not in mtr.keys():
+        t = time.time()
+        mtr['fro_norm'] = fro_norm(model_func, 10)
+        logger.info(f"time required for fro_norm:{time.time() - t}")
+        save(mtr)
 
-    # if 'eig_trace' not in mtr.keys():
-    #     t = time.time()
-    #     e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)
-    #     mtr["eig_trace"] = e.sum()
-    #     logger.info(f"time required for eig:{time.time() - t}")
-    #     with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
-    #         np.save(f, e)
+    if 'fim' not in mtr.keys():
+        t = time.time()
+        mtr['fim'] = fim(model_func)
+        logger.info(f"time required for fim:{time.time() - t}")
+        save(mtr)
+
+    if 'local_entropy' not in mtr.keys():
+        t = time.time()
+        mtr['local_entropy'] = entropy(model_func, 100, 100)
+        logger.info(f"time required for entropy:{time.time() - t}")
+        save(mtr)
+
+    if 'low_pass' not in mtr.keys():
+        t = time.time()
+        mtr['low_pass'] = low_pass(model_func, 0.01, 100)
+        logger.info(f"time required for low pass:{time.time() - t}")
+        save(mtr)
+
+    if 'local_entropy_grad_norm' not in mtr.keys():
+        t = time.time()
+        e = entropy_grad(model_func)
+        mtr["local_entropy_grad_norm"] = e
+        logger.info(f"time required for entropy_grad:{time.time() - t}")
+        save(mtr)
+
+
+    if 'eig_trace' not in mtr.keys():
+        t = time.time()
+        e = eig_trace(model_func, 100, draws=2, use_cuda=args.use_cuda, verbose=True)
+        mtr["eig_trace"] = e.sum()
+        logger.info(f"time required for eig:{time.time() - t}")
+        with open(f"{args.cp_dir}/eig_val.npy", 'wb') as f:
+            np.save(f, e)
 
     save(mtr)
     logger.info(mtr)

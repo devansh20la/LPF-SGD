@@ -1,0 +1,1 @@
+from models.resnet import ResNet18 as cifar_resnet18

@@ -22,64 +22,28 @@ get_device() {
 	done
 }
 
-# for mtype in 'resnet18'; do
-# 	for optim in 'fsgd'; do
-# 		for dtype in 'imagenet'; do
-# 			for ms in {0..4}; do
-# 				get_device
-# 				CUDA_VISIBLE_DEVICES=$((device)) nohup python test.py --dtype=${dtype} --mtype=${mtype} --ms=${ms} --optim=${optim} &
-# 				sleep 2
-# 			done
-# 		done
-# 	done
-# done
-# for mtype in 'resnet18' 'resnet50' 'resnet101'; do
-# 	for dtype in 'cifar10' 'cifar100'; do
-# 		python train.py --ep=10 --bs=128 --dtype=${dtype} --mtype=${mtype} --print_freq=100 --mo=0.9 --lr=0.1 --ms=0 --wd=5e-4
-# 	done
-# done
-# for mtype in 'resnet18' 'resnet50' 'resnet101'; do
-# 	for dtype in 'cifar10' 'cifar100'; do
-# 		python sam_train.py --ep=10 --bs=128 --dtype=${dtype} --mtype=${mtype} --print_freq=100 --mo=0.9 --lr=0.1 --ms=0 --wd=5e-4
-# 	done
-# done
-# for mtype in 'resnet18' 'resnet50' 'resnet101'; do
-# 	for dtype in 'cifar10' 'cifar100'; do
-# 		python fsgd_train.py --std=0.002 --ep=10 --bs=128 --dtype=${dtype} --mtype=${mtype} --print_freq=100 --mo=0.9 --lr=0.1 --ms=0 --wd=5e-4
-# 	done
-# done
-
-############## compute sharpness #######################
+# opt="entropy"
 # for ms in 0; do
-# 	for mtype in 'lenet'; do
-# 		for dtype in 'mnist'; do
-# 			get_device
-# 			CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dl.py \
-# 				--dtype=${dtype} \
-# 				--mtype=${mtype} \
-# 				--cp_dir=checkpoints/mnist/lenet/sgd/run_ms_${ms} > jobs/sgd.out 2>&1 &
-# 			sleep 10
-# 			get_device
-# 			CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dl.py \
-# 				--dtype=${dtype} \
-# 				--mtype=${mtype} \
-# 				--cp_dir=checkpoints/mnist/lenet/sam_sgd/run_ms_${ms} > jobs/sam.out 2>&1 &
-# 			sleep 10
-# 			get_device
-# 			CUDA_VISIBLE_DEVICES=$((device)) nohup python sharp_dl.py \
-# 				--dtype=${dtype} \
-# 				--mtype=${mtype} \
-# 				--cp_dir=checkpoints/mnist/lenet/fsgd/run_ms_${ms} > jobs/fsgd.out 2>&1 &
-# 			sleep 10
-# 		done
-# 	done
-# done
-
-# for ms in 0 1 2 3 4; do
-# 	for dtype in 'cifar10' 'cifar100'; do
-# 		for mtype in 'resnet50' 'resnet101'; do
-# 			for opt in 'sgd' 'sam_sgd' 'fsgd'; do
-# 				sbatch srun_greene.sh ${mtype} ${dtype} ${ms} ${opt}
+# 	for dtype in 'mnist'; do
+# 		for mtype in 'lenet'; do
+# 			for g0 in 0.001; do
+# 				for g1 in 0.0001; do
+# 					get_device
+# 					CUDA_VISIBLE_DEVICES=$((device)) nohup python entropy_train.py \
+# 					  	--ep=150 \
+# 					  	--bs=128 \
+# 					  	--dtype=${dtype} \
+# 					  	--mtype=${mtype} \
+# 					  	--print_freq=100 \
+# 					  	--mo=0.9 \
+# 					  	--lr=0.1 \
+# 					  	--ms=${ms} \
+# 					  	--wd=5e-4 \
+# 					  	--gamma_0=${g0} \
+# 					  	--gamma_1=${g1} > jobs/entropy_${g0}_${g1}_${ms}.out 2>&1 &
+# 					sleep 10
+# 					# sbatch srun_greene.sh ${opt} ${ms} ${mtype} ${dtype} ${g0} ${g1}
+# 				done
 # 			done
 # 		done
 # 	done

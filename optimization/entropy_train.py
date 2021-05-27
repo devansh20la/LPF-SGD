@@ -24,7 +24,7 @@ def create_path(path):
         os.makedirs(path)
     else:
         print("Deleting")
-        shutil.rmtree(path)
+        quit()
 
 
 def entropy_fit(phase, loader, model, criterion, optimizer, args):
@@ -123,9 +123,8 @@ def main(args):
         criterion = criterion.cuda()
         torch.backends.cudnn.benchmark = True
 
-    optimizer = EntropySGD(model.parameters(), wd=args.wd, lr=args.lr, momentum=args.mo)
-    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.milestones, gamma=0.1,
-                                               verbose=True)
+    optimizer = EntropySGD(model.parameters(), wd=args.wd, lr=args.lr, momentum=args.mo, gamma_0=args.gamma_0, gamma_1=args.gamma_1)
+    scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=args.milestones, gamma=0.1)
 
     writer = SummaryWriter(log_dir=args.cp_dir)
     torch.save(model.state_dict(), f"{args.cp_dir}/model_init.pth.tar")
@@ -147,6 +146,8 @@ def main(args):
         trainloss, trainerr1 = entropy_fit('train', dset_loaders['train'],
                                            model, criterion, optimizer, args)
         logger.info('Train_Loss = {0}, Train_Err = {1}'.format(trainloss, trainerr1))
+        writer.add_scalar('Metrics/gamma0', optimizer.param_groups[0]['gamma_0'], epoch)
+        writer.add_scalar('Metrics/gamma1', optimizer.param_groups[0]['gamma_1'], epoch)
         writer.add_scalar('Train/Train_Loss', trainloss, epoch)
         writer.add_scalar('Train/Train_Err1', trainerr1, epoch)
 
@@ -178,6 +179,8 @@ def get_args(*args):
     parser.add_argument('--dtype', type=str, default="mnist", help='Data type')
     parser.add_argument('--ep', type=int, default=150, help='Epochs')
     parser.add_argument('--mtype', default='lenet')
+    parser.add_argument('--gamma_0', type=float, default=0.001)
+    parser.add_argument('--gamma_1', type=float, default=0.0001)
 
     # params
     parser.add_argument('--ms', type=int, default=0, help='ms')
@@ -228,10 +231,16 @@ if __name__ == '__main__':
 
     # Intialize directory and create path
     args.cp_dir = f"{args.dir}/checkpoints/{args.n}/run_ms_{args.ms}"
-    files = len(glob.glob(f"{args.cp_dir}/run*"))
-    args.cp_dir = f"{args.cp_dir}/run{files}"
-    create_path(args.cp_dir)
-    create_path(args.cp_dir + '/ckp/')
+    while True:
+        files = len(glob.glob(f"{args.cp_dir}/run*"))
+        cp_dir = f"{args.cp_dir}/run{files}"
+        try:
+            os.makedirs(cp_dir)
+            args.cp_dir = cp_dir
+            break
+        except:
+            continue
+
     for file in glob.glob("**/*.py", recursive=True):
         if "checkpoints" in file or "data" in file or "results" in file:
             continue

@@ -17,6 +17,9 @@ def get_loader(args, training, augment=False):
         dsets = tinyimagenet(args, training)
     elif args.dtype == 'mnist':
         dsets = mnist_dsets(args, training)
+    else:
+        print("dtype wrong")
+        quit()
     if training is True:
         dset_loaders = {
             'train': DataLoader(dsets['train'], batch_size=args.bs,

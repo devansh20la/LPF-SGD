@@ -22,7 +22,27 @@ get_device() {
 	done
 }
 
-# opt="entropy"
+for ms in 0 1 2 3 4; do
+	for dtype in 'cifar10' 'cifar100'; do
+		for opt in 'sgd' 'sam' 'lpf'; do
+			get_device
+			CUDA_VISIBLE_DEVICES=$((device)) nohup python ${opt}_train.py \
+			  	--ep=150 \
+			  	--bs=128 \
+			  	--dtype=${dtype} \
+			  	--mtype=${mtype} \
+			  	--print_freq=100 \
+			  	--mo=0.9 \
+			  	--lr=0.1 \
+			  	--ms=${ms} \
+			  	--wd=5e-4 \
+			  	--gamma_0=${g0} \
+			  	--gamma_1=${g1} > jobs/entropy_${g0}_${g1}_${ms}.out 2>&1 &
+		done
+	done
+done
+
+
 # for ms in 0; do
 # 	for dtype in 'mnist'; do
 # 		for mtype in 'lenet'; do

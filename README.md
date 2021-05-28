@@ -79,7 +79,8 @@ We can train lpfsgd models as:
 
 ### Hyper-parameters
 <div id="tab:exp1_1">
-
+Training hyper-parameters common to all optimizers:
+momentum.
 |   Dataset    |       Model        | BS  |         WD          | MO  | Epochs |           LR (Policy)            |
 |:------------:|:------------------:|:---:|:-------------------:|:---:|:------:|:--------------------------------:|
 |    MNIST     |       LeNet        | 128 | 5*e*<sup> − 4</sup> | 0.9 |  150   |  0.01 (x 0.1 at ep=\[50,100\])   |
@@ -87,13 +88,11 @@ We can train lpfsgd models as:
 | TinyImageNet |     ResNet-18      | 128 | 1*e*<sup> − 4</sup> | 0.9 |  100   | 0.1 (x 0.1 at ep=\[30, 60, 90\]) |
 |   ImageNet   |     ResNet-18      | 256 | 1*e*<sup> − 4</sup> | 0.9 |  100   | 0.1 (x 0.1 at ep=\[30, 60, 90\]) |
 
-Training hyper-parameters common to all optimizers utilized for
-Table [\[tab:exp1\]][1].Here BS: batch size, WD: weight decay, MO: SGD
-momentum.
 
 </div>
 
 <div id="tab:exp1_2">
+Summary of SAM hyper-parameters:
 
 |   Dataset    |      Model      | *ρ* (policy) |
 |:------------:|:---------------:|:------------:|
@@ -102,7 +101,20 @@ momentum.
 | TinyImageNet |    ResNet18     | 0.05 (fixed) |
 |   ImageNet   |    ResNet18     | 0.05 (fixed) |
 
-Summary of SAM hyper-parameters utilized for table [\[tab:exp1\]][1].
+
+</div>
+
+<div id="tab:exp1_4">
+
+Summary of LPF-SGD hyper-parameters:
+
+|   Dataset    |      Model      |  M  |  *γ* (policy)  |
+|:------------:|:---------------:|:---:|:--------------:|
+|    MNIST     |      LeNet      |  1  |  0.001(fixed)  |
+|    CIFAR     | ResNet18,50,101 |  1  | 0.002 (fixed)  |
+| TinyImageNet |     ResNet      |  1  | 0.001 (fixed)  |
+|   ImageNet   |     ResNet      |  1  | 0.0005 (fixed) |
+
 
 </div>
 

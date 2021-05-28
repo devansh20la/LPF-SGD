@@ -82,6 +82,7 @@ We can train lpfsgd models as:
 <div id="tab:exp1_1">
 Training hyper-parameters common to all optimizers:
 momentum.
+
 |   Dataset    |       Model        | BS  |         WD          | MO  | Epochs |           LR (Policy)            |
 |:------------:|:------------------:|:---:|:-------------------:|:---:|:------:|:--------------------------------:|
 |    MNIST     |       LeNet        | 128 | 5*e*<sup> − 4</sup> | 0.9 |  150   |  0.01 (x 0.1 at ep=\[50,100\])   |

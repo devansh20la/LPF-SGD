@@ -139,19 +139,20 @@ Summary of LPF-SGD hyper-parameters:
 ## Experiments 2
 To re-create the results in Table 4 from the paper, change to exp1 directory 'cd exp1/example'. Here are the arguments common to all training scripts:
 
---mtype 		        Model Type ["wrn", "shakeshake", "pyramidnet"]
---depth 		        Number of layers.
---width_factor 		  	width factor 
---epochs 		       	Total number of epochs.
---learning_rate 		base learning rate
---momentum 				momentum
---weight_decay 			weight decay
---batch_size 			batch size
---seed 	           		seed
---dtype 	         	dtype
---img_aug 			    augmentation scheme [basic_none, basic_cutout(basic+cut), autoaugment(basic+aa+cut)]
---threads THREADS     	Number of CPU threads for dataloaders.
-
+```
+	--mtype 		        Model Type ["wrn", "shakeshake", "pyramidnet"] 
+	--depth 		        Number of layers. 
+	--width_factor 		  	width factor  
+	--epochs 		       	Total number of epochs.
+	--learning_rate 		base learning rate
+	--momentum 				momentum
+	--weight_decay 			weight decay
+	--batch_size 			batch size
+	--seed 	           		seed
+	--dtype 	         	dtype
+	--img_aug 			    augmentation scheme [basic_none, basic_cutout(basic+cut), autoaugment(basic+aa+cut)]
+	--threads THREADS     	Number of CPU threads for dataloaders.
+```
 
 ### Training
 Here is an example to train shakeshake model with basic augmentation scheme and sgd optimizer:
@@ -206,8 +207,9 @@ python ssgd_train.py \
 ### Hyper-parameters
 <div id="tab:exp2_1">
 Training hyper-parameters common to all optimizers utilized for
-Table [\[tab:exp2\]][1].Here BS: batch size, WD: weight decay, MO: SGD
+Table 4 in the paper. Here BS: batch size, WD: weight decay, MO: SGD
 momentum.
+
 
 |                       |     |                     |     |        |                              |                           |
 |:----------------------|:---:|:-------------------:|:---:|:------:|:----------------------------:|:-------------------------:|
@@ -224,6 +226,7 @@ momentum.
 <div id="tab:exp2_2">
 Radius hyper-parameter for LPF-SGD optimizer. Here \* refers to all
 kinds of augmentation schemes.
+
 
 |                     |              |     |                 |              |                 |              |
 |:-------------------:|:------------:|:---:|:---------------:|:------------:|:---------------:|:------------:|

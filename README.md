@@ -32,6 +32,7 @@ This shell script will perform the following operations:
 ## Experiments 1
 To re-create the results in Table 3 from the paper, change to exp1 directory 'cd exp1'. Here are the arguments common to all training python scripts:
 
+```
   --dir DIR 			Data directory
   --print_freq 			Print frequency
   --dtype DTYPE         data type [cifar10, cifar100]
@@ -42,7 +43,7 @@ To re-create the results in Table 3 from the paper, change to exp1 directory 'cd
   --wd WD               weight decay
   --lr LR               learning rate
   --bs BS               batch size
-
+```
 
 ### Training
 We can train SGD, SAM and lpfsgd models on cifar10 data with resnet18 model as follow:

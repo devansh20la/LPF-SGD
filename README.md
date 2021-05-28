@@ -78,6 +78,7 @@ We can train lpfsgd models as:
 ```
 
 ### Hyper-parameters
+
 <div id="tab:exp1_1">
 Training hyper-parameters common to all optimizers:
 momentum.

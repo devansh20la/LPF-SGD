@@ -30,51 +30,66 @@ This shell script will perform the following operations:
 
 
 ## Experiments 1
+To re-create the results in Table 3 from the paper, change to exp1 directory 'cd exp1'. Here are the arguments common to all training python scripts:
+
+  --dir DIR 			Data directory
+  --print_freq 			Print frequency
+  --dtype DTYPE         data type [cifar10, cifar100]
+  --ep EP               Epochs
+  --mtype mtype 		model type [resnet18, resnet50, resnet101]
+  --ms MS               manuel seed
+  --mo MO               momentum
+  --wd WD               weight decay
+  --lr LR               learning rate
+  --bs BS               batch size
+
 
 ### Training
-We can train sgd, sam and lpfsgd models on cifar10 data with resnet18 model as follow:
+We can train SGD, SAM and lpfsgd models on cifar10 data with resnet18 model as follow:
 
 ```
-	python sgd_train.py \
-		--ep=200 \
-		--bs=128 \
-		--dtype='cifar10' \
-		--mtype='resnet18' \
-		--print_freq=100 \
-		--mo=0.9 \
-		--lr=0.1 \
-		--ms=0 \
-		--wd=5e-4
+python sgd_train.py \
+	--ep=200 \
+	--bs=128 \
+	--dtype='cifar10' \
+	--mtype='resnet18' \
+	--print_freq=100 \
+	--mo=0.9 \
+	--lr=0.1 \
+	--ms=0 \
+	--wd=5e-4
 ```
 
-We can train sam models as:
+We can train SAM models as:
 
 ```
-	python sam_train.py \
-		--ep=200 \
-		--bs=128 \
-		--dtype='cifar10' \
-		--mtype='resnet18' \
-		--print_freq=100 \
-		--mo=0.9 \
-		--lr=0.1 \
-		--ms=0 \
-		--wd=5e-4
+python sam_train.py \
+	--ep=200 \
+	--bs=128 \
+	--dtype='cifar10' \
+	--mtype='resnet18' \
+	--print_freq=100 \
+	--mo=0.9 \
+	--lr=0.1 \
+	--ms=0 \
+	--wd=5e-4
 ```
 
 We can train lpfsgd models as:
 
+
 ```
-	python lpf_train.py \
-		--ep=200 \
-		--bs=128 \
-		--dtype='cifar10' \
-		--mtype='resnet18' \
-		--print_freq=100 \
-		--mo=0.9 \
-		--lr=0.1 \
-		--ms=0 \
-		--wd=5e-4
+python lpf_train.py \
+	--ep=200 \
+	--bs=128 \
+	--dtype='cifar10' \
+	--mtype='resnet18' \
+	--print_freq=100 \
+	--mo=0.9 \
+	--lr=0.1 \
+	--ms=0 \
+	--wd=5e-4 \
+	--std=0.0002
 ```
 
 ### Hyper-parameters
@@ -120,6 +135,108 @@ Summary of LPF-SGD hyper-parameters:
 
 </div>
 
-## Experiments 2
 
+## Experiments 2
+To re-create the results in Table 4 from the paper, change to exp1 directory 'cd exp1/example'. Here are the arguments common to all training scripts:
+
+--mtype 		        Model Type ["wrn", "shakeshake", "pyramidnet"]
+--depth 		        Number of layers.
+--width_factor 		  	width factor 
+--epochs 		       	Total number of epochs.
+--learning_rate 		base learning rate
+--momentum 				momentum
+--weight_decay 			weight decay
+--batch_size 			batch size
+--seed 	           		seed
+--dtype 	         	dtype
+--img_aug 			    augmentation scheme [basic_none, basic_cutout(basic+cut), autoaugment(basic+aa+cut)]
+--threads THREADS     	Number of CPU threads for dataloaders.
+
+
+### Training
+Here is an example to train shakeshake model with basic augmentation scheme and sgd optimizer:
+```
+python sgd_train.py \
+	--mtype "shakeshake" \
+	--dtype "cifar10" \
+	--learning_rate 0.2 \
+	--weight_decay 0.0001 \
+	--epochs 1800 \
+	--depth 26 \
+	--width 96 \
+	--seed 0 \
+	--img_aug "basic_none" \
+	--threads 8
+```
+
+Here is an example to train shakeshake model with basic augmentation scheme and SAM optimizer (default rho is set to 0.05):
+
+```
+python sam_train.py \
+	--mtype "shakeshake" \
+	--dtype "cifar10" \
+	--learning_rate 0.2 \
+	--weight_decay 0.0001 \
+	--epochs 1800 \
+	--depth 26 \
+	--width 96 \
+	--seed 0 \
+	--img_aug "basic_none" \
+	--threads 8
+```
+
+Here is an example to train shakeshake model with basic augmentation scheme and LPF-SGD optimizer (default std is set to 0.0005):
+```
+python ssgd_train.py \
+	--mtype "shakeshake" \
+	--dtype 'cifar10'
+	--learning_rate 0.2 \
+	--weight_decay 0.0001 \
+	--epochs 1800 \
+	--depth 26 \
+	--width 96 \
+	--seed 0 \
+	--img_aug 'basic_none' \
+	--std 0.0005 \
+	--inc 15 \
+	--M 8
+```
+
+
+### Hyper-parameters
+<div id="tab:exp2_1">
+Training hyper-parameters common to all optimizers utilized for
+Table [\[tab:exp2\]][1].Here BS: batch size, WD: weight decay, MO: SGD
+momentum.
+
+|                       |     |                     |     |        |                              |                           |
+|:----------------------|:---:|:-------------------:|:---:|:------:|:----------------------------:|:-------------------------:|
+| Model                 | BS  |         WD          | MO  | Epochs |          LR(Policy)          |                           |
+|                       |     |                     |     |        |           CIFAR-10           |         CIFAR-100         |
+| WRN16-8               | 128 | 5*e*<sup> − 4</sup> | 0.9 |  200   | 0.1(× 0.2 at \[60,120,160\]) |                           |
+| WRN28-10              | 128 | 5*e*<sup> − 4</sup> | 0.9 |  200   | 0.1(× 0.2 at \[60,120,160\]) |                           |
+| ShakeShake (26 2x96d) | 128 | 1*e*<sup> − 4</sup> | 0.9 |  1800  |     0.2(cosine decrease)     |                           |
+| PyNet110              | 128 | 1*e*<sup> − 4</sup> | 0.9 |  200   |  0.1(× 0.1 at \[100,150\])   | 0.5(× 0.1 at \[100,150\]) |
+| PyNet272              | 128 | 1*e*<sup> − 4</sup> | 0.9 |  200   |  0.1(× 0.1 at \[100,150\])   |                           |
+
+</div>
+
+<div id="tab:exp2_2">
+Radius hyper-parameter for LPF-SGD optimizer. Here \* refers to all
+kinds of augmentation schemes.
+
+|                     |              |     |                 |              |                 |              |
+|:-------------------:|:------------:|:---:|:---------------:|:------------:|:---------------:|:------------:|
+|        Model        |     Aug      |  M  |    CIFAR-10     |              |    CIFAR-100    |              |
+|                     |              |     | *γ*<sub>0</sub> | *α* (policy) | *γ*<sub>0</sub> | *α* (policy) |
+|       WRN16-8       |      \*      |  8  |     0.0005      |      15      |     0.0005      |      15      |
+|      WRN28-10       |    Basic     |  8  |     0.0005      |      35      |     0.0005      |      25      |
+|                     |  Basic+Cut   |  8  |     0.0005      |      35      |     0.0005      |      25      |
+|                     | Basic+Cut+AA |  8  |     0.0005      |      35      |     0.0007      |      15      |
+| ShakeShake 26 2x96d |      \*      |  8  |     0.0005      |      15      |     0.0005      |      15      |
+|      PyNet110       |      \*      |  8  |     0.0005      |      15      |     0.0005      |      15      |
+|      PyNet272       |      \*      |  8  |     0.0005      |      15      |     0.0005      |      15      |
+
+
+</div>
 

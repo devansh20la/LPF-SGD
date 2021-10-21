@@ -248,12 +248,12 @@ kinds of augmentation schemes.
 To re-create the results in Table 7 from the paper, change to exp1 directory 'cd machine_translation'. Here are the arguments common to all training scripts:
 
 ```
-	--ts 		  Total number of steps.
-	--lr 			base learning rate
-	--wd 			weight decay
-	--bs 			batch size
-	--seed		seed
-	--dp			dropout probability
+--ts 		  Total number of steps.
+--lr 			base learning rate
+--wd 			weight decay
+--bs 			batch size
+--seed		seed
+--dp			dropout probability
 ```
 
 ### Training
@@ -290,3 +290,7 @@ Summary of E-SGD, ASO, SAM and LPF-SGD hyper-parameters used for obtaining Table
 | WMT2014 | Mini-Trans |           (0.5, 0.0001, 0.1, 5)            |  0.009   | 0.01 | (8, 0.0005, 15) |
 
 </div>
+
+## Adversarial
+In order to compute adversarial robustness of the model, first train the required model and move the model file in ```adversarial/checkpooints/```.
+You can now run `main.py` with same parameters as training but an additional parameter ```model_path``` that loads the saved model.

@@ -189,7 +189,7 @@ python sam_train.py \
 
 Here is an example to train shakeshake model with basic augmentation scheme and LPF-SGD optimizer (default std is set to 0.0005):
 ```
-python ssgd_train.py \
+python lpf_train.py \
 	--mtype "shakeshake" \
 	--dtype 'cifar10'
 	--learning_rate 0.2 \

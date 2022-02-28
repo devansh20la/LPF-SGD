@@ -60,14 +60,14 @@ def cifar10_dsets(args, training, augment=False):
     if training is True:
         dsets = {
             'train': CIFAR10(root=args.data_dir, train=True,
-                             download=False, transform=tf['train']),
+                             download=True, transform=tf['train']),
             'val': CIFAR10(root=args.data_dir, train=False,
-                           download=False, transform=tf['val'])
+                           download=True, transform=tf['val'])
             }
     else:
         dsets = {
             'test': CIFAR10(root=args.data_dir, train=False,
-                            download=False, transform=tf['val'])
+                            download=True, transform=tf['val'])
             }
     return dsets
 
@@ -95,14 +95,14 @@ def cifar100_dsets(args, training, augment=False):
     if training is True:
         dsets = {
             'train': CIFAR100(root=args.data_dir, train=True,
-                              download=False, transform=tf['train']),
+                              download=True, transform=tf['train']),
             'val': CIFAR100(root=args.data_dir, train=False,
-                            download=False, transform=tf['val'])
+                            download=True, transform=tf['val'])
             }
     else:
         dsets = {
             'test': CIFAR100(root=args.data_dir, train=False,
-                             download=False, transform=tf['val'])
+                             download=True, transform=tf['val'])
             }
     return dsets
 

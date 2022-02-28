@@ -1,0 +1,1201 @@
+Namespace(bs=128, cp_dir='./checkpoints/cifar10/resnet50/smooth_out//run_ms_2', data_dir='./data/cifar10', dir='.', dtype='cifar10', ep=200, loadckp=None, lr=0.1, milestones=[100, 120], mo=0.9, ms=2, mtype='resnet50', n='cifar10/resnet50/smooth_out/', num_classes=10, print_freq=100, smooth_out_a=0.009, use_cuda=True, wd=0.0005)
+Epoch: [0 | 200]
+Phase:train -- Batch_idx:100/391-- 701.93 samples/sec-- Loss:5.05 -- Error1:88.84
+Phase:train -- Batch_idx:200/391-- 726.45 samples/sec-- Loss:3.65 -- Error1:86.70
+Phase:train -- Batch_idx:300/391-- 734.42 samples/sec-- Loss:3.14 -- Error1:84.87
+Train_Loss = 2.885947360458374, Train_Err = 83.624
+Val_Loss = 2.064166423225403, Val_Err = 81.88
+Epoch: [1 | 200]
+Phase:train -- Batch_idx:100/391-- 738.23 samples/sec-- Loss:2.03 -- Error1:78.77
+Phase:train -- Batch_idx:200/391-- 743.70 samples/sec-- Loss:2.01 -- Error1:77.59
+Phase:train -- Batch_idx:300/391-- 745.59 samples/sec-- Loss:1.97 -- Error1:76.34
+Train_Loss = 1.9399904724884034, Train_Err = 74.9
+Val_Loss = 1.8001525053024292, Val_Err = 67.42
+Epoch: [2 | 200]
+Phase:train -- Batch_idx:100/391-- 739.67 samples/sec-- Loss:1.80 -- Error1:67.88
+Phase:train -- Batch_idx:200/391-- 744.39 samples/sec-- Loss:1.77 -- Error1:66.46
+Phase:train -- Batch_idx:300/391-- 745.99 samples/sec-- Loss:1.74 -- Error1:65.55
+Train_Loss = 1.7206641068267823, Train_Err = 64.632
+Val_Loss = 1.6281856872558593, Val_Err = 61.09
+Epoch: [3 | 200]
+Phase:train -- Batch_idx:100/391-- 736.46 samples/sec-- Loss:1.62 -- Error1:59.66
+Phase:train -- Batch_idx:200/391-- 741.51 samples/sec-- Loss:1.60 -- Error1:59.15
+Phase:train -- Batch_idx:300/391-- 743.20 samples/sec-- Loss:1.58 -- Error1:58.28
+Train_Loss = 1.5666600244522095, Train_Err = 57.908
+Val_Loss = 1.5541064153671265, Val_Err = 58.07
+Epoch: [4 | 200]
+Phase:train -- Batch_idx:100/391-- 736.52 samples/sec-- Loss:1.49 -- Error1:55.20
+Phase:train -- Batch_idx:200/391-- 741.71 samples/sec-- Loss:1.47 -- Error1:54.36
+Phase:train -- Batch_idx:300/391-- 743.50 samples/sec-- Loss:1.46 -- Error1:54.00
+Train_Loss = 1.4475012747955323, Train_Err = 53.324
+Val_Loss = 1.3749835472106933, Val_Err = 51.11
+Epoch: [5 | 200]
+Phase:train -- Batch_idx:100/391-- 737.61 samples/sec-- Loss:1.35 -- Error1:49.82
+Phase:train -- Batch_idx:200/391-- 743.26 samples/sec-- Loss:1.35 -- Error1:49.60
+Phase:train -- Batch_idx:300/391-- 745.28 samples/sec-- Loss:1.34 -- Error1:48.90
+Train_Loss = 1.3277470444107056, Train_Err = 48.632
+Val_Loss = 1.3518624103546142, Val_Err = 48.99
+Epoch: [6 | 200]
+Phase:train -- Batch_idx:100/391-- 739.20 samples/sec-- Loss:1.24 -- Error1:45.12
+Phase:train -- Batch_idx:200/391-- 744.07 samples/sec-- Loss:1.23 -- Error1:44.50
+Phase:train -- Batch_idx:300/391-- 745.17 samples/sec-- Loss:1.22 -- Error1:44.20
+Train_Loss = 1.2043094687652587, Train_Err = 43.584
+Val_Loss = 1.192606725692749, Val_Err = 42.93
+Epoch: [7 | 200]
+Phase:train -- Batch_idx:100/391-- 736.58 samples/sec-- Loss:1.09 -- Error1:39.55
+Phase:train -- Batch_idx:200/391-- 741.67 samples/sec-- Loss:1.09 -- Error1:39.07
+Phase:train -- Batch_idx:300/391-- 743.46 samples/sec-- Loss:1.08 -- Error1:38.72
+Train_Loss = 1.06076572309494, Train_Err = 38.026
+Val_Loss = 1.0928334985733033, Val_Err = 39.08
+Epoch: [8 | 200]
+Phase:train -- Batch_idx:100/391-- 736.34 samples/sec-- Loss:0.96 -- Error1:34.19
+Phase:train -- Batch_idx:200/391-- 741.33 samples/sec-- Loss:0.94 -- Error1:33.71
+Phase:train -- Batch_idx:300/391-- 743.03 samples/sec-- Loss:0.94 -- Error1:33.53
+Train_Loss = 0.9262753918838501, Train_Err = 33.074
+Val_Loss = 1.1077562690734863, Val_Err = 34.93
+Epoch: [9 | 200]
+Phase:train -- Batch_idx:100/391-- 738.76 samples/sec-- Loss:0.83 -- Error1:29.78
+Phase:train -- Batch_idx:200/391-- 743.94 samples/sec-- Loss:0.84 -- Error1:30.04
+Phase:train -- Batch_idx:300/391-- 745.63 samples/sec-- Loss:0.84 -- Error1:29.69
+Train_Loss = 0.8295078645896912, Train_Err = 29.464
+Val_Loss = 0.9679733828544617, Val_Err = 33.65
+Epoch: [10 | 200]
+Phase:train -- Batch_idx:100/391-- 738.06 samples/sec-- Loss:0.75 -- Error1:26.90
+Phase:train -- Batch_idx:200/391-- 742.40 samples/sec-- Loss:0.75 -- Error1:26.33
+Phase:train -- Batch_idx:300/391-- 743.90 samples/sec-- Loss:0.74 -- Error1:26.13
+Train_Loss = 0.7360076903152466, Train_Err = 25.856
+Val_Loss = 0.8028110685348511, Val_Err = 27.78
+Epoch: [11 | 200]
+Phase:train -- Batch_idx:100/391-- 736.42 samples/sec-- Loss:0.66 -- Error1:23.28
+Phase:train -- Batch_idx:200/391-- 741.57 samples/sec-- Loss:0.68 -- Error1:23.43
+Phase:train -- Batch_idx:300/391-- 743.31 samples/sec-- Loss:0.68 -- Error1:23.60
+Train_Loss = 0.6760492000770569, Train_Err = 23.474
+Val_Loss = 0.8812565176010132, Val_Err = 28.24
+Epoch: [12 | 200]
+Phase:train -- Batch_idx:100/391-- 734.27 samples/sec-- Loss:0.61 -- Error1:20.95
+Phase:train -- Batch_idx:200/391-- 740.47 samples/sec-- Loss:0.61 -- Error1:21.24
+Phase:train -- Batch_idx:300/391-- 743.02 samples/sec-- Loss:0.62 -- Error1:21.70
+Train_Loss = 0.6230548652458191, Train_Err = 21.682
+Val_Loss = 0.8961876050949097, Val_Err = 30.32
+Epoch: [13 | 200]
+Phase:train -- Batch_idx:100/391-- 737.39 samples/sec-- Loss:0.57 -- Error1:19.70
+Phase:train -- Batch_idx:200/391-- 742.57 samples/sec-- Loss:0.58 -- Error1:19.97
+Phase:train -- Batch_idx:300/391-- 744.12 samples/sec-- Loss:0.59 -- Error1:20.35
+Train_Loss = 0.5865756650352478, Train_Err = 20.274
+Val_Loss = 0.8009262122631073, Val_Err = 26.48
+Epoch: [14 | 200]
+Phase:train -- Batch_idx:100/391-- 736.48 samples/sec-- Loss:0.53 -- Error1:18.76
+Phase:train -- Batch_idx:200/391-- 741.61 samples/sec-- Loss:0.54 -- Error1:18.94
+Phase:train -- Batch_idx:300/391-- 743.35 samples/sec-- Loss:0.55 -- Error1:19.31
+Train_Loss = 0.5566596786499023, Train_Err = 19.436
+Val_Loss = 0.9020418281555176, Val_Err = 30.04
+Epoch: [15 | 200]
+Phase:train -- Batch_idx:100/391-- 735.73 samples/sec-- Loss:0.50 -- Error1:17.67
+Phase:train -- Batch_idx:200/391-- 737.82 samples/sec-- Loss:0.53 -- Error1:18.39
+Phase:train -- Batch_idx:300/391-- 739.93 samples/sec-- Loss:0.53 -- Error1:18.49
+Train_Loss = 0.5343252812290191, Train_Err = 18.576
+Val_Loss = 0.7557643215179444, Val_Err = 24.6
+Epoch: [16 | 200]
+Phase:train -- Batch_idx:100/391-- 735.94 samples/sec-- Loss:0.49 -- Error1:17.05
+Phase:train -- Batch_idx:200/391-- 741.90 samples/sec-- Loss:0.50 -- Error1:17.43
+Phase:train -- Batch_idx:300/391-- 743.93 samples/sec-- Loss:0.50 -- Error1:17.40
+Train_Loss = 0.5066686968231201, Train_Err = 17.534
+Val_Loss = 0.7230769052505494, Val_Err = 24.46
+Epoch: [17 | 200]
+Phase:train -- Batch_idx:100/391-- 738.14 samples/sec-- Loss:0.44 -- Error1:15.03
+Phase:train -- Batch_idx:200/391-- 743.24 samples/sec-- Loss:0.47 -- Error1:16.00
+Phase:train -- Batch_idx:300/391-- 744.38 samples/sec-- Loss:0.48 -- Error1:16.42
+Train_Loss = 0.4832523588180542, Train_Err = 16.666
+Val_Loss = 0.8279326175689697, Val_Err = 27.78
+Epoch: [18 | 200]
+Phase:train -- Batch_idx:100/391-- 736.27 samples/sec-- Loss:0.43 -- Error1:14.80
+Phase:train -- Batch_idx:200/391-- 741.27 samples/sec-- Loss:0.45 -- Error1:15.64
+Phase:train -- Batch_idx:300/391-- 742.94 samples/sec-- Loss:0.46 -- Error1:15.94
+Train_Loss = 0.470153986825943, Train_Err = 16.192
+Val_Loss = 0.8077606779098511, Val_Err = 26.27
+Epoch: [19 | 200]
+Phase:train -- Batch_idx:100/391-- 736.69 samples/sec-- Loss:0.42 -- Error1:14.77
+Phase:train -- Batch_idx:200/391-- 741.80 samples/sec-- Loss:0.44 -- Error1:15.25
+Phase:train -- Batch_idx:300/391-- 743.48 samples/sec-- Loss:0.45 -- Error1:15.56
+Train_Loss = 0.4555250135040283, Train_Err = 15.814
+Val_Loss = 0.7461496708869934, Val_Err = 23.71
+Epoch: [20 | 200]
+Phase:train -- Batch_idx:100/391-- 738.44 samples/sec-- Loss:0.40 -- Error1:13.80
+Phase:train -- Batch_idx:200/391-- 743.46 samples/sec-- Loss:0.42 -- Error1:14.64
+Phase:train -- Batch_idx:300/391-- 745.09 samples/sec-- Loss:0.43 -- Error1:15.03
+Train_Loss = 0.43949196142196656, Train_Err = 15.306
+Val_Loss = 0.6592423436164856, Val_Err = 22.52
+Epoch: [21 | 200]
+Phase:train -- Batch_idx:100/391-- 736.57 samples/sec-- Loss:0.40 -- Error1:13.91
+Phase:train -- Batch_idx:200/391-- 741.41 samples/sec-- Loss:0.41 -- Error1:14.40
+Phase:train -- Batch_idx:300/391-- 743.14 samples/sec-- Loss:0.42 -- Error1:14.76
+Train_Loss = 0.4308872518920898, Train_Err = 15.048
+Val_Loss = 0.6832423154830932, Val_Err = 22.93
+Epoch: [22 | 200]
+Phase:train -- Batch_idx:100/391-- 736.71 samples/sec-- Loss:0.38 -- Error1:13.38
+Phase:train -- Batch_idx:200/391-- 741.63 samples/sec-- Loss:0.40 -- Error1:13.85
+Phase:train -- Batch_idx:300/391-- 743.24 samples/sec-- Loss:0.41 -- Error1:14.37
+Train_Loss = 0.4183320147895813, Train_Err = 14.592
+Val_Loss = 0.6619469242095948, Val_Err = 22.1
+Epoch: [23 | 200]
+Phase:train -- Batch_idx:100/391-- 735.71 samples/sec-- Loss:0.36 -- Error1:12.52
+Phase:train -- Batch_idx:200/391-- 740.90 samples/sec-- Loss:0.39 -- Error1:13.57
+Phase:train -- Batch_idx:300/391-- 743.06 samples/sec-- Loss:0.39 -- Error1:13.76
+Train_Loss = 0.40634802711486817, Train_Err = 14.142
+Val_Loss = 0.8371931310653686, Val_Err = 26.34
+Epoch: [24 | 200]
+Phase:train -- Batch_idx:100/391-- 738.16 samples/sec-- Loss:0.36 -- Error1:12.52
+Phase:train -- Batch_idx:200/391-- 742.95 samples/sec-- Loss:0.39 -- Error1:13.36
+Phase:train -- Batch_idx:300/391-- 744.56 samples/sec-- Loss:0.39 -- Error1:13.68
+Train_Loss = 0.4020586105918884, Train_Err = 13.998
+Val_Loss = 0.6316992132186889, Val_Err = 20.76
+Epoch: [25 | 200]
+Phase:train -- Batch_idx:100/391-- 736.20 samples/sec-- Loss:0.34 -- Error1:11.38
+Phase:train -- Batch_idx:200/391-- 741.16 samples/sec-- Loss:0.36 -- Error1:12.34
+Phase:train -- Batch_idx:300/391-- 742.90 samples/sec-- Loss:0.38 -- Error1:13.15
+Train_Loss = 0.3868401997756958, Train_Err = 13.378
+Val_Loss = 0.6413808930873871, Val_Err = 21.35
+Epoch: [26 | 200]
+Phase:train -- Batch_idx:100/391-- 737.56 samples/sec-- Loss:0.33 -- Error1:11.69
+Phase:train -- Batch_idx:200/391-- 742.13 samples/sec-- Loss:0.36 -- Error1:12.52
+Phase:train -- Batch_idx:300/391-- 743.59 samples/sec-- Loss:0.38 -- Error1:13.27
+Train_Loss = 0.38186548577308654, Train_Err = 13.358
+Val_Loss = 0.7474566120147705, Val_Err = 24.22
+Epoch: [27 | 200]
+Phase:train -- Batch_idx:100/391-- 736.72 samples/sec-- Loss:0.32 -- Error1:11.12
+Phase:train -- Batch_idx:200/391-- 742.35 samples/sec-- Loss:0.35 -- Error1:12.21
+Phase:train -- Batch_idx:300/391-- 744.22 samples/sec-- Loss:0.37 -- Error1:12.74
+Train_Loss = 0.3753097834777832, Train_Err = 12.99
+Val_Loss = 0.7674151784896851, Val_Err = 24.81
+Epoch: [28 | 200]
+Phase:train -- Batch_idx:100/391-- 738.69 samples/sec-- Loss:0.34 -- Error1:11.96
+Phase:train -- Batch_idx:200/391-- 743.38 samples/sec-- Loss:0.35 -- Error1:12.37
+Phase:train -- Batch_idx:300/391-- 744.43 samples/sec-- Loss:0.36 -- Error1:12.40
+Train_Loss = 0.3679227304267883, Train_Err = 12.792
+Val_Loss = 0.7666278360366822, Val_Err = 24.34
+Epoch: [29 | 200]
+Phase:train -- Batch_idx:100/391-- 737.42 samples/sec-- Loss:0.33 -- Error1:11.51
+Phase:train -- Batch_idx:200/391-- 742.41 samples/sec-- Loss:0.34 -- Error1:11.95
+Phase:train -- Batch_idx:300/391-- 743.95 samples/sec-- Loss:0.36 -- Error1:12.30
+Train_Loss = 0.36353289348602297, Train_Err = 12.576
+Val_Loss = 0.7208824478149414, Val_Err = 22.79
+Epoch: [30 | 200]
+Phase:train -- Batch_idx:100/391-- 737.35 samples/sec-- Loss:0.32 -- Error1:10.88
+Phase:train -- Batch_idx:200/391-- 742.16 samples/sec-- Loss:0.34 -- Error1:11.65
+Phase:train -- Batch_idx:300/391-- 743.75 samples/sec-- Loss:0.35 -- Error1:12.14
+Train_Loss = 0.35745607454299927, Train_Err = 12.354
+Val_Loss = 0.6373980377197266, Val_Err = 20.22
+Epoch: [31 | 200]
+Phase:train -- Batch_idx:100/391-- 738.75 samples/sec-- Loss:0.33 -- Error1:11.34
+Phase:train -- Batch_idx:200/391-- 743.76 samples/sec-- Loss:0.33 -- Error1:11.53
+Phase:train -- Batch_idx:300/391-- 745.42 samples/sec-- Loss:0.34 -- Error1:11.90
+Train_Loss = 0.3505925427246094, Train_Err = 12.176
+Val_Loss = 0.7602097009658814, Val_Err = 23.53
+Epoch: [32 | 200]
+Phase:train -- Batch_idx:100/391-- 738.08 samples/sec-- Loss:0.29 -- Error1:9.90
+Phase:train -- Batch_idx:200/391-- 742.14 samples/sec-- Loss:0.32 -- Error1:10.91
+Phase:train -- Batch_idx:300/391-- 743.57 samples/sec-- Loss:0.33 -- Error1:11.49
+Train_Loss = 0.33936146288871766, Train_Err = 11.794
+Val_Loss = 0.6347684349060059, Val_Err = 20.43
+Epoch: [33 | 200]
+Phase:train -- Batch_idx:100/391-- 737.30 samples/sec-- Loss:0.29 -- Error1:10.20
+Phase:train -- Batch_idx:200/391-- 741.95 samples/sec-- Loss:0.33 -- Error1:11.45
+Phase:train -- Batch_idx:300/391-- 743.56 samples/sec-- Loss:0.34 -- Error1:11.93
+Train_Loss = 0.34877776135444644, Train_Err = 12.154
+Val_Loss = 0.6596866037368775, Val_Err = 21.72
+Epoch: [34 | 200]
+Phase:train -- Batch_idx:100/391-- 736.39 samples/sec-- Loss:0.29 -- Error1:9.85
+Phase:train -- Batch_idx:200/391-- 741.49 samples/sec-- Loss:0.32 -- Error1:11.18
+Phase:train -- Batch_idx:300/391-- 743.85 samples/sec-- Loss:0.34 -- Error1:11.69
+Train_Loss = 0.34017096558570864, Train_Err = 11.87
+Val_Loss = 0.6565607335090637, Val_Err = 21.25
+Epoch: [35 | 200]
+Phase:train -- Batch_idx:100/391-- 738.87 samples/sec-- Loss:0.30 -- Error1:10.87
+Phase:train -- Batch_idx:200/391-- 743.93 samples/sec-- Loss:0.32 -- Error1:11.15
+Phase:train -- Batch_idx:300/391-- 745.56 samples/sec-- Loss:0.32 -- Error1:11.36
+Train_Loss = 0.33513264223098754, Train_Err = 11.714
+Val_Loss = 0.6655940913200379, Val_Err = 21.95
+Epoch: [36 | 200]
+Phase:train -- Batch_idx:100/391-- 737.38 samples/sec-- Loss:0.27 -- Error1:9.48
+Phase:train -- Batch_idx:200/391-- 742.17 samples/sec-- Loss:0.30 -- Error1:10.27
+Phase:train -- Batch_idx:300/391-- 743.73 samples/sec-- Loss:0.32 -- Error1:10.96
+Train_Loss = 0.324270164232254, Train_Err = 11.31
+Val_Loss = 0.7469639211654663, Val_Err = 23.76
+Epoch: [37 | 200]
+Phase:train -- Batch_idx:100/391-- 736.99 samples/sec-- Loss:0.27 -- Error1:9.21
+Phase:train -- Batch_idx:200/391-- 741.99 samples/sec-- Loss:0.30 -- Error1:10.18
+Phase:train -- Batch_idx:300/391-- 743.69 samples/sec-- Loss:0.31 -- Error1:10.90
+Train_Loss = 0.32648919082641603, Train_Err = 11.376
+Val_Loss = 0.7309618103027343, Val_Err = 22.78
+Epoch: [38 | 200]
+Phase:train -- Batch_idx:100/391-- 738.55 samples/sec-- Loss:0.30 -- Error1:10.15
+Phase:train -- Batch_idx:200/391-- 743.54 samples/sec-- Loss:0.32 -- Error1:11.00
+Phase:train -- Batch_idx:300/391-- 745.26 samples/sec-- Loss:0.32 -- Error1:11.07
+Train_Loss = 0.3297123869037628, Train_Err = 11.344
+Val_Loss = 0.6411927621841431, Val_Err = 21.46
+Epoch: [39 | 200]
+Phase:train -- Batch_idx:100/391-- 739.04 samples/sec-- Loss:0.27 -- Error1:9.20
+Phase:train -- Batch_idx:200/391-- 743.76 samples/sec-- Loss:0.30 -- Error1:10.52
+Phase:train -- Batch_idx:300/391-- 744.85 samples/sec-- Loss:0.31 -- Error1:11.05
+Train_Loss = 0.3200353557109833, Train_Err = 11.216
+Val_Loss = 0.6207312504768372, Val_Err = 19.58
+Epoch: [40 | 200]
+Phase:train -- Batch_idx:100/391-- 737.51 samples/sec-- Loss:0.27 -- Error1:9.30
+Phase:train -- Batch_idx:200/391-- 742.53 samples/sec-- Loss:0.30 -- Error1:10.34
+Phase:train -- Batch_idx:300/391-- 744.25 samples/sec-- Loss:0.31 -- Error1:10.88
+Train_Loss = 0.3211226276016235, Train_Err = 11.158
+Val_Loss = 0.6096373692512512, Val_Err = 19.52
+Epoch: [41 | 200]
+Phase:train -- Batch_idx:100/391-- 736.79 samples/sec-- Loss:0.29 -- Error1:10.35
+Phase:train -- Batch_idx:200/391-- 741.96 samples/sec-- Loss:0.30 -- Error1:10.37
+Phase:train -- Batch_idx:300/391-- 743.74 samples/sec-- Loss:0.31 -- Error1:11.02
+Train_Loss = 0.32046101238250735, Train_Err = 11.224
+Val_Loss = 0.7424650617599488, Val_Err = 23.15
+Epoch: [42 | 200]
+Phase:train -- Batch_idx:100/391-- 739.68 samples/sec-- Loss:0.25 -- Error1:8.52
+Phase:train -- Batch_idx:200/391-- 744.41 samples/sec-- Loss:0.28 -- Error1:9.60
+Phase:train -- Batch_idx:300/391-- 746.05 samples/sec-- Loss:0.30 -- Error1:10.34
+Train_Loss = 0.312013437538147, Train_Err = 10.946
+Val_Loss = 0.6108945237159729, Val_Err = 20.07
+Epoch: [43 | 200]
+Phase:train -- Batch_idx:100/391-- 738.55 samples/sec-- Loss:0.27 -- Error1:9.22
+Phase:train -- Batch_idx:200/391-- 743.06 samples/sec-- Loss:0.29 -- Error1:10.18
+Phase:train -- Batch_idx:300/391-- 744.70 samples/sec-- Loss:0.31 -- Error1:10.63
+Train_Loss = 0.3147933234405518, Train_Err = 10.898
+Val_Loss = 0.6345168856620789, Val_Err = 21.08
+Epoch: [44 | 200]
+Phase:train -- Batch_idx:100/391-- 736.92 samples/sec-- Loss:0.26 -- Error1:9.24
+Phase:train -- Batch_idx:200/391-- 742.06 samples/sec-- Loss:0.29 -- Error1:10.48
+Phase:train -- Batch_idx:300/391-- 743.78 samples/sec-- Loss:0.31 -- Error1:10.83
+Train_Loss = 0.31404662984848025, Train_Err = 11.05
+Val_Loss = 0.5630023441314698, Val_Err = 18.49
+Epoch: [45 | 200]
+Phase:train -- Batch_idx:100/391-- 737.18 samples/sec-- Loss:0.26 -- Error1:9.24
+Phase:train -- Batch_idx:200/391-- 742.43 samples/sec-- Loss:0.28 -- Error1:9.89
+Phase:train -- Batch_idx:300/391-- 744.64 samples/sec-- Loss:0.30 -- Error1:10.34
+Train_Loss = 0.3084025968170166, Train_Err = 10.772
+Val_Loss = 0.689593985080719, Val_Err = 21.75
+Epoch: [46 | 200]
+Phase:train -- Batch_idx:100/391-- 739.38 samples/sec-- Loss:0.26 -- Error1:9.15
+Phase:train -- Batch_idx:200/391-- 744.09 samples/sec-- Loss:0.30 -- Error1:10.38
+Phase:train -- Batch_idx:300/391-- 745.49 samples/sec-- Loss:0.31 -- Error1:10.81
+Train_Loss = 0.31322837433815004, Train_Err = 11.012
+Val_Loss = 0.7654003240585328, Val_Err = 22.92
+Epoch: [47 | 200]
+Phase:train -- Batch_idx:100/391-- 738.02 samples/sec-- Loss:0.28 -- Error1:10.05
+Phase:train -- Batch_idx:200/391-- 742.75 samples/sec-- Loss:0.29 -- Error1:10.11
+Phase:train -- Batch_idx:300/391-- 744.29 samples/sec-- Loss:0.30 -- Error1:10.48
+Train_Loss = 0.308962547416687, Train_Err = 10.882
+Val_Loss = 0.6103657878398895, Val_Err = 19.06
+Epoch: [48 | 200]
+Phase:train -- Batch_idx:100/391-- 737.83 samples/sec-- Loss:0.23 -- Error1:7.80
+Phase:train -- Batch_idx:200/391-- 742.57 samples/sec-- Loss:0.27 -- Error1:9.14
+Phase:train -- Batch_idx:300/391-- 744.21 samples/sec-- Loss:0.28 -- Error1:9.58
+Train_Loss = 0.28954471084594724, Train_Err = 9.91
+Val_Loss = 0.6870157819747925, Val_Err = 21.36
+Epoch: [49 | 200]
+Phase:train -- Batch_idx:100/391-- 738.37 samples/sec-- Loss:0.26 -- Error1:8.63
+Phase:train -- Batch_idx:200/391-- 743.90 samples/sec-- Loss:0.28 -- Error1:9.77
+Phase:train -- Batch_idx:300/391-- 745.70 samples/sec-- Loss:0.29 -- Error1:10.08
+Train_Loss = 0.30353133114814757, Train_Err = 10.456
+Val_Loss = 0.6483535524368286, Val_Err = 20.78
+Epoch: [50 | 200]
+Phase:train -- Batch_idx:100/391-- 739.02 samples/sec-- Loss:0.27 -- Error1:9.35
+Phase:train -- Batch_idx:200/391-- 743.89 samples/sec-- Loss:0.28 -- Error1:9.83
+Phase:train -- Batch_idx:300/391-- 745.15 samples/sec-- Loss:0.30 -- Error1:10.45
+Train_Loss = 0.30563637775421143, Train_Err = 10.594
+Val_Loss = 0.7619736282348633, Val_Err = 23.35
+Epoch: [51 | 200]
+Phase:train -- Batch_idx:100/391-- 739.12 samples/sec-- Loss:0.25 -- Error1:8.77
+Phase:train -- Batch_idx:200/391-- 743.89 samples/sec-- Loss:0.28 -- Error1:9.86
+Phase:train -- Batch_idx:300/391-- 745.59 samples/sec-- Loss:0.29 -- Error1:10.36
+Train_Loss = 0.3017223823928833, Train_Err = 10.592
+Val_Loss = 0.5923080068588257, Val_Err = 19.21
+Epoch: [52 | 200]
+Phase:train -- Batch_idx:100/391-- 738.62 samples/sec-- Loss:0.27 -- Error1:9.44
+Phase:train -- Batch_idx:200/391-- 743.60 samples/sec-- Loss:0.28 -- Error1:9.83
+Phase:train -- Batch_idx:300/391-- 745.18 samples/sec-- Loss:0.29 -- Error1:10.21
+Train_Loss = 0.2965652284526825, Train_Err = 10.338
+Val_Loss = 0.7084122749328613, Val_Err = 22.04
+Epoch: [53 | 200]
+Phase:train -- Batch_idx:100/391-- 740.57 samples/sec-- Loss:0.24 -- Error1:8.34
+Phase:train -- Batch_idx:200/391-- 745.52 samples/sec-- Loss:0.27 -- Error1:9.44
+Phase:train -- Batch_idx:300/391-- 747.23 samples/sec-- Loss:0.29 -- Error1:9.91
+Train_Loss = 0.29436782791137694, Train_Err = 10.156
+Val_Loss = 0.850408687210083, Val_Err = 24.96
+Epoch: [54 | 200]
+Phase:train -- Batch_idx:100/391-- 740.48 samples/sec-- Loss:0.26 -- Error1:9.09
+Phase:train -- Batch_idx:200/391-- 744.70 samples/sec-- Loss:0.27 -- Error1:9.52
+Phase:train -- Batch_idx:300/391-- 746.12 samples/sec-- Loss:0.29 -- Error1:10.10
+Train_Loss = 0.2951574536895752, Train_Err = 10.33
+Val_Loss = 0.6787238556861878, Val_Err = 21.54
+Epoch: [55 | 200]
+Phase:train -- Batch_idx:100/391-- 738.12 samples/sec-- Loss:0.25 -- Error1:8.75
+Phase:train -- Batch_idx:200/391-- 743.52 samples/sec-- Loss:0.27 -- Error1:9.58
+Phase:train -- Batch_idx:300/391-- 745.37 samples/sec-- Loss:0.29 -- Error1:10.02
+Train_Loss = 0.29963391973495485, Train_Err = 10.456
+Val_Loss = 0.6857618852615357, Val_Err = 22.25
+Epoch: [56 | 200]
+Phase:train -- Batch_idx:100/391-- 739.87 samples/sec-- Loss:0.24 -- Error1:8.23
+Phase:train -- Batch_idx:200/391-- 744.51 samples/sec-- Loss:0.26 -- Error1:9.05
+Phase:train -- Batch_idx:300/391-- 746.69 samples/sec-- Loss:0.28 -- Error1:9.65
+Train_Loss = 0.2887163320636749, Train_Err = 10.076
+Val_Loss = 0.5914672021865844, Val_Err = 19.55
+Epoch: [57 | 200]
+Phase:train -- Batch_idx:100/391-- 741.83 samples/sec-- Loss:0.26 -- Error1:9.09
+Phase:train -- Batch_idx:200/391-- 746.58 samples/sec-- Loss:0.28 -- Error1:9.75
+Phase:train -- Batch_idx:300/391-- 748.13 samples/sec-- Loss:0.29 -- Error1:9.93
+Train_Loss = 0.2941485230541229, Train_Err = 10.248
+Val_Loss = 0.6401746591567993, Val_Err = 20.38
+Epoch: [58 | 200]
+Phase:train -- Batch_idx:100/391-- 739.27 samples/sec-- Loss:0.26 -- Error1:8.77
+Phase:train -- Batch_idx:200/391-- 744.18 samples/sec-- Loss:0.27 -- Error1:9.50
+Phase:train -- Batch_idx:300/391-- 745.90 samples/sec-- Loss:0.28 -- Error1:9.93
+Train_Loss = 0.2916938262271881, Train_Err = 10.192
+Val_Loss = 0.5577247022628784, Val_Err = 18.47
+Epoch: [59 | 200]
+Phase:train -- Batch_idx:100/391-- 738.63 samples/sec-- Loss:0.23 -- Error1:7.95
+Phase:train -- Batch_idx:200/391-- 743.83 samples/sec-- Loss:0.27 -- Error1:9.20
+Phase:train -- Batch_idx:300/391-- 745.67 samples/sec-- Loss:0.28 -- Error1:9.61
+Train_Loss = 0.2876279226112366, Train_Err = 9.946
+Val_Loss = 0.6108595890045166, Val_Err = 19.38
+Epoch: [60 | 200]
+Phase:train -- Batch_idx:100/391-- 739.55 samples/sec-- Loss:0.24 -- Error1:8.31
+Phase:train -- Batch_idx:200/391-- 745.25 samples/sec-- Loss:0.27 -- Error1:9.16
+Phase:train -- Batch_idx:300/391-- 747.18 samples/sec-- Loss:0.28 -- Error1:9.60
+Train_Loss = 0.28421707735061646, Train_Err = 9.838
+Val_Loss = 0.9431894737243652, Val_Err = 25.73
+Epoch: [61 | 200]
+Phase:train -- Batch_idx:100/391-- 741.27 samples/sec-- Loss:0.26 -- Error1:8.85
+Phase:train -- Batch_idx:200/391-- 746.20 samples/sec-- Loss:0.26 -- Error1:9.00
+Phase:train -- Batch_idx:300/391-- 747.37 samples/sec-- Loss:0.28 -- Error1:9.55
+Train_Loss = 0.29195976490020753, Train_Err = 10.004
+Val_Loss = 0.5923353492736816, Val_Err = 19.65
+Epoch: [62 | 200]
+Phase:train -- Batch_idx:100/391-- 740.56 samples/sec-- Loss:0.24 -- Error1:8.22
+Phase:train -- Batch_idx:200/391-- 745.29 samples/sec-- Loss:0.27 -- Error1:9.38
+Phase:train -- Batch_idx:300/391-- 697.01 samples/sec-- Loss:0.28 -- Error1:9.68
+Train_Loss = 0.28789655508041384, Train_Err = 9.954
+Val_Loss = 0.7279374277114868, Val_Err = 21.53
+Epoch: [63 | 200]
+Phase:train -- Batch_idx:100/391-- 740.50 samples/sec-- Loss:0.25 -- Error1:8.52
+Phase:train -- Batch_idx:200/391-- 745.26 samples/sec-- Loss:0.27 -- Error1:9.20
+Phase:train -- Batch_idx:300/391-- 746.81 samples/sec-- Loss:0.28 -- Error1:9.85
+Train_Loss = 0.2902192269897461, Train_Err = 10.08
+Val_Loss = 0.5520208048820495, Val_Err = 18.05
+Epoch: [64 | 200]
+Phase:train -- Batch_idx:100/391-- 741.06 samples/sec-- Loss:0.22 -- Error1:7.45
+Phase:train -- Batch_idx:200/391-- 746.09 samples/sec-- Loss:0.24 -- Error1:8.47
+Phase:train -- Batch_idx:300/391-- 747.80 samples/sec-- Loss:0.27 -- Error1:9.43
+Train_Loss = 0.2815172494697571, Train_Err = 9.746
+Val_Loss = 0.9151622943878174, Val_Err = 25.1
+Epoch: [65 | 200]
+Phase:train -- Batch_idx:100/391-- 741.25 samples/sec-- Loss:0.24 -- Error1:8.32
+Phase:train -- Batch_idx:200/391-- 745.55 samples/sec-- Loss:0.26 -- Error1:8.93
+Phase:train -- Batch_idx:300/391-- 746.87 samples/sec-- Loss:0.27 -- Error1:9.30
+Train_Loss = 0.281296041727066, Train_Err = 9.63
+Val_Loss = 0.6910025106430053, Val_Err = 21.11
+Epoch: [66 | 200]
+Phase:train -- Batch_idx:100/391-- 739.15 samples/sec-- Loss:0.24 -- Error1:7.91
+Phase:train -- Batch_idx:200/391-- 744.04 samples/sec-- Loss:0.26 -- Error1:8.62
+Phase:train -- Batch_idx:300/391-- 745.67 samples/sec-- Loss:0.27 -- Error1:9.26
+Train_Loss = 0.2770654945468903, Train_Err = 9.468
+Val_Loss = 0.6166974407196045, Val_Err = 19.92
+Epoch: [67 | 200]
+Phase:train -- Batch_idx:100/391-- 738.44 samples/sec-- Loss:0.26 -- Error1:9.06
+Phase:train -- Batch_idx:200/391-- 743.67 samples/sec-- Loss:0.27 -- Error1:9.30
+Phase:train -- Batch_idx:300/391-- 745.99 samples/sec-- Loss:0.28 -- Error1:9.77
+Train_Loss = 0.28739034482955933, Train_Err = 9.974
+Val_Loss = 0.5783999067306519, Val_Err = 18.99
+Epoch: [68 | 200]
+Phase:train -- Batch_idx:100/391-- 741.57 samples/sec-- Loss:0.24 -- Error1:8.36
+Phase:train -- Batch_idx:200/391-- 746.44 samples/sec-- Loss:0.26 -- Error1:9.15
+Phase:train -- Batch_idx:300/391-- 748.08 samples/sec-- Loss:0.27 -- Error1:9.48
+Train_Loss = 0.2840673695373535, Train_Err = 9.894
+Val_Loss = 0.6668834661960602, Val_Err = 21.22
+Epoch: [69 | 200]
+Phase:train -- Batch_idx:100/391-- 739.50 samples/sec-- Loss:0.23 -- Error1:8.02
+Phase:train -- Batch_idx:200/391-- 744.28 samples/sec-- Loss:0.25 -- Error1:8.55
+Phase:train -- Batch_idx:300/391-- 745.91 samples/sec-- Loss:0.27 -- Error1:9.21
+Train_Loss = 0.2753002125263214, Train_Err = 9.554
+Val_Loss = 0.6300998286247254, Val_Err = 19.86
+Epoch: [70 | 200]
+Phase:train -- Batch_idx:100/391-- 740.06 samples/sec-- Loss:0.22 -- Error1:7.64
+Phase:train -- Batch_idx:200/391-- 744.83 samples/sec-- Loss:0.25 -- Error1:8.75
+Phase:train -- Batch_idx:300/391-- 746.46 samples/sec-- Loss:0.27 -- Error1:9.30
+Train_Loss = 0.27538962235927583, Train_Err = 9.51
+Val_Loss = 0.7068708769321441, Val_Err = 21.17
+Epoch: [71 | 200]
+Phase:train -- Batch_idx:100/391-- 740.66 samples/sec-- Loss:0.22 -- Error1:7.49
+Phase:train -- Batch_idx:200/391-- 746.05 samples/sec-- Loss:0.25 -- Error1:8.69
+Phase:train -- Batch_idx:300/391-- 747.96 samples/sec-- Loss:0.27 -- Error1:9.30
+Train_Loss = 0.28077736084461213, Train_Err = 9.71
+Val_Loss = 0.7287638298988343, Val_Err = 22.64
+Epoch: [72 | 200]
+Phase:train -- Batch_idx:100/391-- 741.83 samples/sec-- Loss:0.24 -- Error1:8.40
+Phase:train -- Batch_idx:200/391-- 746.68 samples/sec-- Loss:0.26 -- Error1:9.00
+Phase:train -- Batch_idx:300/391-- 747.73 samples/sec-- Loss:0.28 -- Error1:9.54
+Train_Loss = 0.28193438429832457, Train_Err = 9.72
+Val_Loss = 0.5274687538146973, Val_Err = 16.98
+Epoch: [73 | 200]
+Phase:train -- Batch_idx:100/391-- 739.45 samples/sec-- Loss:0.22 -- Error1:7.31
+Phase:train -- Batch_idx:200/391-- 744.67 samples/sec-- Loss:0.25 -- Error1:8.25
+Phase:train -- Batch_idx:300/391-- 746.35 samples/sec-- Loss:0.26 -- Error1:8.67
+Train_Loss = 0.26891952849388123, Train_Err = 9.138
+Val_Loss = 0.6210339192390442, Val_Err = 19.25
+Epoch: [74 | 200]
+Phase:train -- Batch_idx:100/391-- 740.55 samples/sec-- Loss:0.26 -- Error1:9.03
+Phase:train -- Batch_idx:200/391-- 745.26 samples/sec-- Loss:0.26 -- Error1:8.86
+Phase:train -- Batch_idx:300/391-- 746.90 samples/sec-- Loss:0.27 -- Error1:9.38
+Train_Loss = 0.280629302110672, Train_Err = 9.64
+Val_Loss = 0.6428267972230911, Val_Err = 19.89
+Epoch: [75 | 200]
+Phase:train -- Batch_idx:100/391-- 741.43 samples/sec-- Loss:0.24 -- Error1:8.20
+Phase:train -- Batch_idx:200/391-- 746.13 samples/sec-- Loss:0.26 -- Error1:8.90
+Phase:train -- Batch_idx:300/391-- 747.67 samples/sec-- Loss:0.27 -- Error1:9.17
+Train_Loss = 0.2743406835746765, Train_Err = 9.44
+Val_Loss = 0.6489012891769409, Val_Err = 20.58
+Epoch: [76 | 200]
+Phase:train -- Batch_idx:100/391-- 740.70 samples/sec-- Loss:0.24 -- Error1:8.05
+Phase:train -- Batch_idx:200/391-- 745.16 samples/sec-- Loss:0.25 -- Error1:8.57
+Phase:train -- Batch_idx:300/391-- 746.69 samples/sec-- Loss:0.27 -- Error1:9.37
+Train_Loss = 0.2804861300468445, Train_Err = 9.668
+Val_Loss = 0.5587430042266845, Val_Err = 17.97
+Epoch: [77 | 200]
+Phase:train -- Batch_idx:100/391-- 739.70 samples/sec-- Loss:0.23 -- Error1:8.05
+Phase:train -- Batch_idx:200/391-- 744.54 samples/sec-- Loss:0.25 -- Error1:8.62
+Phase:train -- Batch_idx:300/391-- 746.23 samples/sec-- Loss:0.26 -- Error1:9.13
+Train_Loss = 0.2747073164367676, Train_Err = 9.518
+Val_Loss = 0.7728402195453644, Val_Err = 23.84
+Epoch: [78 | 200]
+Phase:train -- Batch_idx:100/391-- 739.85 samples/sec-- Loss:0.22 -- Error1:7.48
+Phase:train -- Batch_idx:200/391-- 744.88 samples/sec-- Loss:0.25 -- Error1:8.51
+Phase:train -- Batch_idx:300/391-- 746.84 samples/sec-- Loss:0.27 -- Error1:9.21
+Train_Loss = 0.2717973966217041, Train_Err = 9.246
+Val_Loss = 0.7366513107299805, Val_Err = 22.28
+Epoch: [79 | 200]
+Phase:train -- Batch_idx:100/391-- 741.67 samples/sec-- Loss:0.23 -- Error1:8.03
+Phase:train -- Batch_idx:200/391-- 746.41 samples/sec-- Loss:0.25 -- Error1:8.63
+Phase:train -- Batch_idx:300/391-- 748.09 samples/sec-- Loss:0.26 -- Error1:9.19
+Train_Loss = 0.2749487068939209, Train_Err = 9.628
+Val_Loss = 0.6814340198516846, Val_Err = 21.12
+Epoch: [80 | 200]
+Phase:train -- Batch_idx:100/391-- 740.60 samples/sec-- Loss:0.23 -- Error1:8.11
+Phase:train -- Batch_idx:200/391-- 745.31 samples/sec-- Loss:0.25 -- Error1:8.64
+Phase:train -- Batch_idx:300/391-- 746.98 samples/sec-- Loss:0.26 -- Error1:9.20
+Train_Loss = 0.2720108566713333, Train_Err = 9.382
+Val_Loss = 0.624715204334259, Val_Err = 20.08
+Epoch: [81 | 200]
+Phase:train -- Batch_idx:100/391-- 739.20 samples/sec-- Loss:0.23 -- Error1:7.87
+Phase:train -- Batch_idx:200/391-- 744.30 samples/sec-- Loss:0.25 -- Error1:8.65
+Phase:train -- Batch_idx:300/391-- 746.08 samples/sec-- Loss:0.26 -- Error1:8.98
+Train_Loss = 0.26945223541259766, Train_Err = 9.3
+Val_Loss = 0.658468479347229, Val_Err = 20.02
+Epoch: [82 | 200]
+Phase:train -- Batch_idx:100/391-- 740.33 samples/sec-- Loss:0.23 -- Error1:8.06
+Phase:train -- Batch_idx:200/391-- 746.15 samples/sec-- Loss:0.25 -- Error1:8.62
+Phase:train -- Batch_idx:300/391-- 748.07 samples/sec-- Loss:0.26 -- Error1:8.93
+Train_Loss = 0.2715296437740326, Train_Err = 9.36
+Val_Loss = 0.9522214227676392, Val_Err = 27.24
+Epoch: [83 | 200]
+Phase:train -- Batch_idx:100/391-- 741.94 samples/sec-- Loss:0.22 -- Error1:7.52
+Phase:train -- Batch_idx:200/391-- 746.89 samples/sec-- Loss:0.25 -- Error1:8.66
+Phase:train -- Batch_idx:300/391-- 748.02 samples/sec-- Loss:0.27 -- Error1:9.25
+Train_Loss = 0.2711574659442902, Train_Err = 9.336
+Val_Loss = 0.5618025945663452, Val_Err = 17.79
+Epoch: [84 | 200]
+Phase:train -- Batch_idx:100/391-- 740.54 samples/sec-- Loss:0.24 -- Error1:8.45
+Phase:train -- Batch_idx:200/391-- 745.15 samples/sec-- Loss:0.26 -- Error1:9.17
+Phase:train -- Batch_idx:300/391-- 746.79 samples/sec-- Loss:0.27 -- Error1:9.35
+Train_Loss = 0.27693333439826967, Train_Err = 9.608
+Val_Loss = 0.7614450637817383, Val_Err = 23.33
+Epoch: [85 | 200]
+Phase:train -- Batch_idx:100/391-- 740.51 samples/sec-- Loss:0.23 -- Error1:7.96
+Phase:train -- Batch_idx:200/391-- 745.52 samples/sec-- Loss:0.26 -- Error1:8.73
+Phase:train -- Batch_idx:300/391-- 747.02 samples/sec-- Loss:0.26 -- Error1:9.07
+Train_Loss = 0.27106757431983947, Train_Err = 9.242
+Val_Loss = 0.6539664872169495, Val_Err = 20.81
+Epoch: [86 | 200]
+Phase:train -- Batch_idx:100/391-- 742.05 samples/sec-- Loss:0.22 -- Error1:7.73
+Phase:train -- Batch_idx:200/391-- 746.89 samples/sec-- Loss:0.24 -- Error1:8.35
+Phase:train -- Batch_idx:300/391-- 748.54 samples/sec-- Loss:0.26 -- Error1:9.03
+Train_Loss = 0.2667535054016113, Train_Err = 9.36
+Val_Loss = 0.5591796485900878, Val_Err = 18.05
+Epoch: [87 | 200]
+Phase:train -- Batch_idx:100/391-- 740.90 samples/sec-- Loss:0.23 -- Error1:8.06
+Phase:train -- Batch_idx:200/391-- 745.16 samples/sec-- Loss:0.26 -- Error1:8.84
+Phase:train -- Batch_idx:300/391-- 746.64 samples/sec-- Loss:0.27 -- Error1:9.25
+Train_Loss = 0.2773731279373169, Train_Err = 9.464
+Val_Loss = 0.5433709107398986, Val_Err = 17.4
+Epoch: [88 | 200]
+Phase:train -- Batch_idx:100/391-- 739.85 samples/sec-- Loss:0.22 -- Error1:7.34
+Phase:train -- Batch_idx:200/391-- 745.00 samples/sec-- Loss:0.24 -- Error1:8.27
+Phase:train -- Batch_idx:300/391-- 746.75 samples/sec-- Loss:0.26 -- Error1:8.82
+Train_Loss = 0.26517562929153443, Train_Err = 9.168
+Val_Loss = 0.631229902267456, Val_Err = 20.25
+Epoch: [89 | 200]
+Phase:train -- Batch_idx:100/391-- 740.55 samples/sec-- Loss:0.22 -- Error1:7.69
+Phase:train -- Batch_idx:200/391-- 745.27 samples/sec-- Loss:0.24 -- Error1:8.33
+Phase:train -- Batch_idx:300/391-- 747.40 samples/sec-- Loss:0.26 -- Error1:8.90
+Train_Loss = 0.2680195944595337, Train_Err = 9.236
+Val_Loss = 0.6745084470748901, Val_Err = 22.07
+Epoch: [90 | 200]
+Phase:train -- Batch_idx:100/391-- 741.80 samples/sec-- Loss:0.23 -- Error1:7.91
+Phase:train -- Batch_idx:200/391-- 746.69 samples/sec-- Loss:0.24 -- Error1:8.27
+Phase:train -- Batch_idx:300/391-- 748.44 samples/sec-- Loss:0.26 -- Error1:8.81
+Train_Loss = 0.2685921150302887, Train_Err = 9.266
+Val_Loss = 0.7579528593063355, Val_Err = 24.16
+Epoch: [91 | 200]
+Phase:train -- Batch_idx:100/391-- 740.69 samples/sec-- Loss:0.21 -- Error1:6.99
+Phase:train -- Batch_idx:200/391-- 745.45 samples/sec-- Loss:0.24 -- Error1:8.30
+Phase:train -- Batch_idx:300/391-- 747.08 samples/sec-- Loss:0.26 -- Error1:8.95
+Train_Loss = 0.2647603702545166, Train_Err = 9.108
+Val_Loss = 0.5935239141464234, Val_Err = 18.84
+Epoch: [92 | 200]
+Phase:train -- Batch_idx:100/391-- 740.56 samples/sec-- Loss:0.22 -- Error1:7.54
+Phase:train -- Batch_idx:200/391-- 745.18 samples/sec-- Loss:0.25 -- Error1:8.57
+Phase:train -- Batch_idx:300/391-- 746.78 samples/sec-- Loss:0.26 -- Error1:8.89
+Train_Loss = 0.2699358699131012, Train_Err = 9.246
+Val_Loss = 0.6684912048339844, Val_Err = 21.28
+Epoch: [93 | 200]
+Phase:train -- Batch_idx:100/391-- 739.57 samples/sec-- Loss:0.23 -- Error1:7.73
+Phase:train -- Batch_idx:200/391-- 745.57 samples/sec-- Loss:0.24 -- Error1:8.23
+Phase:train -- Batch_idx:300/391-- 747.61 samples/sec-- Loss:0.26 -- Error1:8.91
+Train_Loss = 0.26110405358314515, Train_Err = 8.97
+Val_Loss = 0.6336396183013916, Val_Err = 19.25
+Epoch: [94 | 200]
+Phase:train -- Batch_idx:100/391-- 741.67 samples/sec-- Loss:0.21 -- Error1:7.52
+Phase:train -- Batch_idx:200/391-- 746.46 samples/sec-- Loss:0.24 -- Error1:8.23
+Phase:train -- Batch_idx:300/391-- 747.64 samples/sec-- Loss:0.26 -- Error1:8.75
+Train_Loss = 0.2665493565940857, Train_Err = 9.038
+Val_Loss = 0.7745354964256287, Val_Err = 23.11
+Epoch: [95 | 200]
+Phase:train -- Batch_idx:100/391-- 740.36 samples/sec-- Loss:0.22 -- Error1:7.45
+Phase:train -- Batch_idx:200/391-- 745.46 samples/sec-- Loss:0.24 -- Error1:8.31
+Phase:train -- Batch_idx:300/391-- 747.02 samples/sec-- Loss:0.26 -- Error1:8.97
+Train_Loss = 0.26944310853004455, Train_Err = 9.326
+Val_Loss = 0.6576112701416016, Val_Err = 20.18
+Epoch: [96 | 200]
+Phase:train -- Batch_idx:100/391-- 740.79 samples/sec-- Loss:0.22 -- Error1:7.90
+Phase:train -- Batch_idx:200/391-- 745.37 samples/sec-- Loss:0.24 -- Error1:8.34
+Phase:train -- Batch_idx:300/391-- 746.86 samples/sec-- Loss:0.26 -- Error1:8.84
+Train_Loss = 0.2639818359470367, Train_Err = 9.07
+Val_Loss = 0.6798001769065857, Val_Err = 21.12
+Epoch: [97 | 200]
+Phase:train -- Batch_idx:100/391-- 742.14 samples/sec-- Loss:0.22 -- Error1:7.88
+Phase:train -- Batch_idx:200/391-- 746.85 samples/sec-- Loss:0.25 -- Error1:8.69
+Phase:train -- Batch_idx:300/391-- 748.43 samples/sec-- Loss:0.26 -- Error1:9.18
+Train_Loss = 0.2712333034563065, Train_Err = 9.448
+Val_Loss = 0.6360633086204529, Val_Err = 19.7
+Epoch: [98 | 200]
+Phase:train -- Batch_idx:100/391-- 741.61 samples/sec-- Loss:0.22 -- Error1:7.22
+Phase:train -- Batch_idx:200/391-- 745.86 samples/sec-- Loss:0.23 -- Error1:7.80
+Phase:train -- Batch_idx:300/391-- 747.26 samples/sec-- Loss:0.25 -- Error1:8.52
+Train_Loss = 0.2586958496761322, Train_Err = 8.868
+Val_Loss = 0.7669864828586579, Val_Err = 23.1
+Epoch: [99 | 200]
+Phase:train -- Batch_idx:100/391-- 741.04 samples/sec-- Loss:0.23 -- Error1:7.64
+Phase:train -- Batch_idx:200/391-- 745.62 samples/sec-- Loss:0.24 -- Error1:8.29
+Phase:train -- Batch_idx:300/391-- 747.24 samples/sec-- Loss:0.26 -- Error1:8.79
+Train_Loss = 0.2630004335165024, Train_Err = 9.054
+Val_Loss = 0.6120017419815064, Val_Err = 18.51
+Epoch: [100 | 200]
+Phase:train -- Batch_idx:100/391-- 740.67 samples/sec-- Loss:0.13 -- Error1:3.95
+Phase:train -- Batch_idx:200/391-- 745.56 samples/sec-- Loss:0.10 -- Error1:3.12
+Phase:train -- Batch_idx:300/391-- 747.42 samples/sec-- Loss:0.09 -- Error1:2.70
+Train_Loss = 0.08329778680562973, Train_Err = 2.486
+Val_Loss = 0.3741131373882294, Val_Err = 11.62
+Epoch: [101 | 200]
+Phase:train -- Batch_idx:100/391-- 739.60 samples/sec-- Loss:0.03 -- Error1:0.52
+Phase:train -- Batch_idx:200/391-- 744.00 samples/sec-- Loss:0.03 -- Error1:0.53
+Phase:train -- Batch_idx:300/391-- 745.63 samples/sec-- Loss:0.03 -- Error1:0.52
+Train_Loss = 0.025830159640014172, Train_Err = 0.5
+Val_Loss = 0.3899566546201706, Val_Err = 11.48
+Epoch: [102 | 200]
+Phase:train -- Batch_idx:100/391-- 736.93 samples/sec-- Loss:0.02 -- Error1:0.15
+Phase:train -- Batch_idx:200/391-- 742.07 samples/sec-- Loss:0.01 -- Error1:0.12
+Phase:train -- Batch_idx:300/391-- 743.89 samples/sec-- Loss:0.01 -- Error1:0.12
+Train_Loss = 0.01353191226184368, Train_Err = 0.124
+Val_Loss = 0.39841116034984586, Val_Err = 11.33
+Epoch: [103 | 200]
+Phase:train -- Batch_idx:100/391-- 736.97 samples/sec-- Loss:0.01 -- Error1:0.08
+Phase:train -- Batch_idx:200/391-- 742.05 samples/sec-- Loss:0.01 -- Error1:0.07
+Phase:train -- Batch_idx:300/391-- 743.76 samples/sec-- Loss:0.01 -- Error1:0.07
+Train_Loss = 0.009157551789432764, Train_Err = 0.07
+Val_Loss = 0.40756395404338835, Val_Err = 11.2
+Epoch: [104 | 200]
+Phase:train -- Batch_idx:100/391-- 737.69 samples/sec-- Loss:0.01 -- Error1:0.03
+Phase:train -- Batch_idx:200/391-- 743.23 samples/sec-- Loss:0.01 -- Error1:0.04
+Phase:train -- Batch_idx:300/391-- 745.18 samples/sec-- Loss:0.01 -- Error1:0.04
+Train_Loss = 0.007128858125209809, Train_Err = 0.038
+Val_Loss = 0.41119636089801787, Val_Err = 11.19
+Epoch: [105 | 200]
+Phase:train -- Batch_idx:100/391-- 738.38 samples/sec-- Loss:0.01 -- Error1:0.02
+Phase:train -- Batch_idx:200/391-- 743.56 samples/sec-- Loss:0.01 -- Error1:0.02
+Phase:train -- Batch_idx:300/391-- 744.77 samples/sec-- Loss:0.01 -- Error1:0.03
+Train_Loss = 0.00554933209836483, Train_Err = 0.024
+Val_Loss = 0.41306278932094576, Val_Err = 11.03
+Epoch: [106 | 200]
+Phase:train -- Batch_idx:100/391-- 737.02 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.09 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 743.83 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.004785737375766039, Train_Err = 0.008
+Val_Loss = 0.41096826343536375, Val_Err = 10.86
+Epoch: [107 | 200]
+Phase:train -- Batch_idx:100/391-- 737.44 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 742.50 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 744.24 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.003916889624260366, Train_Err = 0.004
+Val_Loss = 0.41711441822052003, Val_Err = 10.9
+Epoch: [108 | 200]
+Phase:train -- Batch_idx:100/391-- 739.79 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.52 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.99 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.003965306343287229, Train_Err = 0.014
+Val_Loss = 0.4172055190563202, Val_Err = 10.82
+Epoch: [109 | 200]
+Phase:train -- Batch_idx:100/391-- 737.62 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 742.63 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 744.38 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0034643030127882958, Train_Err = 0.006
+Val_Loss = 0.41463259525299073, Val_Err = 10.84
+Epoch: [110 | 200]
+Phase:train -- Batch_idx:100/391-- 737.12 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 742.29 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.08 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.003473444968909025, Train_Err = 0.01
+Val_Loss = 0.4169761064529419, Val_Err = 10.81
+Epoch: [111 | 200]
+Phase:train -- Batch_idx:100/391-- 737.21 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.40 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.65 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0032437820844352246, Train_Err = 0.0
+Val_Loss = 0.4164254232406616, Val_Err = 10.77
+Epoch: [112 | 200]
+Phase:train -- Batch_idx:100/391-- 738.44 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 743.42 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 745.35 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0030824982810020445, Train_Err = 0.01
+Val_Loss = 0.41631112174987794, Val_Err = 10.65
+Epoch: [113 | 200]
+Phase:train -- Batch_idx:100/391-- 737.08 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.13 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.81 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0028310759203135968, Train_Err = 0.002
+Val_Loss = 0.4157967597007751, Val_Err = 10.7
+Epoch: [114 | 200]
+Phase:train -- Batch_idx:100/391-- 738.05 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.63 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.12 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002779980200827122, Train_Err = 0.002
+Val_Loss = 0.41727134919166564, Val_Err = 10.69
+Epoch: [115 | 200]
+Phase:train -- Batch_idx:100/391-- 737.37 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.84 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.79 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0027060254238545894, Train_Err = 0.002
+Val_Loss = 0.4174372043132782, Val_Err = 10.68
+Epoch: [116 | 200]
+Phase:train -- Batch_idx:100/391-- 739.33 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.56 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.77 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002797490849196911, Train_Err = 0.006
+Val_Loss = 0.41876699392795563, Val_Err = 10.62
+Epoch: [117 | 200]
+Phase:train -- Batch_idx:100/391-- 736.79 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 741.87 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.61 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002669188759624958, Train_Err = 0.002
+Val_Loss = 0.41970321259498594, Val_Err = 10.58
+Epoch: [118 | 200]
+Phase:train -- Batch_idx:100/391-- 736.98 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 741.81 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.49 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.002729656510949135, Train_Err = 0.006
+Val_Loss = 0.4267703505992889, Val_Err = 10.6
+Epoch: [119 | 200]
+Phase:train -- Batch_idx:100/391-- 739.24 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 744.33 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 745.96 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0028038636066019533, Train_Err = 0.006
+Val_Loss = 0.42426349968910215, Val_Err = 10.66
+Epoch: [120 | 200]
+Phase:train -- Batch_idx:100/391-- 737.79 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.62 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.22 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0025395311376452444, Train_Err = 0.0
+Val_Loss = 0.41756835227012634, Val_Err = 10.58
+Epoch: [121 | 200]
+Phase:train -- Batch_idx:100/391-- 737.39 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.24 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.86 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.002627548686899245, Train_Err = 0.004
+Val_Loss = 0.4243385136127472, Val_Err = 10.64
+Epoch: [122 | 200]
+Phase:train -- Batch_idx:100/391-- 737.78 samples/sec-- Loss:0.00 -- Error1:0.02
+Phase:train -- Batch_idx:200/391-- 743.03 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 744.99 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.002471362541988492, Train_Err = 0.008
+Val_Loss = 0.4188832401752472, Val_Err = 10.72
+Epoch: [123 | 200]
+Phase:train -- Batch_idx:100/391-- 739.69 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.52 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.94 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024566953836381434, Train_Err = 0.002
+Val_Loss = 0.41845403656959534, Val_Err = 10.7
+Epoch: [124 | 200]
+Phase:train -- Batch_idx:100/391-- 738.18 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.91 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.48 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002506218947097659, Train_Err = 0.002
+Val_Loss = 0.42179538660049437, Val_Err = 10.8
+Epoch: [125 | 200]
+Phase:train -- Batch_idx:100/391-- 738.05 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.70 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.27 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024907604587078094, Train_Err = 0.002
+Val_Loss = 0.4242495496273041, Val_Err = 10.57
+Epoch: [126 | 200]
+Phase:train -- Batch_idx:100/391-- 738.88 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.01 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.63 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024829621198773385, Train_Err = 0.002
+Val_Loss = 0.423004114484787, Val_Err = 10.69
+Epoch: [127 | 200]
+Phase:train -- Batch_idx:100/391-- 739.57 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.91 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.00229361840672791, Train_Err = 0.0
+Val_Loss = 0.42459359879493713, Val_Err = 10.67
+Epoch: [128 | 200]
+Phase:train -- Batch_idx:100/391-- 738.01 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.59 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.16 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023342962453514336, Train_Err = 0.002
+Val_Loss = 0.4187832658290863, Val_Err = 10.5
+Epoch: [129 | 200]
+Phase:train -- Batch_idx:100/391-- 736.25 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 741.73 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.49 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024000690057128667, Train_Err = 0.002
+Val_Loss = 0.4206003629207611, Val_Err = 10.76
+Epoch: [130 | 200]
+Phase:train -- Batch_idx:100/391-- 739.51 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.21 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.81 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023686818493157623, Train_Err = 0.004
+Val_Loss = 0.4212509252548218, Val_Err = 10.52
+Epoch: [131 | 200]
+Phase:train -- Batch_idx:100/391-- 735.95 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 741.58 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.49 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023797711353003978, Train_Err = 0.0
+Val_Loss = 0.4220758562088013, Val_Err = 10.61
+Epoch: [132 | 200]
+Phase:train -- Batch_idx:100/391-- 737.40 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.52 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.10 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002417338331490755, Train_Err = 0.004
+Val_Loss = 0.41936256890296936, Val_Err = 10.56
+Epoch: [133 | 200]
+Phase:train -- Batch_idx:100/391-- 737.71 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.98 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.02 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002246649293154478, Train_Err = 0.0
+Val_Loss = 0.42077900862693784, Val_Err = 10.6
+Epoch: [134 | 200]
+Phase:train -- Batch_idx:100/391-- 738.71 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.74 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.11 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024826996302604676, Train_Err = 0.002
+Val_Loss = 0.4129914852619171, Val_Err = 10.53
+Epoch: [135 | 200]
+Phase:train -- Batch_idx:100/391-- 737.16 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.11 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.79 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002422305243909359, Train_Err = 0.0
+Val_Loss = 0.420180459022522, Val_Err = 10.52
+Epoch: [136 | 200]
+Phase:train -- Batch_idx:100/391-- 737.22 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.26 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023216145807504656, Train_Err = 0.0
+Val_Loss = 0.4211304462432861, Val_Err = 10.4
+Epoch: [137 | 200]
+Phase:train -- Batch_idx:100/391-- 738.68 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.95 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.65 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023774757051467895, Train_Err = 0.0
+Val_Loss = 0.42133774123191836, Val_Err = 10.5
+Epoch: [138 | 200]
+Phase:train -- Batch_idx:100/391-- 740.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.01 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.26 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002381637388765812, Train_Err = 0.002
+Val_Loss = 0.42011812143325805, Val_Err = 10.61
+Epoch: [139 | 200]
+Phase:train -- Batch_idx:100/391-- 737.76 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.59 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.17 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024008556616306304, Train_Err = 0.002
+Val_Loss = 0.41645177927017213, Val_Err = 10.39
+Epoch: [140 | 200]
+Phase:train -- Batch_idx:100/391-- 737.07 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.42 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.55 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002483475473225117, Train_Err = 0.002
+Val_Loss = 0.41540024070739745, Val_Err = 10.38
+Epoch: [141 | 200]
+Phase:train -- Batch_idx:100/391-- 739.69 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.60 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 746.29 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0024058739195019006, Train_Err = 0.0
+Val_Loss = 0.41972542624473574, Val_Err = 10.57
+Epoch: [142 | 200]
+Phase:train -- Batch_idx:100/391-- 737.65 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.61 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.20 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002264283455312252, Train_Err = 0.0
+Val_Loss = 0.41760274267196656, Val_Err = 10.36
+Epoch: [143 | 200]
+Phase:train -- Batch_idx:100/391-- 737.76 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.74 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.41 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002322291802316904, Train_Err = 0.002
+Val_Loss = 0.4191402656555176, Val_Err = 10.63
+Epoch: [144 | 200]
+Phase:train -- Batch_idx:100/391-- 738.32 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.76 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.70 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002440947234258056, Train_Err = 0.002
+Val_Loss = 0.4215282178878784, Val_Err = 10.48
+Epoch: [145 | 200]
+Phase:train -- Batch_idx:100/391-- 739.97 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.98 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002365401692315936, Train_Err = 0.002
+Val_Loss = 0.4229541452884674, Val_Err = 10.39
+Epoch: [146 | 200]
+Phase:train -- Batch_idx:100/391-- 738.39 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.16 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.85 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022724000707268713, Train_Err = 0.0
+Val_Loss = 0.4176001515388489, Val_Err = 10.52
+Epoch: [147 | 200]
+Phase:train -- Batch_idx:100/391-- 738.23 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.91 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.50 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002297187273725867, Train_Err = 0.002
+Val_Loss = 0.41771737275123594, Val_Err = 10.46
+Epoch: [148 | 200]
+Phase:train -- Batch_idx:100/391-- 739.28 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.15 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.82 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023174412136524915, Train_Err = 0.0
+Val_Loss = 0.4194811174869537, Val_Err = 10.43
+Epoch: [149 | 200]
+Phase:train -- Batch_idx:100/391-- 739.85 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.96 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.24 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.002435576016381383, Train_Err = 0.006
+Val_Loss = 0.42040861105918886, Val_Err = 10.54
+Epoch: [150 | 200]
+Phase:train -- Batch_idx:100/391-- 738.18 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.73 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.23 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023651504369080066, Train_Err = 0.002
+Val_Loss = 0.4209648218154907, Val_Err = 10.41
+Epoch: [151 | 200]
+Phase:train -- Batch_idx:100/391-- 737.81 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.55 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.23 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022860557632893323, Train_Err = 0.002
+Val_Loss = 0.4174175688266754, Val_Err = 10.43
+Epoch: [152 | 200]
+Phase:train -- Batch_idx:100/391-- 739.16 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.04 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.66 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002286607366502285, Train_Err = 0.002
+Val_Loss = 0.4203054451942444, Val_Err = 10.46
+Epoch: [153 | 200]
+Phase:train -- Batch_idx:100/391-- 737.13 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.06 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.74 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023742314998805524, Train_Err = 0.0
+Val_Loss = 0.42112473673820494, Val_Err = 10.4
+Epoch: [154 | 200]
+Phase:train -- Batch_idx:100/391-- 738.39 samples/sec-- Loss:0.00 -- Error1:0.02
+Phase:train -- Batch_idx:200/391-- 742.91 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 744.47 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.00237636924110353, Train_Err = 0.004
+Val_Loss = 0.41527529902458193, Val_Err = 10.41
+Epoch: [155 | 200]
+Phase:train -- Batch_idx:100/391-- 736.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.68 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002399763784110546, Train_Err = 0.0
+Val_Loss = 0.4222654033184052, Val_Err = 10.58
+Epoch: [156 | 200]
+Phase:train -- Batch_idx:100/391-- 739.60 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.43 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.95 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023397122421860697, Train_Err = 0.0
+Val_Loss = 0.41849330716133115, Val_Err = 10.48
+Epoch: [157 | 200]
+Phase:train -- Batch_idx:100/391-- 736.36 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 741.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.61 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002306908645518124, Train_Err = 0.0
+Val_Loss = 0.41698271126747133, Val_Err = 10.5
+Epoch: [158 | 200]
+Phase:train -- Batch_idx:100/391-- 736.81 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.92 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002360848812833428, Train_Err = 0.0
+Val_Loss = 0.4173456268787384, Val_Err = 10.47
+Epoch: [159 | 200]
+Phase:train -- Batch_idx:100/391-- 740.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.81 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 746.27 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0023574390864372252, Train_Err = 0.004
+Val_Loss = 0.4186385257720947, Val_Err = 10.32
+Epoch: [160 | 200]
+Phase:train -- Batch_idx:100/391-- 738.52 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.91 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.24 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002351226570084691, Train_Err = 0.002
+Val_Loss = 0.4192100490093231, Val_Err = 10.48
+Epoch: [161 | 200]
+Phase:train -- Batch_idx:100/391-- 736.38 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 741.76 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.60 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022236250710114835, Train_Err = 0.0
+Val_Loss = 0.41667475175857543, Val_Err = 10.45
+Epoch: [162 | 200]
+Phase:train -- Batch_idx:100/391-- 737.69 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.41 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.12 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002300495493263006, Train_Err = 0.0
+Val_Loss = 0.4163630781650543, Val_Err = 10.41
+Epoch: [163 | 200]
+Phase:train -- Batch_idx:100/391-- 739.48 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.28 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022712207092344763, Train_Err = 0.0
+Val_Loss = 0.42288530559539794, Val_Err = 10.51
+Epoch: [164 | 200]
+Phase:train -- Batch_idx:100/391-- 737.56 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.30 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.86 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002239282273165882, Train_Err = 0.0
+Val_Loss = 0.4172887122154236, Val_Err = 10.44
+Epoch: [165 | 200]
+Phase:train -- Batch_idx:100/391-- 737.48 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.63 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.12 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002387647329196334, Train_Err = 0.0
+Val_Loss = 0.42026802792549134, Val_Err = 10.48
+Epoch: [166 | 200]
+Phase:train -- Batch_idx:100/391-- 736.21 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.03 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.22 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002251149887666106, Train_Err = 0.002
+Val_Loss = 0.4198151853084564, Val_Err = 10.39
+Epoch: [167 | 200]
+Phase:train -- Batch_idx:100/391-- 738.92 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.97 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.37 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002243509008809924, Train_Err = 0.0
+Val_Loss = 0.4163127541542053, Val_Err = 10.48
+Epoch: [168 | 200]
+Phase:train -- Batch_idx:100/391-- 737.59 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.29 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.86 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002354258901178837, Train_Err = 0.002
+Val_Loss = 0.419647465467453, Val_Err = 10.44
+Epoch: [169 | 200]
+Phase:train -- Batch_idx:100/391-- 737.53 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 741.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.53 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0023426239013671873, Train_Err = 0.004
+Val_Loss = 0.4212066255569458, Val_Err = 10.42
+Epoch: [170 | 200]
+Phase:train -- Batch_idx:100/391-- 738.07 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.30 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.11 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023496801269054413, Train_Err = 0.002
+Val_Loss = 0.4197997939109802, Val_Err = 10.67
+Epoch: [171 | 200]
+Phase:train -- Batch_idx:100/391-- 739.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.34 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.62 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022056036613881586, Train_Err = 0.0
+Val_Loss = 0.4208062613964081, Val_Err = 10.41
+Epoch: [172 | 200]
+Phase:train -- Batch_idx:100/391-- 736.92 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.14 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.85 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023184928421676157, Train_Err = 0.002
+Val_Loss = 0.42324215455055236, Val_Err = 10.4
+Epoch: [173 | 200]
+Phase:train -- Batch_idx:100/391-- 737.40 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.22 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.04 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002254424890987575, Train_Err = 0.0
+Val_Loss = 0.4190561608791351, Val_Err = 10.31
+Epoch: [174 | 200]
+Phase:train -- Batch_idx:100/391-- 739.09 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.35 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 746.02 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002292451528608799, Train_Err = 0.002
+Val_Loss = 0.4169566584587097, Val_Err = 10.36
+Epoch: [175 | 200]
+Phase:train -- Batch_idx:100/391-- 737.62 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.65 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.32 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.00230537224419415, Train_Err = 0.002
+Val_Loss = 0.41749306807518005, Val_Err = 10.42
+Epoch: [176 | 200]
+Phase:train -- Batch_idx:100/391-- 736.84 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 741.99 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.75 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002430498880892992, Train_Err = 0.006
+Val_Loss = 0.4180806079864502, Val_Err = 10.46
+Epoch: [177 | 200]
+Phase:train -- Batch_idx:100/391-- 737.88 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 743.19 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.18 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002457432609796524, Train_Err = 0.002
+Val_Loss = 0.4171012298583984, Val_Err = 10.46
+Epoch: [178 | 200]
+Phase:train -- Batch_idx:100/391-- 739.15 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 744.05 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.36 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023534982209652664, Train_Err = 0.004
+Val_Loss = 0.42139464688301087, Val_Err = 10.44
+Epoch: [179 | 200]
+Phase:train -- Batch_idx:100/391-- 737.80 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.80 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.58 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002252111087143421, Train_Err = 0.0
+Val_Loss = 0.41620300168991087, Val_Err = 10.33
+Epoch: [180 | 200]
+Phase:train -- Batch_idx:100/391-- 737.77 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.44 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 744.08 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.002460764095634222, Train_Err = 0.006
+Val_Loss = 0.4213842677116394, Val_Err = 10.42
+Epoch: [181 | 200]
+Phase:train -- Batch_idx:100/391-- 739.90 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.59 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 746.17 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022635585893690585, Train_Err = 0.0
+Val_Loss = 0.4204687708854675, Val_Err = 10.44
+Epoch: [182 | 200]
+Phase:train -- Batch_idx:100/391-- 739.26 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.33 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.66 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002334497984647751, Train_Err = 0.0
+Val_Loss = 0.42001233344078065, Val_Err = 10.46
+Epoch: [183 | 200]
+Phase:train -- Batch_idx:100/391-- 738.38 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.93 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.53 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0023077756288275124, Train_Err = 0.004
+Val_Loss = 0.42123743934631347, Val_Err = 10.53
+Epoch: [184 | 200]
+Phase:train -- Batch_idx:100/391-- 737.81 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.45 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.34 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002332450632676482, Train_Err = 0.002
+Val_Loss = 0.41895714507102966, Val_Err = 10.39
+Epoch: [185 | 200]
+Phase:train -- Batch_idx:100/391-- 739.57 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.45 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.97 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002243554117232561, Train_Err = 0.002
+Val_Loss = 0.41972068700790405, Val_Err = 10.4
+Epoch: [186 | 200]
+Phase:train -- Batch_idx:100/391-- 737.34 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.51 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.25 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002333725040927529, Train_Err = 0.0
+Val_Loss = 0.4196253159046173, Val_Err = 10.47
+Epoch: [187 | 200]
+Phase:train -- Batch_idx:100/391-- 737.62 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.39 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.06 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002231837103292346, Train_Err = 0.0
+Val_Loss = 0.4177255575656891, Val_Err = 10.36
+Epoch: [188 | 200]
+Phase:train -- Batch_idx:100/391-- 737.38 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.97 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.97 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.00230325545810163, Train_Err = 0.002
+Val_Loss = 0.4208296312332153, Val_Err = 10.4
+Epoch: [189 | 200]
+Phase:train -- Batch_idx:100/391-- 739.28 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.22 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.49 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002300798745304346, Train_Err = 0.002
+Val_Loss = 0.4195391629219055, Val_Err = 10.46
+Epoch: [190 | 200]
+Phase:train -- Batch_idx:100/391-- 737.95 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.59 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.23 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022190187968313692, Train_Err = 0.0
+Val_Loss = 0.42123801407814027, Val_Err = 10.5
+Epoch: [191 | 200]
+Phase:train -- Batch_idx:100/391-- 737.60 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:200/391-- 742.70 samples/sec-- Loss:0.00 -- Error1:0.01
+Phase:train -- Batch_idx:300/391-- 744.31 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.002343597734719515, Train_Err = 0.006
+Val_Loss = 0.41630050654411316, Val_Err = 10.31
+Epoch: [192 | 200]
+Phase:train -- Batch_idx:100/391-- 739.08 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.89 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.57 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002254212937504053, Train_Err = 0.0
+Val_Loss = 0.4225950771808624, Val_Err = 10.4
+Epoch: [193 | 200]
+Phase:train -- Batch_idx:100/391-- 739.10 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.33 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.83 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.0022798002848029137, Train_Err = 0.002
+Val_Loss = 0.41975231127738954, Val_Err = 10.52
+Epoch: [194 | 200]
+Phase:train -- Batch_idx:100/391-- 738.76 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.26 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.82 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002237741627395153, Train_Err = 0.0
+Val_Loss = 0.42059023728370665, Val_Err = 10.42
+Epoch: [195 | 200]
+Phase:train -- Batch_idx:100/391-- 737.14 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.31 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.56 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0022661152191460134, Train_Err = 0.004
+Val_Loss = 0.4207758710861206, Val_Err = 10.42
+Epoch: [196 | 200]
+Phase:train -- Batch_idx:100/391-- 739.61 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 744.49 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 746.07 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002279903569072485, Train_Err = 0.002
+Val_Loss = 0.4181576219558716, Val_Err = 10.33
+Epoch: [197 | 200]
+Phase:train -- Batch_idx:100/391-- 738.61 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.24 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 744.78 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002282640740200877, Train_Err = 0.0
+Val_Loss = 0.42322833404541016, Val_Err = 10.28
+Epoch: [198 | 200]
+Phase:train -- Batch_idx:100/391-- 737.37 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 742.28 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 743.90 samples/sec-- Loss:0.00 -- Error1:0.01
+Train_Loss = 0.0023446519680321216, Train_Err = 0.004
+Val_Loss = 0.41812662997245786, Val_Err = 10.34
+Epoch: [199 | 200]
+Phase:train -- Batch_idx:100/391-- 737.96 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:200/391-- 743.50 samples/sec-- Loss:0.00 -- Error1:0.00
+Phase:train -- Batch_idx:300/391-- 745.25 samples/sec-- Loss:0.00 -- Error1:0.00
+Train_Loss = 0.002242719629406929, Train_Err = 0.0
+Val_Loss = 0.4232920888900757, Val_Err = 10.42

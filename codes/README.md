@@ -1,6 +1,6 @@
 # Low-Pass Filtering SGD for Recovering Flat Optima in the Deep Learning Optimization Landscape
 
-This repository is the official implementation of Low-Pass Filtering SGD for Recovering Flat Optima in the Deep Learning Optimization Landscape. 
+This repository is the official implementation of [Low-Pass Filtering SGD for Recovering Flat Optima in the Deep Learning Optimization Landscape](https://arxiv.org/abs/2201.08025) to appear in AISTATS, 2022. 
 
 
 ## Requirements

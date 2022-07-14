@@ -136,6 +136,9 @@ Summary of LPF-SGD hyper-parameters:
 
 </div>
 
+## Training logs
+
+The checkpoints log files for all the experiments are provided [here](https://github.com/devansh20la/LPF-SGD/tree/master/codes/resnets_nodataaug/checkpoints)
 
 ## Experiments 2
 To re-create the results in Table 5 from the paper, change to wrn_dataaug directory 'cd wrn_dataaug/example'. Here are the arguments common to all training scripts:

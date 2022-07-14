@@ -1,0 +1,901 @@
+root: Namespace(M=8, batch_size=16, cp_dir='checkpoints/basic_cutout/cifar100/ssgd/run_ms_1/pyramidnet_272_bottleneck_8_8_0.0005/run0', depth=272, dtype='cifar100', epochs=300, img_aug='basic_cutout', inc=15, learning_rate=0.1, momentum=0.9, mtype='pyramidnet', num_classes=100, resume=None, seed=1, std=0.0005, threads=8, weight_decay=0.0001, width_factor=8)
+root: Epoch: [0 | 300]
+root: Train_Loss = 0.48473089933395386, Train_Err = 89.466
+root: Val_Loss = 3.282745122909546, Val_Err = 78.59
+root: Epoch: [1 | 300]
+root: Train_Loss = 0.3627839684486389, Train_Err = 73.338
+root: Val_Loss = 2.344870090484619, Val_Err = 61.5
+root: Epoch: [2 | 300]
+root: Train_Loss = 0.2860074043273926, Train_Err = 60.528
+root: Val_Loss = 1.9248552322387695, Val_Err = 51.23
+root: Epoch: [3 | 300]
+root: Train_Loss = 0.2423502504825592, Train_Err = 52.584
+root: Val_Loss = 1.7089948654174805, Val_Err = 46.06
+root: Epoch: [4 | 300]
+root: Train_Loss = 0.21249647438526154, Train_Err = 47.102
+root: Val_Loss = 1.5393108129501343, Val_Err = 42.16
+root: Epoch: [5 | 300]
+root: Train_Loss = 0.1919458508491516, Train_Err = 42.918
+root: Val_Loss = 1.4340596199035645, Val_Err = 39.95
+root: Epoch: [6 | 300]
+root: Train_Loss = 0.17593802511692047, Train_Err = 39.52
+root: Val_Loss = 1.3473013639450073, Val_Err = 37.51
+root: Epoch: [7 | 300]
+root: Train_Loss = 0.16160131990909576, Train_Err = 36.69
+root: Val_Loss = 1.3311833143234253, Val_Err = 36.38
+root: Epoch: [8 | 300]
+root: Train_Loss = 0.1508723795413971, Train_Err = 34.848
+root: Val_Loss = 1.2783061265945435, Val_Err = 35.17
+root: Epoch: [9 | 300]
+root: Train_Loss = 0.1404780000448227, Train_Err = 32.686
+root: Val_Loss = 1.2205448150634766, Val_Err = 33.36
+root: Epoch: [10 | 300]
+root: Train_Loss = 0.13287563621997833, Train_Err = 31.108
+root: Val_Loss = 1.1621899604797363, Val_Err = 32.21
+root: Epoch: [11 | 300]
+root: Train_Loss = 0.12529954314231873, Train_Err = 29.622
+root: Val_Loss = 1.2373919486999512, Val_Err = 33.88
+root: Epoch: [12 | 300]
+root: Train_Loss = 0.11853314936161041, Train_Err = 27.958
+root: Val_Loss = 1.1022670269012451, Val_Err = 31.0
+root: Epoch: [13 | 300]
+root: Train_Loss = 0.11234664916992188, Train_Err = 26.49
+root: Val_Loss = 1.1313105821609497, Val_Err = 31.08
+root: Epoch: [14 | 300]
+root: Train_Loss = 0.10765958577394485, Train_Err = 25.654
+root: Val_Loss = 1.1028136014938354, Val_Err = 30.32
+root: Epoch: [15 | 300]
+root: Train_Loss = 0.10110173374414444, Train_Err = 24.596
+root: Val_Loss = 1.088536262512207, Val_Err = 29.37
+root: Epoch: [16 | 300]
+root: Train_Loss = 0.09773675352334976, Train_Err = 23.396
+root: Val_Loss = 1.109686255455017, Val_Err = 29.92
+root: Epoch: [17 | 300]
+root: Train_Loss = 0.09289461374282837, Train_Err = 22.338
+root: Val_Loss = 1.0577353239059448, Val_Err = 28.58
+root: Epoch: [18 | 300]
+root: Train_Loss = 0.08900569379329681, Train_Err = 21.374
+root: Val_Loss = 1.1123545169830322, Val_Err = 29.83
+root: Epoch: [19 | 300]
+root: Train_Loss = 0.08507339656352997, Train_Err = 20.748
+root: Val_Loss = 1.059332251548767, Val_Err = 27.56
+root: Epoch: [20 | 300]
+root: Train_Loss = 0.08139792084693909, Train_Err = 19.93
+root: Val_Loss = 1.118298053741455, Val_Err = 29.3
+root: Epoch: [21 | 300]
+root: Train_Loss = 0.07815000414848328, Train_Err = 19.414
+root: Val_Loss = 1.071103572845459, Val_Err = 28.26
+root: Epoch: [22 | 300]
+root: Train_Loss = 0.07543930411338806, Train_Err = 18.564
+root: Val_Loss = 1.1055155992507935, Val_Err = 28.34
+root: Epoch: [23 | 300]
+root: Train_Loss = 0.07242316752672195, Train_Err = 17.888
+root: Val_Loss = 1.0798087120056152, Val_Err = 27.91
+root: Epoch: [24 | 300]
+root: Train_Loss = 0.07077030837535858, Train_Err = 17.526
+root: Val_Loss = 1.0779508352279663, Val_Err = 27.28
+root: Epoch: [25 | 300]
+root: Train_Loss = 0.0674823671579361, Train_Err = 16.866
+root: Val_Loss = 1.07582426071167, Val_Err = 27.24
+root: Epoch: [26 | 300]
+root: Train_Loss = 0.06518500298261642, Train_Err = 16.178
+root: Val_Loss = 1.1143441200256348, Val_Err = 27.74
+root: Epoch: [27 | 300]
+root: Train_Loss = 0.0637734904885292, Train_Err = 15.802
+root: Val_Loss = 1.0689239501953125, Val_Err = 27.34
+root: Epoch: [28 | 300]
+root: Train_Loss = 0.06258342415094376, Train_Err = 15.72
+root: Val_Loss = 1.0733730792999268, Val_Err = 26.78
+root: Epoch: [29 | 300]
+root: Train_Loss = 0.059652868658304214, Train_Err = 14.834
+root: Val_Loss = 1.1272950172424316, Val_Err = 27.53
+root: Epoch: [30 | 300]
+root: Train_Loss = 0.058355290442705154, Train_Err = 14.51
+root: Val_Loss = 1.1105823516845703, Val_Err = 27.27
+root: Epoch: [31 | 300]
+root: Train_Loss = 0.05666206404566765, Train_Err = 14.232
+root: Val_Loss = 1.1629524230957031, Val_Err = 27.8
+root: Epoch: [32 | 300]
+root: Train_Loss = 0.057116296142339706, Train_Err = 14.28
+root: Val_Loss = 1.1242375373840332, Val_Err = 27.6
+root: Epoch: [33 | 300]
+root: Train_Loss = 0.05517061427235603, Train_Err = 13.826
+root: Val_Loss = 1.1247203350067139, Val_Err = 27.05
+root: Epoch: [34 | 300]
+root: Train_Loss = 0.053430937230587006, Train_Err = 13.29
+root: Val_Loss = 1.1238832473754883, Val_Err = 27.09
+root: Epoch: [35 | 300]
+root: Train_Loss = 0.05117000266909599, Train_Err = 12.752
+root: Val_Loss = 1.11893630027771, Val_Err = 27.07
+root: Epoch: [36 | 300]
+root: Train_Loss = 0.05146819353103638, Train_Err = 12.832
+root: Val_Loss = 1.116401195526123, Val_Err = 26.65
+root: Epoch: [37 | 300]
+root: Train_Loss = 0.04860210418701172, Train_Err = 12.118
+root: Val_Loss = 1.1658583879470825, Val_Err = 27.64
+root: Epoch: [38 | 300]
+root: Train_Loss = 0.05033029988408089, Train_Err = 12.596
+root: Val_Loss = 1.1105207204818726, Val_Err = 26.22
+root: Epoch: [39 | 300]
+root: Train_Loss = 0.04788839817047119, Train_Err = 12.002
+root: Val_Loss = 1.1074116230010986, Val_Err = 26.3
+root: Epoch: [40 | 300]
+root: Train_Loss = 0.0484747514128685, Train_Err = 12.218
+root: Val_Loss = 1.218021035194397, Val_Err = 27.5
+root: Epoch: [41 | 300]
+root: Train_Loss = 0.046920545399188995, Train_Err = 11.836
+root: Val_Loss = 1.0864897966384888, Val_Err = 25.69
+root: Epoch: [42 | 300]
+root: Train_Loss = 0.04559803754091263, Train_Err = 11.49
+root: Val_Loss = 1.1519629955291748, Val_Err = 26.93
+root: Epoch: [43 | 300]
+root: Train_Loss = 0.0439540334045887, Train_Err = 10.978
+root: Val_Loss = 1.1286174058914185, Val_Err = 26.15
+root: Epoch: [44 | 300]
+root: Train_Loss = 0.044705264270305634, Train_Err = 11.064
+root: Val_Loss = 1.1320029497146606, Val_Err = 26.29
+root: Epoch: [45 | 300]
+root: Train_Loss = 0.04385564848780632, Train_Err = 11.1
+root: Val_Loss = 1.13722825050354, Val_Err = 26.6
+root: Epoch: [46 | 300]
+root: Train_Loss = 0.04318041354417801, Train_Err = 10.694
+root: Val_Loss = 1.141465187072754, Val_Err = 26.21
+root: Epoch: [47 | 300]
+root: Train_Loss = 0.04299834743142128, Train_Err = 10.76
+root: Val_Loss = 1.140334129333496, Val_Err = 26.27
+root: Epoch: [48 | 300]
+root: Train_Loss = 0.042157839983701706, Train_Err = 10.566
+root: Val_Loss = 1.1584559679031372, Val_Err = 26.7
+root: Epoch: [49 | 300]
+root: Train_Loss = 0.041176628321409225, Train_Err = 10.154
+root: Val_Loss = 1.124333381652832, Val_Err = 25.82
+root: Epoch: [50 | 300]
+root: Train_Loss = 0.04125320166349411, Train_Err = 10.312
+root: Val_Loss = 1.1204465627670288, Val_Err = 25.87
+root: Epoch: [51 | 300]
+root: Train_Loss = 0.041344769299030304, Train_Err = 10.206
+root: Val_Loss = 1.143625020980835, Val_Err = 26.14
+root: Epoch: [52 | 300]
+root: Train_Loss = 0.039294563233852386, Train_Err = 9.82
+root: Val_Loss = 1.1473050117492676, Val_Err = 26.0
+root: Epoch: [53 | 300]
+root: Train_Loss = 0.03973238170146942, Train_Err = 9.884
+root: Val_Loss = 1.1610709428787231, Val_Err = 26.53
+root: Epoch: [54 | 300]
+root: Train_Loss = 0.03956520929932594, Train_Err = 9.92
+root: Val_Loss = 1.1474612951278687, Val_Err = 26.68
+root: Epoch: [55 | 300]
+root: Train_Loss = 0.03898075968027115, Train_Err = 9.858
+root: Val_Loss = 1.2088087797164917, Val_Err = 26.67
+root: Epoch: [56 | 300]
+root: Train_Loss = 0.0401066429913044, Train_Err = 10.08
+root: Val_Loss = 1.1087543964385986, Val_Err = 25.61
+root: Epoch: [57 | 300]
+root: Train_Loss = 0.03754231706261635, Train_Err = 9.34
+root: Val_Loss = 1.1306174993515015, Val_Err = 25.57
+root: Epoch: [58 | 300]
+root: Train_Loss = 0.03824504464864731, Train_Err = 9.648
+root: Val_Loss = 1.1659953594207764, Val_Err = 26.05
+root: Epoch: [59 | 300]
+root: Train_Loss = 0.03754374757409096, Train_Err = 9.402
+root: Val_Loss = 1.15398371219635, Val_Err = 26.12
+root: Epoch: [60 | 300]
+root: Train_Loss = 0.03749585524201393, Train_Err = 9.328
+root: Val_Loss = 1.131057620048523, Val_Err = 25.3
+root: Epoch: [61 | 300]
+root: Train_Loss = 0.03680029138922691, Train_Err = 9.144
+root: Val_Loss = 1.2055195569992065, Val_Err = 26.78
+root: Epoch: [62 | 300]
+root: Train_Loss = 0.03762466832995415, Train_Err = 9.334
+root: Val_Loss = 1.1096117496490479, Val_Err = 24.9
+root: Epoch: [63 | 300]
+root: Train_Loss = 0.03677268326282501, Train_Err = 9.038
+root: Val_Loss = 1.1407569646835327, Val_Err = 25.98
+root: Epoch: [64 | 300]
+root: Train_Loss = 0.03719554468989372, Train_Err = 9.194
+root: Val_Loss = 1.1160343885421753, Val_Err = 25.88
+root: Epoch: [65 | 300]
+root: Train_Loss = 0.037213679403066635, Train_Err = 9.316
+root: Val_Loss = 1.1519041061401367, Val_Err = 26.11
+root: Epoch: [66 | 300]
+root: Train_Loss = 0.03695850074291229, Train_Err = 9.25
+root: Val_Loss = 1.0909423828125, Val_Err = 25.09
+root: Epoch: [67 | 300]
+root: Train_Loss = 0.035795874893665314, Train_Err = 8.932
+root: Val_Loss = 1.1397289037704468, Val_Err = 25.81
+root: Epoch: [68 | 300]
+root: Train_Loss = 0.03616535663604736, Train_Err = 9.05
+root: Val_Loss = 1.2097159624099731, Val_Err = 26.99
+root: Epoch: [69 | 300]
+root: Train_Loss = 0.03473227098584175, Train_Err = 8.732
+root: Val_Loss = 1.200447678565979, Val_Err = 26.4
+root: Epoch: [70 | 300]
+root: Train_Loss = 0.036641042679548264, Train_Err = 9.134
+root: Val_Loss = 1.1661497354507446, Val_Err = 26.2
+root: Epoch: [71 | 300]
+root: Train_Loss = 0.033835653215646744, Train_Err = 8.43
+root: Val_Loss = 1.1634246110916138, Val_Err = 25.86
+root: Epoch: [72 | 300]
+root: Train_Loss = 0.035223208367824554, Train_Err = 8.84
+root: Val_Loss = 1.1093958616256714, Val_Err = 25.34
+root: Epoch: [73 | 300]
+root: Train_Loss = 0.03380417823791504, Train_Err = 8.308
+root: Val_Loss = 1.132847785949707, Val_Err = 25.68
+root: Epoch: [74 | 300]
+root: Train_Loss = 0.03502485156059265, Train_Err = 8.732
+root: Val_Loss = 1.1839812994003296, Val_Err = 25.99
+root: Epoch: [75 | 300]
+root: Train_Loss = 0.03435531631112099, Train_Err = 8.436
+root: Val_Loss = 1.1047861576080322, Val_Err = 25.04
+root: Epoch: [76 | 300]
+root: Train_Loss = 0.03465887904167175, Train_Err = 8.656
+root: Val_Loss = 1.1424505710601807, Val_Err = 25.38
+root: Epoch: [77 | 300]
+root: Train_Loss = 0.0335366390645504, Train_Err = 8.37
+root: Val_Loss = 1.1340664625167847, Val_Err = 24.94
+root: Epoch: [78 | 300]
+root: Train_Loss = 0.03215790167450905, Train_Err = 8.036
+root: Val_Loss = 1.1531168222427368, Val_Err = 25.69
+root: Epoch: [79 | 300]
+root: Train_Loss = 0.03457992896437645, Train_Err = 8.658
+root: Val_Loss = 1.141550898551941, Val_Err = 25.18
+root: Epoch: [80 | 300]
+root: Train_Loss = 0.032844819128513336, Train_Err = 8.252
+root: Val_Loss = 1.0965819358825684, Val_Err = 24.6
+root: Epoch: [81 | 300]
+root: Train_Loss = 0.03362688794732094, Train_Err = 8.378
+root: Val_Loss = 1.1112360954284668, Val_Err = 24.62
+root: Epoch: [82 | 300]
+root: Train_Loss = 0.03386104479432106, Train_Err = 8.47
+root: Val_Loss = 1.1040719747543335, Val_Err = 24.72
+root: Epoch: [83 | 300]
+root: Train_Loss = 0.031228329986333847, Train_Err = 7.63
+root: Val_Loss = 1.1609143018722534, Val_Err = 25.74
+root: Epoch: [84 | 300]
+root: Train_Loss = 0.032935600727796555, Train_Err = 8.242
+root: Val_Loss = 1.147438883781433, Val_Err = 25.46
+root: Epoch: [85 | 300]
+root: Train_Loss = 0.03299026936292648, Train_Err = 8.168
+root: Val_Loss = 1.1780108213424683, Val_Err = 25.55
+root: Epoch: [86 | 300]
+root: Train_Loss = 0.03204553201794624, Train_Err = 7.912
+root: Val_Loss = 1.140173316001892, Val_Err = 25.04
+root: Epoch: [87 | 300]
+root: Train_Loss = 0.03154774010181427, Train_Err = 7.78
+root: Val_Loss = 1.241023302078247, Val_Err = 26.56
+root: Epoch: [88 | 300]
+root: Train_Loss = 0.03254099190235138, Train_Err = 8.112
+root: Val_Loss = 1.1275138854980469, Val_Err = 24.59
+root: Epoch: [89 | 300]
+root: Train_Loss = 0.03055974282324314, Train_Err = 7.524
+root: Val_Loss = 1.1215492486953735, Val_Err = 24.5
+root: Epoch: [90 | 300]
+root: Train_Loss = 0.032270755618810654, Train_Err = 7.994
+root: Val_Loss = 1.1250983476638794, Val_Err = 25.06
+root: Epoch: [91 | 300]
+root: Train_Loss = 0.03166712448000908, Train_Err = 7.718
+root: Val_Loss = 1.1698575019836426, Val_Err = 25.34
+root: Epoch: [92 | 300]
+root: Train_Loss = 0.031323306262493134, Train_Err = 7.752
+root: Val_Loss = 1.1428757905960083, Val_Err = 24.78
+root: Epoch: [93 | 300]
+root: Train_Loss = 0.030626529827713966, Train_Err = 7.59
+root: Val_Loss = 1.1079990863800049, Val_Err = 24.63
+root: Epoch: [94 | 300]
+root: Train_Loss = 0.031901948153972626, Train_Err = 7.908
+root: Val_Loss = 1.124782681465149, Val_Err = 24.61
+root: Epoch: [95 | 300]
+root: Train_Loss = 0.030011486262083054, Train_Err = 7.46
+root: Val_Loss = 1.1182798147201538, Val_Err = 24.51
+root: Epoch: [96 | 300]
+root: Train_Loss = 0.029166830703616142, Train_Err = 7.178
+root: Val_Loss = 1.1736217737197876, Val_Err = 25.53
+root: Epoch: [97 | 300]
+root: Train_Loss = 0.03230031579732895, Train_Err = 7.964
+root: Val_Loss = 1.1721587181091309, Val_Err = 25.2
+root: Epoch: [98 | 300]
+root: Train_Loss = 0.031026236712932587, Train_Err = 7.684
+root: Val_Loss = 1.0859870910644531, Val_Err = 24.75
+root: Epoch: [99 | 300]
+root: Train_Loss = 0.030109193176031113, Train_Err = 7.466
+root: Val_Loss = 1.1367413997650146, Val_Err = 25.13
+root: Epoch: [100 | 300]
+root: Train_Loss = 0.03037431091070175, Train_Err = 7.486
+root: Val_Loss = 1.1719728708267212, Val_Err = 25.75
+root: Epoch: [101 | 300]
+root: Train_Loss = 0.03016483783721924, Train_Err = 7.436
+root: Val_Loss = 1.1227952241897583, Val_Err = 24.57
+root: Epoch: [102 | 300]
+root: Train_Loss = 0.030068697407841682, Train_Err = 7.286
+root: Val_Loss = 1.1510571241378784, Val_Err = 24.68
+root: Epoch: [103 | 300]
+root: Train_Loss = 0.03021589294075966, Train_Err = 7.55
+root: Val_Loss = 1.1681276559829712, Val_Err = 24.78
+root: Epoch: [104 | 300]
+root: Train_Loss = 0.03038754127919674, Train_Err = 7.572
+root: Val_Loss = 1.0881839990615845, Val_Err = 24.04
+root: Epoch: [105 | 300]
+root: Train_Loss = 0.030107606202363968, Train_Err = 7.322
+root: Val_Loss = 1.1365522146224976, Val_Err = 24.57
+root: Epoch: [106 | 300]
+root: Train_Loss = 0.02984076365828514, Train_Err = 7.364
+root: Val_Loss = 1.1035959720611572, Val_Err = 24.1
+root: Epoch: [107 | 300]
+root: Train_Loss = 0.030013827607035637, Train_Err = 7.26
+root: Val_Loss = 1.1433839797973633, Val_Err = 24.68
+root: Epoch: [108 | 300]
+root: Train_Loss = 0.028375770896673203, Train_Err = 6.988
+root: Val_Loss = 1.2303656339645386, Val_Err = 26.1
+root: Epoch: [109 | 300]
+root: Train_Loss = 0.02956782467663288, Train_Err = 7.248
+root: Val_Loss = 1.214905023574829, Val_Err = 25.3
+root: Epoch: [110 | 300]
+root: Train_Loss = 0.0286698080599308, Train_Err = 7.104
+root: Val_Loss = 1.131508231163025, Val_Err = 24.99
+root: Epoch: [111 | 300]
+root: Train_Loss = 0.028282158076763153, Train_Err = 6.98
+root: Val_Loss = 1.1345621347427368, Val_Err = 24.63
+root: Epoch: [112 | 300]
+root: Train_Loss = 0.029820870608091354, Train_Err = 7.31
+root: Val_Loss = 1.1319513320922852, Val_Err = 24.54
+root: Epoch: [113 | 300]
+root: Train_Loss = 0.02939019165933132, Train_Err = 7.186
+root: Val_Loss = 1.129949927330017, Val_Err = 24.38
+root: Epoch: [114 | 300]
+root: Train_Loss = 0.029762795194983482, Train_Err = 7.448
+root: Val_Loss = 1.113444447517395, Val_Err = 24.39
+root: Epoch: [115 | 300]
+root: Train_Loss = 0.030987897887825966, Train_Err = 7.726
+root: Val_Loss = 1.1242848634719849, Val_Err = 24.33
+root: Epoch: [116 | 300]
+root: Train_Loss = 0.02829974703490734, Train_Err = 6.882
+root: Val_Loss = 1.056315541267395, Val_Err = 23.95
+root: Epoch: [117 | 300]
+root: Train_Loss = 0.028691137209534645, Train_Err = 7.172
+root: Val_Loss = 1.1399121284484863, Val_Err = 24.23
+root: Epoch: [118 | 300]
+root: Train_Loss = 0.0287672970443964, Train_Err = 7.098
+root: Val_Loss = 1.1404513120651245, Val_Err = 24.52
+root: Epoch: [119 | 300]
+root: Train_Loss = 0.029838310554623604, Train_Err = 7.344
+root: Val_Loss = 1.169100046157837, Val_Err = 25.55
+root: Epoch: [120 | 300]
+root: Train_Loss = 0.027836011722683907, Train_Err = 6.86
+root: Val_Loss = 1.1456586122512817, Val_Err = 24.34
+root: Epoch: [121 | 300]
+root: Train_Loss = 0.028722748160362244, Train_Err = 7.142
+root: Val_Loss = 1.1467405557632446, Val_Err = 24.78
+root: Epoch: [122 | 300]
+root: Train_Loss = 0.029498383402824402, Train_Err = 7.342
+root: Val_Loss = 1.1198445558547974, Val_Err = 24.22
+root: Epoch: [123 | 300]
+root: Train_Loss = 0.029103728011250496, Train_Err = 7.148
+root: Val_Loss = 1.1301478147506714, Val_Err = 24.53
+root: Epoch: [124 | 300]
+root: Train_Loss = 0.028861835598945618, Train_Err = 7.076
+root: Val_Loss = 1.1584157943725586, Val_Err = 24.79
+root: Epoch: [125 | 300]
+root: Train_Loss = 0.027790667489171028, Train_Err = 6.88
+root: Val_Loss = 1.1648374795913696, Val_Err = 25.06
+root: Epoch: [126 | 300]
+root: Train_Loss = 0.027231914922595024, Train_Err = 6.744
+root: Val_Loss = 1.1009700298309326, Val_Err = 24.04
+root: Epoch: [127 | 300]
+root: Train_Loss = 0.026551175862550735, Train_Err = 6.496
+root: Val_Loss = 1.1676825284957886, Val_Err = 24.89
+root: Epoch: [128 | 300]
+root: Train_Loss = 0.027249552309513092, Train_Err = 6.656
+root: Val_Loss = 1.2035678625106812, Val_Err = 24.94
+root: Epoch: [129 | 300]
+root: Train_Loss = 0.02859041653573513, Train_Err = 7.1
+root: Val_Loss = 1.127668857574463, Val_Err = 24.11
+root: Epoch: [130 | 300]
+root: Train_Loss = 0.027995187789201736, Train_Err = 6.95
+root: Val_Loss = 1.208121418952942, Val_Err = 25.84
+root: Epoch: [131 | 300]
+root: Train_Loss = 0.02945365384221077, Train_Err = 7.306
+root: Val_Loss = 1.1982530355453491, Val_Err = 25.28
+root: Epoch: [132 | 300]
+root: Train_Loss = 0.0277706366032362, Train_Err = 6.912
+root: Val_Loss = 1.0964998006820679, Val_Err = 23.91
+root: Epoch: [133 | 300]
+root: Train_Loss = 0.027336986735463142, Train_Err = 6.758
+root: Val_Loss = 1.1332281827926636, Val_Err = 24.03
+root: Epoch: [134 | 300]
+root: Train_Loss = 0.027879348024725914, Train_Err = 6.85
+root: Val_Loss = 1.1369956731796265, Val_Err = 24.13
+root: Epoch: [135 | 300]
+root: Train_Loss = 0.028374256566166878, Train_Err = 7.056
+root: Val_Loss = 1.1296440362930298, Val_Err = 23.94
+root: Epoch: [136 | 300]
+root: Train_Loss = 0.02806626819074154, Train_Err = 6.872
+root: Val_Loss = 1.1311804056167603, Val_Err = 24.41
+root: Epoch: [137 | 300]
+root: Train_Loss = 0.02863333933055401, Train_Err = 7.044
+root: Val_Loss = 1.1056067943572998, Val_Err = 24.0
+root: Epoch: [138 | 300]
+root: Train_Loss = 0.02784820646047592, Train_Err = 6.774
+root: Val_Loss = 1.1111254692077637, Val_Err = 24.07
+root: Epoch: [139 | 300]
+root: Train_Loss = 0.02787013165652752, Train_Err = 6.89
+root: Val_Loss = 1.1414293050765991, Val_Err = 24.44
+root: Epoch: [140 | 300]
+root: Train_Loss = 0.02796236053109169, Train_Err = 7.032
+root: Val_Loss = 1.10410737991333, Val_Err = 24.22
+root: Epoch: [141 | 300]
+root: Train_Loss = 0.028143804520368576, Train_Err = 6.97
+root: Val_Loss = 1.0917021036148071, Val_Err = 23.99
+root: Epoch: [142 | 300]
+root: Train_Loss = 0.027016231790184975, Train_Err = 6.686
+root: Val_Loss = 1.1009472608566284, Val_Err = 24.22
+root: Epoch: [143 | 300]
+root: Train_Loss = 0.027255062013864517, Train_Err = 6.746
+root: Val_Loss = 1.0666950941085815, Val_Err = 23.28
+root: Epoch: [144 | 300]
+root: Train_Loss = 0.02826688624918461, Train_Err = 6.988
+root: Val_Loss = 1.1402654647827148, Val_Err = 23.91
+root: Epoch: [145 | 300]
+root: Train_Loss = 0.029432140290737152, Train_Err = 7.262
+root: Val_Loss = 1.0772663354873657, Val_Err = 23.66
+root: Epoch: [146 | 300]
+root: Train_Loss = 0.02792292647063732, Train_Err = 6.824
+root: Val_Loss = 1.0809862613677979, Val_Err = 22.55
+root: Epoch: [147 | 300]
+root: Train_Loss = 0.026385487988591194, Train_Err = 6.526
+root: Val_Loss = 1.0904909372329712, Val_Err = 23.42
+root: Epoch: [148 | 300]
+root: Train_Loss = 0.026922736316919327, Train_Err = 6.562
+root: Val_Loss = 1.1073169708251953, Val_Err = 23.85
+root: Epoch: [149 | 300]
+root: Train_Loss = 0.027091490104794502, Train_Err = 6.69
+root: Val_Loss = 1.0783913135528564, Val_Err = 23.0
+root: Epoch: [150 | 300]
+root: Train_Loss = 0.009493207558989525, Train_Err = 2.0
+root: Val_Loss = 0.8224040865898132, Val_Err = 18.29
+root: Epoch: [151 | 300]
+root: Train_Loss = 0.0048606982454657555, Train_Err = 0.85
+root: Val_Loss = 0.8152986168861389, Val_Err = 17.9
+root: Epoch: [152 | 300]
+root: Train_Loss = 0.003721425076946616, Train_Err = 0.6
+root: Val_Loss = 0.8082499504089355, Val_Err = 17.73
+root: Epoch: [153 | 300]
+root: Train_Loss = 0.003040547948330641, Train_Err = 0.462
+root: Val_Loss = 0.8038403391838074, Val_Err = 17.4
+root: Epoch: [154 | 300]
+root: Train_Loss = 0.0027605718933045864, Train_Err = 0.412
+root: Val_Loss = 0.8057610392570496, Val_Err = 17.55
+root: Epoch: [155 | 300]
+root: Train_Loss = 0.002493498381227255, Train_Err = 0.372
+root: Val_Loss = 0.8150152564048767, Val_Err = 17.34
+root: Epoch: [156 | 300]
+root: Train_Loss = 0.0022425143979489803, Train_Err = 0.334
+root: Val_Loss = 0.8026207089424133, Val_Err = 17.42
+root: Epoch: [157 | 300]
+root: Train_Loss = 0.0021305272821336985, Train_Err = 0.302
+root: Val_Loss = 0.8106050491333008, Val_Err = 17.45
+root: Epoch: [158 | 300]
+root: Train_Loss = 0.0020788065157830715, Train_Err = 0.32
+root: Val_Loss = 0.8039262294769287, Val_Err = 17.13
+root: Epoch: [159 | 300]
+root: Train_Loss = 0.0018532482208684087, Train_Err = 0.27
+root: Val_Loss = 0.8073463439941406, Val_Err = 17.18
+root: Epoch: [160 | 300]
+root: Train_Loss = 0.0018411421915516257, Train_Err = 0.25
+root: Val_Loss = 0.8040642738342285, Val_Err = 17.08
+root: Epoch: [161 | 300]
+root: Train_Loss = 0.0016894956352189183, Train_Err = 0.242
+root: Val_Loss = 0.8036636710166931, Val_Err = 17.09
+root: Epoch: [162 | 300]
+root: Train_Loss = 0.0016417040023952723, Train_Err = 0.222
+root: Val_Loss = 0.803382396697998, Val_Err = 17.07
+root: Epoch: [163 | 300]
+root: Train_Loss = 0.0015859059058129787, Train_Err = 0.204
+root: Val_Loss = 0.8035340905189514, Val_Err = 16.97
+root: Epoch: [164 | 300]
+root: Train_Loss = 0.001692803343757987, Train_Err = 0.254
+root: Val_Loss = 0.794346809387207, Val_Err = 16.87
+root: Epoch: [165 | 300]
+root: Train_Loss = 0.001623685471713543, Train_Err = 0.214
+root: Val_Loss = 0.8082677721977234, Val_Err = 17.07
+root: Epoch: [166 | 300]
+root: Train_Loss = 0.001473570242524147, Train_Err = 0.194
+root: Val_Loss = 0.7930324673652649, Val_Err = 16.74
+root: Epoch: [167 | 300]
+root: Train_Loss = 0.0014102824497967958, Train_Err = 0.198
+root: Val_Loss = 0.7962908148765564, Val_Err = 16.83
+root: Epoch: [168 | 300]
+root: Train_Loss = 0.0015242054359987378, Train_Err = 0.204
+root: Val_Loss = 0.8008540272712708, Val_Err = 16.71
+root: Epoch: [169 | 300]
+root: Train_Loss = 0.0012982853222638369, Train_Err = 0.154
+root: Val_Loss = 0.7921568155288696, Val_Err = 16.79
+root: Epoch: [170 | 300]
+root: Train_Loss = 0.001418978557921946, Train_Err = 0.184
+root: Val_Loss = 0.802623450756073, Val_Err = 17.04
+root: Epoch: [171 | 300]
+root: Train_Loss = 0.0013948638224974275, Train_Err = 0.156
+root: Val_Loss = 0.7970176339149475, Val_Err = 17.01
+root: Epoch: [172 | 300]
+root: Train_Loss = 0.0012892126105725765, Train_Err = 0.166
+root: Val_Loss = 0.7877470850944519, Val_Err = 16.52
+root: Epoch: [173 | 300]
+root: Train_Loss = 0.0014856051420792937, Train_Err = 0.206
+root: Val_Loss = 0.789231538772583, Val_Err = 16.78
+root: Epoch: [174 | 300]
+root: Train_Loss = 0.0013337786076590419, Train_Err = 0.176
+root: Val_Loss = 0.7944215536117554, Val_Err = 16.65
+root: Epoch: [175 | 300]
+root: Train_Loss = 0.0012360038235783577, Train_Err = 0.156
+root: Val_Loss = 0.7885286211967468, Val_Err = 16.65
+root: Epoch: [176 | 300]
+root: Train_Loss = 0.001274638227187097, Train_Err = 0.168
+root: Val_Loss = 0.7909746170043945, Val_Err = 16.8
+root: Epoch: [177 | 300]
+root: Train_Loss = 0.0013642911799252033, Train_Err = 0.17
+root: Val_Loss = 0.796131432056427, Val_Err = 16.89
+root: Epoch: [178 | 300]
+root: Train_Loss = 0.0012103928020223975, Train_Err = 0.156
+root: Val_Loss = 0.7831735014915466, Val_Err = 16.52
+root: Epoch: [179 | 300]
+root: Train_Loss = 0.0012506847269833088, Train_Err = 0.154
+root: Val_Loss = 0.7961523532867432, Val_Err = 16.55
+root: Epoch: [180 | 300]
+root: Train_Loss = 0.0012718315701931715, Train_Err = 0.15
+root: Val_Loss = 0.7835171818733215, Val_Err = 16.68
+root: Epoch: [181 | 300]
+root: Train_Loss = 0.0012630193959921598, Train_Err = 0.166
+root: Val_Loss = 0.7755730152130127, Val_Err = 16.72
+root: Epoch: [182 | 300]
+root: Train_Loss = 0.001155861304141581, Train_Err = 0.112
+root: Val_Loss = 0.7786800265312195, Val_Err = 16.58
+root: Epoch: [183 | 300]
+root: Train_Loss = 0.001257942058146, Train_Err = 0.168
+root: Val_Loss = 0.7854554057121277, Val_Err = 16.56
+root: Epoch: [184 | 300]
+root: Train_Loss = 0.001356777735054493, Train_Err = 0.17
+root: Val_Loss = 0.7871102094650269, Val_Err = 16.66
+root: Epoch: [185 | 300]
+root: Train_Loss = 0.0012148505775257945, Train_Err = 0.132
+root: Val_Loss = 0.7855337262153625, Val_Err = 16.28
+root: Epoch: [186 | 300]
+root: Train_Loss = 0.0011162852169945836, Train_Err = 0.118
+root: Val_Loss = 0.7929766774177551, Val_Err = 16.46
+root: Epoch: [187 | 300]
+root: Train_Loss = 0.0011635845294222236, Train_Err = 0.134
+root: Val_Loss = 0.7832004427909851, Val_Err = 16.59
+root: Epoch: [188 | 300]
+root: Train_Loss = 0.0011119908886030316, Train_Err = 0.128
+root: Val_Loss = 0.7839831113815308, Val_Err = 16.58
+root: Epoch: [189 | 300]
+root: Train_Loss = 0.0012633351143449545, Train_Err = 0.16
+root: Val_Loss = 0.7867912650108337, Val_Err = 16.46
+root: Epoch: [190 | 300]
+root: Train_Loss = 0.0010936318431049585, Train_Err = 0.122
+root: Val_Loss = 0.781755268573761, Val_Err = 16.73
+root: Epoch: [191 | 300]
+root: Train_Loss = 0.001243423786945641, Train_Err = 0.152
+root: Val_Loss = 0.779938280582428, Val_Err = 16.73
+root: Epoch: [192 | 300]
+root: Train_Loss = 0.00121406523976475, Train_Err = 0.146
+root: Val_Loss = 0.7952924966812134, Val_Err = 16.57
+root: Epoch: [193 | 300]
+root: Train_Loss = 0.001132108038291335, Train_Err = 0.118
+root: Val_Loss = 0.7762114405632019, Val_Err = 16.76
+root: Epoch: [194 | 300]
+root: Train_Loss = 0.0011630558874458075, Train_Err = 0.148
+root: Val_Loss = 0.7801774144172668, Val_Err = 16.64
+root: Epoch: [195 | 300]
+root: Train_Loss = 0.0012236627517268062, Train_Err = 0.148
+root: Val_Loss = 0.7713686227798462, Val_Err = 16.55
+root: Epoch: [196 | 300]
+root: Train_Loss = 0.0011720615439116955, Train_Err = 0.126
+root: Val_Loss = 0.7831501364707947, Val_Err = 16.5
+root: Epoch: [197 | 300]
+root: Train_Loss = 0.001218424760736525, Train_Err = 0.15
+root: Val_Loss = 0.7699155211448669, Val_Err = 16.62
+root: Epoch: [198 | 300]
+root: Train_Loss = 0.0012247917475178838, Train_Err = 0.152
+root: Val_Loss = 0.7737697958946228, Val_Err = 16.61
+root: Epoch: [199 | 300]
+root: Train_Loss = 0.0011661254102364182, Train_Err = 0.148
+root: Val_Loss = 0.7729012966156006, Val_Err = 16.45
+root: Epoch: [200 | 300]
+root: Train_Loss = 0.0011972569627687335, Train_Err = 0.134
+root: Val_Loss = 0.7687928080558777, Val_Err = 16.18
+root: Epoch: [201 | 300]
+root: Train_Loss = 0.001098668435588479, Train_Err = 0.098
+root: Val_Loss = 0.7630698680877686, Val_Err = 16.39
+root: Epoch: [202 | 300]
+root: Train_Loss = 0.0011734828585758805, Train_Err = 0.134
+root: Val_Loss = 0.7715708017349243, Val_Err = 16.35
+root: Epoch: [203 | 300]
+root: Train_Loss = 0.001159967272542417, Train_Err = 0.124
+root: Val_Loss = 0.7657867074012756, Val_Err = 16.26
+root: Epoch: [204 | 300]
+root: Train_Loss = 0.0011350143468007445, Train_Err = 0.126
+root: Val_Loss = 0.7696055173873901, Val_Err = 16.41
+root: Epoch: [205 | 300]
+root: Train_Loss = 0.0011539694387465715, Train_Err = 0.142
+root: Val_Loss = 0.767203152179718, Val_Err = 16.56
+root: Epoch: [206 | 300]
+root: Train_Loss = 0.0011549867922440171, Train_Err = 0.142
+root: Val_Loss = 0.7704357504844666, Val_Err = 16.29
+root: Epoch: [207 | 300]
+root: Train_Loss = 0.0011909464374184608, Train_Err = 0.138
+root: Val_Loss = 0.7709262371063232, Val_Err = 16.22
+root: Epoch: [208 | 300]
+root: Train_Loss = 0.001146006165072322, Train_Err = 0.126
+root: Val_Loss = 0.7687680721282959, Val_Err = 16.47
+root: Epoch: [209 | 300]
+root: Train_Loss = 0.001103136921301484, Train_Err = 0.108
+root: Val_Loss = 0.770368754863739, Val_Err = 16.26
+root: Epoch: [210 | 300]
+root: Train_Loss = 0.0010322588495910168, Train_Err = 0.092
+root: Val_Loss = 0.7753201723098755, Val_Err = 16.61
+root: Epoch: [211 | 300]
+root: Train_Loss = 0.0010460426565259695, Train_Err = 0.1
+root: Val_Loss = 0.7717877626419067, Val_Err = 16.4
+root: Epoch: [212 | 300]
+root: Train_Loss = 0.0010670260526239872, Train_Err = 0.102
+root: Val_Loss = 0.7718768119812012, Val_Err = 16.37
+root: Epoch: [213 | 300]
+root: Train_Loss = 0.0011176338884979486, Train_Err = 0.124
+root: Val_Loss = 0.7857858538627625, Val_Err = 16.17
+root: Epoch: [214 | 300]
+root: Train_Loss = 0.0011027909349650145, Train_Err = 0.104
+root: Val_Loss = 0.7668084502220154, Val_Err = 16.08
+root: Epoch: [215 | 300]
+root: Train_Loss = 0.0010864954674616456, Train_Err = 0.114
+root: Val_Loss = 0.7663525938987732, Val_Err = 16.14
+root: Epoch: [216 | 300]
+root: Train_Loss = 0.0011044515995308757, Train_Err = 0.114
+root: Val_Loss = 0.7707904577255249, Val_Err = 16.22
+root: Epoch: [217 | 300]
+root: Train_Loss = 0.0011109471088275313, Train_Err = 0.108
+root: Val_Loss = 0.7711446285247803, Val_Err = 16.15
+root: Epoch: [218 | 300]
+root: Train_Loss = 0.0010875158477574587, Train_Err = 0.12
+root: Val_Loss = 0.7639479041099548, Val_Err = 16.28
+root: Epoch: [219 | 300]
+root: Train_Loss = 0.0011600337456911802, Train_Err = 0.14
+root: Val_Loss = 0.7615411877632141, Val_Err = 16.25
+root: Epoch: [220 | 300]
+root: Train_Loss = 0.001149427960626781, Train_Err = 0.138
+root: Val_Loss = 0.781375527381897, Val_Err = 16.45
+root: Epoch: [221 | 300]
+root: Train_Loss = 0.0011650193482637405, Train_Err = 0.124
+root: Val_Loss = 0.7623218297958374, Val_Err = 16.16
+root: Epoch: [222 | 300]
+root: Train_Loss = 0.0010910702403634787, Train_Err = 0.11
+root: Val_Loss = 0.7814165949821472, Val_Err = 16.16
+root: Epoch: [223 | 300]
+root: Train_Loss = 0.001142107998020947, Train_Err = 0.116
+root: Val_Loss = 0.7858332991600037, Val_Err = 16.36
+root: Epoch: [224 | 300]
+root: Train_Loss = 0.0011126738972961903, Train_Err = 0.108
+root: Val_Loss = 0.7779210209846497, Val_Err = 16.49
+root: Epoch: [225 | 300]
+root: Train_Loss = 0.0010411938419565558, Train_Err = 0.096
+root: Val_Loss = 0.7733781337738037, Val_Err = 16.32
+root: Epoch: [226 | 300]
+root: Train_Loss = 0.00108460639603436, Train_Err = 0.124
+root: Val_Loss = 0.7710068225860596, Val_Err = 16.38
+root: Epoch: [227 | 300]
+root: Train_Loss = 0.001015183050185442, Train_Err = 0.1
+root: Val_Loss = 0.7648620009422302, Val_Err = 16.29
+root: Epoch: [228 | 300]
+root: Train_Loss = 0.0010348442010581493, Train_Err = 0.11
+root: Val_Loss = 0.775898814201355, Val_Err = 16.22
+root: Epoch: [229 | 300]
+root: Train_Loss = 0.0010041047353297472, Train_Err = 0.084
+root: Val_Loss = 0.7726094722747803, Val_Err = 16.24
+root: Epoch: [230 | 300]
+root: Train_Loss = 0.0010416394798085093, Train_Err = 0.102
+root: Val_Loss = 0.7664156556129456, Val_Err = 16.1
+root: Epoch: [231 | 300]
+root: Train_Loss = 0.0010692637879401445, Train_Err = 0.13
+root: Val_Loss = 0.7660186290740967, Val_Err = 16.28
+root: Epoch: [232 | 300]
+root: Train_Loss = 0.0010571907041594386, Train_Err = 0.118
+root: Val_Loss = 0.7682177424430847, Val_Err = 16.05
+root: Epoch: [233 | 300]
+root: Train_Loss = 0.0009977791924029589, Train_Err = 0.096
+root: Val_Loss = 0.7660829424858093, Val_Err = 16.07
+root: Epoch: [234 | 300]
+root: Train_Loss = 0.001011851360090077, Train_Err = 0.098
+root: Val_Loss = 0.7678163647651672, Val_Err = 16.3
+root: Epoch: [235 | 300]
+root: Train_Loss = 0.0010156537173315883, Train_Err = 0.114
+root: Val_Loss = 0.7674425840377808, Val_Err = 16.19
+root: Epoch: [236 | 300]
+root: Train_Loss = 0.0009666867554187775, Train_Err = 0.082
+root: Val_Loss = 0.7700974941253662, Val_Err = 16.3
+root: Epoch: [237 | 300]
+root: Train_Loss = 0.001013722736388445, Train_Err = 0.102
+root: Val_Loss = 0.7678651213645935, Val_Err = 16.51
+root: Epoch: [238 | 300]
+root: Train_Loss = 0.0010454069124534726, Train_Err = 0.124
+root: Val_Loss = 0.7739886045455933, Val_Err = 16.03
+root: Epoch: [239 | 300]
+root: Train_Loss = 0.0010410721879452467, Train_Err = 0.092
+root: Val_Loss = 0.7650393843650818, Val_Err = 16.25
+root: Epoch: [240 | 300]
+root: Train_Loss = 0.0009788632160052657, Train_Err = 0.078
+root: Val_Loss = 0.766655683517456, Val_Err = 16.2
+root: Epoch: [241 | 300]
+root: Train_Loss = 0.0009885167237371206, Train_Err = 0.082
+root: Val_Loss = 0.7630500793457031, Val_Err = 16.08
+root: Epoch: [242 | 300]
+root: Train_Loss = 0.0010185182327404618, Train_Err = 0.102
+root: Val_Loss = 0.7658283710479736, Val_Err = 15.93
+root: Epoch: [243 | 300]
+root: Train_Loss = 0.0009631742723286152, Train_Err = 0.088
+root: Val_Loss = 0.7737843990325928, Val_Err = 16.5
+root: Epoch: [244 | 300]
+root: Train_Loss = 0.0010079065104946494, Train_Err = 0.1
+root: Val_Loss = 0.7733106017112732, Val_Err = 16.07
+root: Epoch: [245 | 300]
+root: Train_Loss = 0.0010098564671352506, Train_Err = 0.092
+root: Val_Loss = 0.7744127511978149, Val_Err = 16.12
+root: Epoch: [246 | 300]
+root: Train_Loss = 0.0009678746573626995, Train_Err = 0.082
+root: Val_Loss = 0.7824065685272217, Val_Err = 16.1
+root: Epoch: [247 | 300]
+root: Train_Loss = 0.0010126540437340736, Train_Err = 0.106
+root: Val_Loss = 0.7649030089378357, Val_Err = 15.98
+root: Epoch: [248 | 300]
+root: Train_Loss = 0.001046544872224331, Train_Err = 0.09
+root: Val_Loss = 0.7621349692344666, Val_Err = 16.12
+root: Epoch: [249 | 300]
+root: Train_Loss = 0.0010717405239120126, Train_Err = 0.104
+root: Val_Loss = 0.7682376503944397, Val_Err = 16.05
+root: Epoch: [250 | 300]
+root: Train_Loss = 0.0009765453869476914, Train_Err = 0.064
+root: Val_Loss = 0.7704073786735535, Val_Err = 15.97
+root: Epoch: [251 | 300]
+root: Train_Loss = 0.0010380399180576205, Train_Err = 0.1
+root: Val_Loss = 0.7735387086868286, Val_Err = 16.13
+root: Epoch: [252 | 300]
+root: Train_Loss = 0.0009715409833006561, Train_Err = 0.058
+root: Val_Loss = 0.7704426646232605, Val_Err = 16.02
+root: Epoch: [253 | 300]
+root: Train_Loss = 0.000984618323855102, Train_Err = 0.092
+root: Val_Loss = 0.7744952440261841, Val_Err = 16.21
+root: Epoch: [254 | 300]
+root: Train_Loss = 0.0009934515692293644, Train_Err = 0.09
+root: Val_Loss = 0.7626100182533264, Val_Err = 16.16
+root: Epoch: [255 | 300]
+root: Train_Loss = 0.001056730281561613, Train_Err = 0.096
+root: Val_Loss = 0.7784321904182434, Val_Err = 16.05
+root: Epoch: [256 | 300]
+root: Train_Loss = 0.001018645940348506, Train_Err = 0.082
+root: Val_Loss = 0.7670474052429199, Val_Err = 16.17
+root: Epoch: [257 | 300]
+root: Train_Loss = 0.0009742286638356745, Train_Err = 0.086
+root: Val_Loss = 0.7707438468933105, Val_Err = 15.89
+root: Epoch: [258 | 300]
+root: Train_Loss = 0.0010455427691340446, Train_Err = 0.11
+root: Val_Loss = 0.7654969096183777, Val_Err = 15.94
+root: Epoch: [259 | 300]
+root: Train_Loss = 0.001056808978319168, Train_Err = 0.118
+root: Val_Loss = 0.7665097713470459, Val_Err = 16.03
+root: Epoch: [260 | 300]
+root: Train_Loss = 0.0011127288453280926, Train_Err = 0.118
+root: Val_Loss = 0.7739101052284241, Val_Err = 16.07
+root: Epoch: [261 | 300]
+root: Train_Loss = 0.0009918425930663943, Train_Err = 0.094
+root: Val_Loss = 0.7674331068992615, Val_Err = 16.1
+root: Epoch: [262 | 300]
+root: Train_Loss = 0.0010180412791669369, Train_Err = 0.094
+root: Val_Loss = 0.7687216401100159, Val_Err = 16.05
+root: Epoch: [263 | 300]
+root: Train_Loss = 0.0011070738546550274, Train_Err = 0.134
+root: Val_Loss = 0.7664266228675842, Val_Err = 16.02
+root: Epoch: [264 | 300]
+root: Train_Loss = 0.0009987421799451113, Train_Err = 0.094
+root: Val_Loss = 0.765729546546936, Val_Err = 16.13
+root: Epoch: [265 | 300]
+root: Train_Loss = 0.0010793416295200586, Train_Err = 0.126
+root: Val_Loss = 0.7691287994384766, Val_Err = 16.18
+root: Epoch: [266 | 300]
+root: Train_Loss = 0.0009693228639662266, Train_Err = 0.084
+root: Val_Loss = 0.7648456692695618, Val_Err = 16.09
+root: Epoch: [267 | 300]
+root: Train_Loss = 0.001037934678606689, Train_Err = 0.096
+root: Val_Loss = 0.7661863565444946, Val_Err = 16.06
+root: Epoch: [268 | 300]
+root: Train_Loss = 0.0009910522494465113, Train_Err = 0.086
+root: Val_Loss = 0.7699220776557922, Val_Err = 16.07
+root: Epoch: [269 | 300]
+root: Train_Loss = 0.0010817453730851412, Train_Err = 0.106
+root: Val_Loss = 0.7675865292549133, Val_Err = 15.93
+root: Epoch: [270 | 300]
+root: Train_Loss = 0.0010180436074733734, Train_Err = 0.108
+root: Val_Loss = 0.7731227278709412, Val_Err = 16.15
+root: Epoch: [271 | 300]
+root: Train_Loss = 0.0009944791672751307, Train_Err = 0.076
+root: Val_Loss = 0.7742008566856384, Val_Err = 16.08
+root: Epoch: [272 | 300]
+root: Train_Loss = 0.0010674644727259874, Train_Err = 0.102
+root: Val_Loss = 0.7632794976234436, Val_Err = 15.98
+root: Epoch: [273 | 300]
+root: Train_Loss = 0.0010395045392215252, Train_Err = 0.11
+root: Val_Loss = 0.7726759910583496, Val_Err = 16.15
+root: Epoch: [274 | 300]
+root: Train_Loss = 0.0010785156628116965, Train_Err = 0.122
+root: Val_Loss = 0.7814793586730957, Val_Err = 15.96
+root: Epoch: [275 | 300]
+root: Train_Loss = 0.001043537282384932, Train_Err = 0.104
+root: Val_Loss = 0.767103374004364, Val_Err = 16.21
+root: Epoch: [276 | 300]
+root: Train_Loss = 0.001023844350129366, Train_Err = 0.098
+root: Val_Loss = 0.7681017518043518, Val_Err = 16.06
+root: Epoch: [277 | 300]
+root: Train_Loss = 0.0010148125002160668, Train_Err = 0.096
+root: Val_Loss = 0.7769505381584167, Val_Err = 16.06
+root: Epoch: [278 | 300]
+root: Train_Loss = 0.0009934400441125035, Train_Err = 0.098
+root: Val_Loss = 0.7706652283668518, Val_Err = 15.99
+root: Epoch: [279 | 300]
+root: Train_Loss = 0.0009857559343799949, Train_Err = 0.076
+root: Val_Loss = 0.7757240533828735, Val_Err = 15.94
+root: Epoch: [280 | 300]
+root: Train_Loss = 0.0010388800874352455, Train_Err = 0.086
+root: Val_Loss = 0.7822556495666504, Val_Err = 16.15
+root: Epoch: [281 | 300]
+root: Train_Loss = 0.001012248219922185, Train_Err = 0.096
+root: Val_Loss = 0.7727755904197693, Val_Err = 16.01
+root: Epoch: [282 | 300]
+root: Train_Loss = 0.0010527624981477857, Train_Err = 0.11
+root: Val_Loss = 0.7662613391876221, Val_Err = 16.14
+root: Epoch: [283 | 300]
+root: Train_Loss = 0.000936809228733182, Train_Err = 0.076
+root: Val_Loss = 0.7679562568664551, Val_Err = 16.02
+root: Epoch: [284 | 300]
+root: Train_Loss = 0.0010303534800186753, Train_Err = 0.11
+root: Val_Loss = 0.7729896306991577, Val_Err = 15.96
+root: Epoch: [285 | 300]
+root: Train_Loss = 0.0010043383808806539, Train_Err = 0.088
+root: Val_Loss = 0.769858181476593, Val_Err = 16.18
+root: Epoch: [286 | 300]
+root: Train_Loss = 0.0010204932186752558, Train_Err = 0.118
+root: Val_Loss = 0.7712793946266174, Val_Err = 16.07
+root: Epoch: [287 | 300]
+root: Train_Loss = 0.0010294332168996334, Train_Err = 0.094
+root: Val_Loss = 0.7712662220001221, Val_Err = 16.24
+root: Epoch: [288 | 300]
+root: Train_Loss = 0.0010388920782133937, Train_Err = 0.116
+root: Val_Loss = 0.7689527869224548, Val_Err = 16.07
+root: Epoch: [289 | 300]
+root: Train_Loss = 0.001062772236764431, Train_Err = 0.114
+root: Val_Loss = 0.767116904258728, Val_Err = 16.17
+root: Epoch: [290 | 300]
+root: Train_Loss = 0.000984796555712819, Train_Err = 0.082
+root: Val_Loss = 0.7783017158508301, Val_Err = 16.16
+root: Epoch: [291 | 300]
+root: Train_Loss = 0.00107107637450099, Train_Err = 0.098
+root: Val_Loss = 0.7644476890563965, Val_Err = 16.07
+root: Epoch: [292 | 300]
+root: Train_Loss = 0.0010147885186597705, Train_Err = 0.082
+root: Val_Loss = 0.7731083035469055, Val_Err = 16.06
+root: Epoch: [293 | 300]
+root: Train_Loss = 0.001041135867126286, Train_Err = 0.096
+root: Val_Loss = 0.7623080611228943, Val_Err = 15.99
+root: Epoch: [294 | 300]
+root: Train_Loss = 0.0010062638903036714, Train_Err = 0.09
+root: Val_Loss = 0.7705559730529785, Val_Err = 15.94
+root: Epoch: [295 | 300]
+root: Train_Loss = 0.0010342656169086695, Train_Err = 0.09
+root: Val_Loss = 0.773643970489502, Val_Err = 16.08
+root: Epoch: [296 | 300]
+root: Train_Loss = 0.0010264591546729207, Train_Err = 0.084
+root: Val_Loss = 0.7660859823226929, Val_Err = 16.12
+root: Epoch: [297 | 300]
+root: Train_Loss = 0.0010231232736259699, Train_Err = 0.102
+root: Val_Loss = 0.7703757882118225, Val_Err = 16.14
+root: Epoch: [298 | 300]
+root: Train_Loss = 0.0010265115415677428, Train_Err = 0.108
+root: Val_Loss = 0.7745283246040344, Val_Err = 16.16
+root: Epoch: [299 | 300]
+root: Train_Loss = 0.001026403857395053, Train_Err = 0.106
+root: Val_Loss = 0.7759857177734375, Val_Err = 16.09

@@ -49,8 +49,8 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
 
         if phase == 'train':
 
-            inputs1 = torch.split(inputs, int(args.batch_size / args.M), dim=0)
-            targets1 = torch.split(targets, int(args.batch_size / args.M), dim=0)
+            inputs1 = torch.split(inputs, int(args.bs / args.M), dim=0)
+            targets1 = torch.split(targets, int(args.bs / args.M), dim=0)
 
             for inputs, targets in zip(inputs1, targets1):
                 # new technique

@@ -79,8 +79,9 @@ def class_model_run(phase, loader, model, criterion, optimizer, args):
                     for mp, n in zip(model.parameters(), noise):
                         mp.data.sub_(n)
 
-            optimizer.zero_grad()
             optimizer.step()
+            optimizer.zero_grad()
+            
         elif phase == 'val':
             with torch.no_grad():
                 outputs = model(inputs)
